@@ -54,7 +54,7 @@
 <meta property="og:description" content="POS通过本章节，大家一起学习单纯的pos是什么机制，以及如何工作的。它较pow有什么优缺点。 POS概述POS即权益证明，英文全称Proof of Stake。它是由匿名极客Sunny King发明的。Sunny King很神秘，类似中本聪，他的具体信息很少有人知道。同时他也是点点币（PPCoin）和质数币（PrimeCoin）的创始人。2012年点点币问世，成为全球首次使用POS共识机制的数字">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2020-01-10T06:39:11.000Z">
-<meta property="article:modified_time" content="2020-01-10T06:39:39.825Z">
+<meta property="article:modified_time" content="2020-01-10T06:50:38.489Z">
 <meta property="article:author" content="Hongery">
 <meta property="article:tag" content="go">
 <meta property="article:tag" content="blockchain">
@@ -238,7 +238,7 @@
               <span class="post-meta-item-text">发表于</span>
               
 
-              <time title="创建时间：2020-01-10 14:39:11 / 修改时间：14:39:39" itemprop="dateCreated datePublished" datetime="2020-01-10T14:39:11+08:00">2020-01-10</time>
+              <time title="创建时间：2020-01-10 14:39:11 / 修改时间：14:50:38" itemprop="dateCreated datePublished" datetime="2020-01-10T14:39:11+08:00">2020-01-10</time>
             </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -286,6 +286,8 @@
       
         <h3 id="POS"><a href="#POS" class="headerlink" title="POS"></a>POS</h3><p>通过本章节，大家一起学习单纯的pos是什么机制，以及如何工作的。它较pow有什么优缺点。</p>
 <h2 id="POS概述"><a href="#POS概述" class="headerlink" title="POS概述"></a>POS概述</h2><p>POS即权益证明，英文全称Proof of Stake。它是由匿名极客<code>Sunny King</code>发明的。<code>Sunny King</code>很神秘，类似中本聪，他的具体信息很少有人知道。同时他也是点点币（PPCoin）和质数币（PrimeCoin）的创始人。2012年点点币问世，成为全球首次使用POS共识机制的数字货币。</p>
+<a id="more"></a>
+
 <p>基于POW的公链挖矿纯靠算力，挖矿难度越高，算力也会越来越中心化。目前比特币挖矿的算力超过70%在中国，据<code>Blockchain.info</code>2018年的统计数据显示，目前世界前十大矿池中，中国独占8家，而中国70%的算力在四川。这样完全背离了去中心化的思想，只有算力高的机构或矿场才能挖到区块，而算力低的个人几乎没有可能挖到区块。算力低的矿工要是参与挖矿，那得赔死，投入电费、场地、矿机等等，结果几乎甚至没有收益。然后他们大部分会放弃挖矿或加入其他大型矿池。而且挖矿代币价格的较大波动也会影响挖矿收益。所以POW类型的挖矿具有很大的投资风险。POW挖矿比拼的就是算力，随着挖矿难度的提高，算力会要求越来越高，导致参与挖矿的矿机数量越来越多，配置也越来越高，如此会造成多大的资源浪费啊。</p>
 <p>针对POW的问题，POS指出了一个全新的概念-币龄，币龄 = 持有的币数 * 持有币的天数，例如钱包里有90个点点币，持有了10天，则币龄=900。决定下一个区块是由谁出，是看当前时刻谁的币龄大。出块后币龄归零，重新计时持币时间。币龄是对应账户恒定数量持币数的值，如果账户的持币数量发生变化，那么币龄也会归零，重新计时。通过币龄来决定出块，不再需要比拼算力，多么环保啊，节省了多少资源啊。</p>
 <p>而且为了让持币人把币握住，不乱抛售，POS还使用了“利息”机制。用户的持币钱包或客户端24小时处于工作状态或后台运行状态，其实就是pos的挖矿状态，系统会在固定时间参照币龄给予持币人一定量的利息（一定量的币）。如此币的抛售将不会像传统的币那么频繁，币价相应的也会稳定。</p>

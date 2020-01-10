@@ -46,16 +46,16 @@
   };
 </script>
 
-  <meta name="description" content="PBFTPBFT即实用拜占庭容错系统，英文全称Practical Byzantine Fault Tolerance。它是第一个基于BFT理论并结合实际产生的新的共识算法。但应用场景是私有链和联盟链，如果用于公链，需要和其他共识算法进行灵活的混用。 PBFT算法原理PBFT是一类状态机拜占庭系统，要求共同维护一个状态，所有节点采用的行动一致。为此，需要运行三类基本协议，包括一致性协议（Agreem">
+  <meta name="description" content="PBFTPBFT即实用拜占庭容错系统，英文全称Practical Byzantine Fault Tolerance。它是第一个基于BFT理论并结合实际产生的新的共识算法。但应用场景是私有链和联盟链，如果用于公链，需要和其他共识算法进行灵活的混用。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="PBFT实用拜占庭容错系统">
 <meta property="og:url" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2020&#x2F;01&#x2F;10&#x2F;PBFT%E5%AE%9E%E7%94%A8%E6%8B%9C%E5%8D%A0%E5%BA%AD%E5%AE%B9%E9%94%99%E7%B3%BB%E7%BB%9F&#x2F;index.html">
 <meta property="og:site_name" content="Hongery">
-<meta property="og:description" content="PBFTPBFT即实用拜占庭容错系统，英文全称Practical Byzantine Fault Tolerance。它是第一个基于BFT理论并结合实际产生的新的共识算法。但应用场景是私有链和联盟链，如果用于公链，需要和其他共识算法进行灵活的混用。 PBFT算法原理PBFT是一类状态机拜占庭系统，要求共同维护一个状态，所有节点采用的行动一致。为此，需要运行三类基本协议，包括一致性协议（Agreem">
+<meta property="og:description" content="PBFTPBFT即实用拜占庭容错系统，英文全称Practical Byzantine Fault Tolerance。它是第一个基于BFT理论并结合实际产生的新的共识算法。但应用场景是私有链和联盟链，如果用于公链，需要和其他共识算法进行灵活的混用。">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="http:&#x2F;&#x2F;image.chaindesk.cn&#x2F;pbft.jpg&#x2F;mark">
 <meta property="article:published_time" content="2020-01-10T06:44:02.000Z">
-<meta property="article:modified_time" content="2020-01-10T06:44:14.770Z">
+<meta property="article:modified_time" content="2020-01-10T06:50:25.081Z">
 <meta property="article:author" content="Hongery">
 <meta property="article:tag" content="go">
 <meta property="article:tag" content="blockchain">
@@ -240,7 +240,7 @@
               <span class="post-meta-item-text">发表于</span>
               
 
-              <time title="创建时间：2020-01-10 14:44:02 / 修改时间：14:44:14" itemprop="dateCreated datePublished" datetime="2020-01-10T14:44:02+08:00">2020-01-10</time>
+              <time title="创建时间：2020-01-10 14:44:02 / 修改时间：14:50:25" itemprop="dateCreated datePublished" datetime="2020-01-10T14:44:02+08:00">2020-01-10</time>
             </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -287,6 +287,8 @@
 
       
         <h3 id="PBFT"><a href="#PBFT" class="headerlink" title="PBFT"></a>PBFT</h3><p>PBFT即<strong>实用拜占庭容错系统</strong>，英文全称<strong>Practical Byzantine Fault Tolerance</strong>。它是第一个基于BFT理论并结合实际产生的新的共识算法。但应用场景是私有链和联盟链，如果用于公链，需要和其他共识算法进行灵活的混用。</p>
+<a id="more"></a>
+
 <h2 id="PBFT算法原理"><a href="#PBFT算法原理" class="headerlink" title="PBFT算法原理"></a>PBFT算法原理</h2><p>PBFT是一类<strong>状态机拜占庭系统</strong>，要求共同维护一个状态，所有节点采用的行动一致。为此，需要运行三类基本协议，包括一致性协议（Agreement）、验证确认协议（Validity）和视图更换协议（Viewchange）。</p>
 <h5 id="1-一致性协议："><a href="#1-一致性协议：" class="headerlink" title="1.一致性协议："></a>1.一致性协议：</h5><p>在PBFT系统中，节点分为两类：主节点（Lead）和从节点（Follow）。主节点就一个，其他剩余节点都是从节点。在实现PBFT系统功能之前，所有节点都是从节点，经过选举，产生一个主节点。每个节点都有被选举权和选举权，选举过程每个节点的概率都是平等的。</p>
 <p>一致性协议包含若干个阶段：请求（Request）&gt;序列分配（Pre-prepare）&gt;相互交互（Prepare） &gt;确认（Commit） &gt;响应（Reply）。过程如下图：</p>
