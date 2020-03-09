@@ -46,15 +46,15 @@
   };
 </script>
 
-  <meta name="description" content="公开密钥加密当代密码学的核心是“公开密钥加密”（ Public-key cryptography ）。本节的目的是梳理清楚学习密码学的大思路，以便在后续课程中，遇到椭圆曲线，RSA ，加密通信，数字签名这些术语的时候，起码知道它们的大致归属。 定义公开密钥加密也称为”非对称加密“，加密和解密的时候使用不同的秘钥（key），其中一个是公钥，是可以公开出去的，另外一个是私钥，要严格保密。公开密钥加密有">
+  <meta name="description" content="公开密钥加密当代密码学的核心是“公开密钥加密”（ Public-key cryptography ）。本节的目的是梳理清楚学习密码学的大思路，以便在后续课程中，遇到椭圆曲线，RSA ，加密通信，数字签名这些术语的时候，起码知道它们的大致归属。">
 <meta property="og:type" content="article">
-<meta property="og:title" content="公开密钥加密">
+<meta property="og:title" content="03公开密钥加密">
 <meta property="og:url" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2020&#x2F;03&#x2F;09&#x2F;%E5%AF%86%E7%A0%81%E5%AD%A6&#x2F;03%E5%85%AC%E5%BC%80%E5%AF%86%E9%92%A5%E5%8A%A0%E5%AF%86&#x2F;index.html">
 <meta property="og:site_name" content="Hongery">
-<meta property="og:description" content="公开密钥加密当代密码学的核心是“公开密钥加密”（ Public-key cryptography ）。本节的目的是梳理清楚学习密码学的大思路，以便在后续课程中，遇到椭圆曲线，RSA ，加密通信，数字签名这些术语的时候，起码知道它们的大致归属。 定义公开密钥加密也称为”非对称加密“，加密和解密的时候使用不同的秘钥（key），其中一个是公钥，是可以公开出去的，另外一个是私钥，要严格保密。公开密钥加密有">
+<meta property="og:description" content="公开密钥加密当代密码学的核心是“公开密钥加密”（ Public-key cryptography ）。本节的目的是梳理清楚学习密码学的大思路，以便在后续课程中，遇到椭圆曲线，RSA ，加密通信，数字签名这些术语的时候，起码知道它们的大致归属。">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2020-03-09T11:01:01.000Z">
-<meta property="article:modified_time" content="2020-03-09T11:01:46.396Z">
+<meta property="article:modified_time" content="2020-03-09T11:13:58.172Z">
 <meta property="article:author" content="Hongery">
 <meta property="article:tag" content="密码学">
 <meta name="twitter:card" content="summary">
@@ -71,7 +71,7 @@
   };
 </script>
 
-  <title>公开密钥加密 | Hongery</title>
+  <title>03公开密钥加密 | Hongery</title>
   
 
 
@@ -226,7 +226,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          公开密钥加密
+          03公开密钥加密
         </h1>
 
         <div class="post-meta">
@@ -237,7 +237,7 @@
               <span class="post-meta-item-text">发表于</span>
               
 
-              <time title="创建时间：2020-03-09 19:01:01 / 修改时间：19:01:46" itemprop="dateCreated datePublished" datetime="2020-03-09T19:01:01+08:00">2020-03-09</time>
+              <time title="创建时间：2020-03-09 19:01:01 / 修改时间：19:13:58" itemprop="dateCreated datePublished" datetime="2020-03-09T19:01:01+08:00">2020-03-09</time>
             </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -284,6 +284,8 @@
 
       
         <h1 id="公开密钥加密"><a href="#公开密钥加密" class="headerlink" title="公开密钥加密"></a>公开密钥加密</h1><p>当代密码学的核心是“公开密钥加密”（ Public-key cryptography ）。本节的目的是梳理清楚学习密码学的大思路，以便在后续课程中，遇到椭圆曲线，RSA ，加密通信，数字签名这些术语的时候，起码知道它们的大致归属。</p>
+<a id="more"></a>
+
 <h2 id="定义"><a href="#定义" class="headerlink" title="定义"></a>定义</h2><p>公开密钥加密也称为”<strong>非对称加密</strong>“，加密和解密的时候使用<strong>不同的秘钥（key）</strong>，其中一个是公钥，是可以公开出去的，另外一个是私钥，要严格保密。<strong>公开密钥加密有两个应用，一个是加密通信，另外一个是数字签名。</strong></p>
 <h4 id="公开密钥加密要实现的功能有两个："><a href="#公开密钥加密要实现的功能有两个：" class="headerlink" title="公开密钥加密要实现的功能有两个："></a>公开密钥加密要实现的功能有两个：</h4><ol>
 <li><strong>保密</strong>，发送者用接收者的公钥去加密信息，接收者就用自己的私钥去解密信息。</li>
@@ -355,7 +357,7 @@
   </li>
   <li class="post-copyright-link">
     <strong>本文链接：</strong>
-    <a href="http://yoursite.com/2020/03/09/%E5%AF%86%E7%A0%81%E5%AD%A6/03%E5%85%AC%E5%BC%80%E5%AF%86%E9%92%A5%E5%8A%A0%E5%AF%86/" title="公开密钥加密">http://yoursite.com/2020/03/09/密码学/03公开密钥加密/</a>
+    <a href="http://yoursite.com/2020/03/09/%E5%AF%86%E7%A0%81%E5%AD%A6/03%E5%85%AC%E5%BC%80%E5%AF%86%E9%92%A5%E5%8A%A0%E5%AF%86/" title="03公开密钥加密">http://yoursite.com/2020/03/09/密码学/03公开密钥加密/</a>
   </li>
   <li class="post-copyright-license">
     <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
@@ -375,10 +377,13 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/2020/03/09/%E5%AF%86%E7%A0%81%E5%AD%A6/02%E5%93%88%E5%B8%8C%E7%AE%97%E6%B3%95/" rel="prev" title="哈希算法">
-      <i class="fa fa-chevron-left"></i> 哈希算法
+    <a href="/2020/03/09/%E5%AF%86%E7%A0%81%E5%AD%A6/02%E5%93%88%E5%B8%8C%E7%AE%97%E6%B3%95/" rel="prev" title="02哈希算法">
+      <i class="fa fa-chevron-left"></i> 02哈希算法
     </a></div>
-      <div class="post-nav-item"></div>
+      <div class="post-nav-item">
+    <a href="/2020/03/09/%E5%AF%86%E7%A0%81%E5%AD%A6/04%E5%8A%A0%E5%AF%86%E9%80%9A%E4%BF%A1/" rel="next" title="04加密通信">
+      04加密通信 <i class="fa fa-chevron-right"></i>
+    </a></div>
     </div>
       </footer>
     

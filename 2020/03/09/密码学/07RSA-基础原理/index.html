@@ -46,12 +46,12 @@
   };
 </script>
 
-  <meta name="description" content="RSA 算法–基本原理篇RSA 算法是非对称加密算法鼻祖，至今仍然是最为广泛使用的算法之一，所以我们就来拆解一下 RSA 算法本身。 宏观思路说到最底层，RSA 算法的作用非常简单，就是生成公钥和私钥的。公钥用于加密信息，私钥用来解密，先上锁，后开锁。实现加密和解密的第一步就是找到一个函数，函数的正向运算很容易，但是逆向运算很难。对应 RSA 的情况，也就是把公钥和信息作为参数进行运算，得到密文，">
+  <meta name="description" content="RSA 算法–基本原理篇RSA 算法是非对称加密算法鼻祖，至今仍然是最为广泛使用的算法之一，所以我们就来拆解一下 RSA 算法本身。">
 <meta property="og:type" content="article">
-<meta property="og:title" content="密码学&#x2F;07RSA-基础原理">
+<meta property="og:title" content="07RSA算法--基本原理">
 <meta property="og:url" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2020&#x2F;03&#x2F;09&#x2F;%E5%AF%86%E7%A0%81%E5%AD%A6&#x2F;07RSA-%E5%9F%BA%E7%A1%80%E5%8E%9F%E7%90%86&#x2F;index.html">
 <meta property="og:site_name" content="Hongery">
-<meta property="og:description" content="RSA 算法–基本原理篇RSA 算法是非对称加密算法鼻祖，至今仍然是最为广泛使用的算法之一，所以我们就来拆解一下 RSA 算法本身。 宏观思路说到最底层，RSA 算法的作用非常简单，就是生成公钥和私钥的。公钥用于加密信息，私钥用来解密，先上锁，后开锁。实现加密和解密的第一步就是找到一个函数，函数的正向运算很容易，但是逆向运算很难。对应 RSA 的情况，也就是把公钥和信息作为参数进行运算，得到密文，">
+<meta property="og:description" content="RSA 算法–基本原理篇RSA 算法是非对称加密算法鼻祖，至今仍然是最为广泛使用的算法之一，所以我们就来拆解一下 RSA 算法本身。">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https:&#x2F;&#x2F;img.haoqicat.com&#x2F;2018100401.jpg">
 <meta property="og:image" content="https:&#x2F;&#x2F;img.haoqicat.com&#x2F;2018100402.jpg">
@@ -61,9 +61,10 @@
 <meta property="og:image" content="https:&#x2F;&#x2F;img.haoqicat.com&#x2F;2018100403.jpg">
 <meta property="og:image" content="https:&#x2F;&#x2F;img.haoqicat.com&#x2F;2018100601.jpg">
 <meta property="og:image" content="https:&#x2F;&#x2F;img.haoqicat.com&#x2F;2018100602.jpg">
-<meta property="article:published_time" content="2020-03-09T10:58:37.537Z">
-<meta property="article:modified_time" content="2020-03-09T07:28:25.962Z">
+<meta property="article:published_time" content="2020-03-09T11:11:10.000Z">
+<meta property="article:modified_time" content="2020-03-09T11:14:13.698Z">
 <meta property="article:author" content="Hongery">
+<meta property="article:tag" content="密码学">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https:&#x2F;&#x2F;img.haoqicat.com&#x2F;2018100401.jpg">
 
@@ -79,7 +80,7 @@
   };
 </script>
 
-  <title>密码学/07RSA-基础原理 | Hongery</title>
+  <title>07RSA算法--基本原理 | Hongery</title>
   
 
 
@@ -234,7 +235,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          密码学/07RSA-基础原理
+          07RSA算法--基本原理
         </h1>
 
         <div class="post-meta">
@@ -245,7 +246,18 @@
               <span class="post-meta-item-text">发表于</span>
               
 
-              <time title="创建时间：2020-03-09 18:58:37 / 修改时间：15:28:25" itemprop="dateCreated datePublished" datetime="2020-03-09T18:58:37+08:00">2020-03-09</time>
+              <time title="创建时间：2020-03-09 19:11:10 / 修改时间：19:14:13" itemprop="dateCreated datePublished" datetime="2020-03-09T19:11:10+08:00">2020-03-09</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E5%AF%86%E7%A0%81%E5%AD%A6/" itemprop="url" rel="index">
+                    <span itemprop="name">密码学</span>
+                  </a>
+                </span>
             </span>
 
           
@@ -281,6 +293,8 @@
 
       
         <h1 id="RSA-算法–基本原理篇"><a href="#RSA-算法–基本原理篇" class="headerlink" title="RSA 算法–基本原理篇"></a>RSA 算法–基本原理篇</h1><p>RSA 算法是非对称加密算法鼻祖，至今仍然是最为广泛使用的算法之一，所以我们就来拆解一下 RSA 算法本身。</p>
+<a id="more"></a>
+
 <h2 id="宏观思路"><a href="#宏观思路" class="headerlink" title="宏观思路"></a>宏观思路</h2><p>说到最底层，<strong>RSA 算法的作用非常简单，就是生成公钥和私钥的</strong>。公钥用于加密信息，私钥用来解密，先上锁，后开锁。实现加密和解密的第一步就是找到一个函数，函数的正向运算很容易，但是逆向运算很难。对应 RSA 的情况，也就是把公钥和信息作为参数进行运算，得到密文，这个过程要很容易，而逆向运算，由密文和公钥想要获得信息，是很难做到的。</p>
 <p><img src="https://img.haoqicat.com/2018100401.jpg" alt="img"></p>
 <p>当然，这个函数还必须有另外一个特点。就是逆向操作虽然默认很难做到的，但是如果拥有了特定的提示信息，操作就变得非常容易了。这里的提示信息，显然就是<strong>私钥</strong>。</p>
@@ -383,7 +397,7 @@
   </li>
   <li class="post-copyright-link">
     <strong>本文链接：</strong>
-    <a href="http://yoursite.com/2020/03/09/%E5%AF%86%E7%A0%81%E5%AD%A6/07RSA-%E5%9F%BA%E7%A1%80%E5%8E%9F%E7%90%86/" title="密码学&#x2F;07RSA-基础原理">http://yoursite.com/2020/03/09/密码学/07RSA-基础原理/</a>
+    <a href="http://yoursite.com/2020/03/09/%E5%AF%86%E7%A0%81%E5%AD%A6/07RSA-%E5%9F%BA%E7%A1%80%E5%8E%9F%E7%90%86/" title="07RSA算法--基本原理">http://yoursite.com/2020/03/09/密码学/07RSA-基础原理/</a>
   </li>
   <li class="post-copyright-license">
     <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
@@ -393,6 +407,9 @@
 
 
       <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E5%AF%86%E7%A0%81%E5%AD%A6/" rel="tag"># 密码学</a>
+          </div>
 
         
 
@@ -400,12 +417,12 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/2020/03/09/%E5%AF%86%E7%A0%81%E5%AD%A6/06%E6%95%B0%E5%AD%97%E8%AF%81%E4%B9%A6/" rel="prev" title="密码学/06数字证书">
-      <i class="fa fa-chevron-left"></i> 密码学/06数字证书
+    <a href="/2020/03/09/%E5%AF%86%E7%A0%81%E5%AD%A6/06%E6%95%B0%E5%AD%97%E8%AF%81%E4%B9%A6/" rel="prev" title="06数字证书">
+      <i class="fa fa-chevron-left"></i> 06数字证书
     </a></div>
       <div class="post-nav-item">
-    <a href="/2020/03/09/%E5%AF%86%E7%A0%81%E5%AD%A6/08Merkle%E6%A0%91/" rel="next" title="密码学/08Merkle树">
-      密码学/08Merkle树 <i class="fa fa-chevron-right"></i>
+    <a href="/2020/03/09/%E5%AF%86%E7%A0%81%E5%AD%A6/08Merkle%E6%A0%91/" rel="next" title="08Merkle树">
+      08Merkle树 <i class="fa fa-chevron-right"></i>
     </a></div>
     </div>
       </footer>

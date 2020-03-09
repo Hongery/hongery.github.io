@@ -46,19 +46,20 @@
   };
 </script>
 
-  <meta name="description" content="数字签名公开密钥加密技术有两大应用，之前已经聊了一个，就是加密通信，本节来聊另外一个：数字签名。数字签名的基本作用跟现实世界的纸笔形式的签名有什么相同点和不同点，数字签名的基本原理和流程又是什么呢？ 基本原理先说数字签名的基本原理。数字签名过程跟加密通信有着一定的对称性，这种对称有着一种逻辑上的美。 加密通信是用公钥进行加密，而用私钥进行解密。而数字签名刚好相反，是采用私钥加密，公钥解密。对于加密">
+  <meta name="description" content="数字签名公开密钥加密技术有两大应用，之前已经聊了一个，就是加密通信，本节来聊另外一个：数字签名。数字签名的基本作用跟现实世界的纸笔形式的签名有什么相同点和不同点，数字签名的基本原理和流程又是什么呢？">
 <meta property="og:type" content="article">
-<meta property="og:title" content="密码学&#x2F;05数字签名">
+<meta property="og:title" content="05数字签名">
 <meta property="og:url" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2020&#x2F;03&#x2F;09&#x2F;%E5%AF%86%E7%A0%81%E5%AD%A6&#x2F;05%E6%95%B0%E5%AD%97%E7%AD%BE%E5%90%8D&#x2F;index.html">
 <meta property="og:site_name" content="Hongery">
-<meta property="og:description" content="数字签名公开密钥加密技术有两大应用，之前已经聊了一个，就是加密通信，本节来聊另外一个：数字签名。数字签名的基本作用跟现实世界的纸笔形式的签名有什么相同点和不同点，数字签名的基本原理和流程又是什么呢？ 基本原理先说数字签名的基本原理。数字签名过程跟加密通信有着一定的对称性，这种对称有着一种逻辑上的美。 加密通信是用公钥进行加密，而用私钥进行解密。而数字签名刚好相反，是采用私钥加密，公钥解密。对于加密">
+<meta property="og:description" content="数字签名公开密钥加密技术有两大应用，之前已经聊了一个，就是加密通信，本节来聊另外一个：数字签名。数字签名的基本作用跟现实世界的纸笔形式的签名有什么相同点和不同点，数字签名的基本原理和流程又是什么呢？">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https:&#x2F;&#x2F;img.haoqicat.com&#x2F;2018092901.jpg">
 <meta property="og:image" content="https:&#x2F;&#x2F;img.haoqicat.com&#x2F;2018092902.jpg">
 <meta property="og:image" content="https:&#x2F;&#x2F;img.haoqicat.com&#x2F;2018092903.jpg">
-<meta property="article:published_time" content="2020-03-09T10:58:37.533Z">
-<meta property="article:modified_time" content="2020-03-08T14:06:48.067Z">
+<meta property="article:published_time" content="2020-03-09T11:10:11.000Z">
+<meta property="article:modified_time" content="2020-03-09T11:14:05.809Z">
 <meta property="article:author" content="Hongery">
+<meta property="article:tag" content="密码学">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https:&#x2F;&#x2F;img.haoqicat.com&#x2F;2018092901.jpg">
 
@@ -74,7 +75,7 @@
   };
 </script>
 
-  <title>密码学/05数字签名 | Hongery</title>
+  <title>05数字签名 | Hongery</title>
   
 
 
@@ -229,7 +230,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          密码学/05数字签名
+          05数字签名
         </h1>
 
         <div class="post-meta">
@@ -238,16 +239,21 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               <span class="post-meta-item-text">发表于</span>
+              
 
-              <time title="创建时间：2020-03-09 18:58:37" itemprop="dateCreated datePublished" datetime="2020-03-09T18:58:37+08:00">2020-03-09</time>
+              <time title="创建时间：2020-03-09 19:10:11 / 修改时间：19:14:05" itemprop="dateCreated datePublished" datetime="2020-03-09T19:10:11+08:00">2020-03-09</time>
             </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-03-08 22:06:48" itemprop="dateModified" datetime="2020-03-08T22:06:48+08:00">2020-03-08</time>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
               </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E5%AF%86%E7%A0%81%E5%AD%A6/" itemprop="url" rel="index">
+                    <span itemprop="name">密码学</span>
+                  </a>
+                </span>
+            </span>
 
           
             <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
@@ -282,6 +288,8 @@
 
       
         <h1 id="数字签名"><a href="#数字签名" class="headerlink" title="数字签名"></a>数字签名</h1><p>公开密钥加密技术有两大应用，之前已经聊了一个，就是加密通信，本节来聊另外一个：数字签名。数字签名的基本作用跟现实世界的纸笔形式的签名有什么相同点和不同点，数字签名的基本原理和流程又是什么呢？</p>
+<a id="more"></a>
+
 <h2 id="基本原理"><a href="#基本原理" class="headerlink" title="基本原理"></a>基本原理</h2><p>先说数字签名的基本原理。数字签名过程跟加密通信有着一定的对称性，这种对称有着一种逻辑上的美。</p>
 <p><strong>加密通信是用公钥进行加密，而用私钥进行解密。而数字签名刚好相反，是采用私钥加密，公钥解密。</strong>对于加密通信，公钥加密过程就是通过加密算法把信息加密成密文，私钥解密过程就是通过解密算法解密密文。<strong>而对于数字签名，私钥加密过程是通过签名算法来生成数字签名的过程，而公钥解密过程是通过验证算法来确定数字签名是不是有私钥持有者签署的。</strong>可以看到，加密算法，解密算法，签名算法，验证算法，对称性是很明显的。</p>
 <p><img src="https://img.haoqicat.com/2018092901.jpg" alt="img"></p>
@@ -346,7 +354,7 @@
   </li>
   <li class="post-copyright-link">
     <strong>本文链接：</strong>
-    <a href="http://yoursite.com/2020/03/09/%E5%AF%86%E7%A0%81%E5%AD%A6/05%E6%95%B0%E5%AD%97%E7%AD%BE%E5%90%8D/" title="密码学&#x2F;05数字签名">http://yoursite.com/2020/03/09/密码学/05数字签名/</a>
+    <a href="http://yoursite.com/2020/03/09/%E5%AF%86%E7%A0%81%E5%AD%A6/05%E6%95%B0%E5%AD%97%E7%AD%BE%E5%90%8D/" title="05数字签名">http://yoursite.com/2020/03/09/密码学/05数字签名/</a>
   </li>
   <li class="post-copyright-license">
     <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
@@ -356,6 +364,9 @@
 
 
       <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E5%AF%86%E7%A0%81%E5%AD%A6/" rel="tag"># 密码学</a>
+          </div>
 
         
 
@@ -363,12 +374,12 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/2020/03/09/%E5%AF%86%E7%A0%81%E5%AD%A6/04%E5%8A%A0%E5%AF%86%E9%80%9A%E4%BF%A1/" rel="prev" title="密码学/04加密通信">
-      <i class="fa fa-chevron-left"></i> 密码学/04加密通信
+    <a href="/2020/03/09/%E5%AF%86%E7%A0%81%E5%AD%A6/04%E5%8A%A0%E5%AF%86%E9%80%9A%E4%BF%A1/" rel="prev" title="04加密通信">
+      <i class="fa fa-chevron-left"></i> 04加密通信
     </a></div>
       <div class="post-nav-item">
-    <a href="/2020/03/09/%E5%AF%86%E7%A0%81%E5%AD%A6/06%E6%95%B0%E5%AD%97%E8%AF%81%E4%B9%A6/" rel="next" title="密码学/06数字证书">
-      密码学/06数字证书 <i class="fa fa-chevron-right"></i>
+    <a href="/2020/03/09/%E5%AF%86%E7%A0%81%E5%AD%A6/06%E6%95%B0%E5%AD%97%E8%AF%81%E4%B9%A6/" rel="next" title="06数字证书">
+      06数字证书 <i class="fa fa-chevron-right"></i>
     </a></div>
     </div>
       </footer>
