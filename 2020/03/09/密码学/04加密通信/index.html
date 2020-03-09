@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.1.1">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/avatar.jpg">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/avatar.jpg">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    hostname: new URL('http://yoursite.com').hostname,
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.6.0',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},
+    copycode: {"enable":true,"show_result":true,"style":"mac"},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":true},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    comments: {"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: 'search.xml',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}
+  };
+</script>
+
+  <meta name="description" content="加密通信早期人们的解决方案其实跟密室是一个道理，就是通过私有网络，也就是从物理上隔绝其他人。但是私有网络衰落，互联网兴起后，客观条件就不同了，互联网是一个公开场合，数据在通信过程中默认是能够被别人获取到的，那么这个时候保证私密的策略就从“不让你看见”变成“看见你也看不懂”了。具体做法就是：首先把信息加密成密文，到达接收方之后，再把密文解密成信息了，这个过程就是加密通信。 对称加密和非对称加密先说加">
+<meta property="og:type" content="article">
+<meta property="og:title" content="密码学&#x2F;04加密通信">
+<meta property="og:url" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2020&#x2F;03&#x2F;09&#x2F;%E5%AF%86%E7%A0%81%E5%AD%A6&#x2F;04%E5%8A%A0%E5%AF%86%E9%80%9A%E4%BF%A1&#x2F;index.html">
+<meta property="og:site_name" content="Hongery">
+<meta property="og:description" content="加密通信早期人们的解决方案其实跟密室是一个道理，就是通过私有网络，也就是从物理上隔绝其他人。但是私有网络衰落，互联网兴起后，客观条件就不同了，互联网是一个公开场合，数据在通信过程中默认是能够被别人获取到的，那么这个时候保证私密的策略就从“不让你看见”变成“看见你也看不懂”了。具体做法就是：首先把信息加密成密文，到达接收方之后，再把密文解密成信息了，这个过程就是加密通信。 对称加密和非对称加密先说加">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https:&#x2F;&#x2F;img.haoqicat.com&#x2F;2018092601.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;img.haoqicat.com&#x2F;2018092602.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;img.haoqicat.com&#x2F;2018092603.jpg">
+<meta property="article:published_time" content="2020-03-09T10:58:37.530Z">
+<meta property="article:modified_time" content="2020-03-08T13:37:21.694Z">
+<meta property="article:author" content="Hongery">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https:&#x2F;&#x2F;img.haoqicat.com&#x2F;2018092601.jpg">
+
+<link rel="canonical" href="http://yoursite.com/2020/03/09/%E5%AF%86%E7%A0%81%E5%AD%A6/04%E5%8A%A0%E5%AF%86%E9%80%9A%E4%BF%A1/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true
+  };
+</script>
+
+  <title>密码学/04加密通信 | Hongery</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Hongery</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">记录学习中的点点滴滴</p>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="none"
+           placeholder="搜索..." spellcheck="false"
+           type="text" id="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+  <a href="https://github.com/Hongery" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/03/09/%E5%AF%86%E7%A0%81%E5%AD%A6/04%E5%8A%A0%E5%AF%86%E9%80%9A%E4%BF%A1/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="Hongery">
+      <meta itemprop="description" content="直到这一刻微笑着说话为止，我至少留下了一公升眼泪">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hongery">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          密码学/04加密通信
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-03-09 18:58:37" itemprop="dateCreated datePublished" datetime="2020-03-09T18:58:37+08:00">2020-03-09</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-03-08 21:37:21" itemprop="dateModified" datetime="2020-03-08T21:37:21+08:00">2020-03-08</time>
+              </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span><br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-file-word-o"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>2k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-clock-o"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>2 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="加密通信"><a href="#加密通信" class="headerlink" title="加密通信"></a>加密通信</h1><p>早期人们的解决方案其实跟密室是一个道理，就是通过私有网络，也就是从物理上隔绝其他人。但是私有网络衰落，互联网兴起后，客观条件就不同了，互联网是一个公开场合，数据在通信过程中默认是能够被别人获取到的，那么这个时候保证私密的策略就从“不让你看见”变成“看见你也看不懂”了。具体做法就是：首先把信息加密成密文，到达接收方之后，再把密文解密成信息了，这个过程就是加密通信。</p>
+<h2 id="对称加密和非对称加密"><a href="#对称加密和非对称加密" class="headerlink" title="对称加密和非对称加密"></a>对称加密和非对称加密</h2><p>先说加密通信的一种最简单的方式，就是对称加密。这个是人类用了几千年的方式，凯撒密码就属于这种。所谓对称，意思就是发送方和接收方使用的是同一个钥匙，或者英文叫 key 。但是互联网上的加密通信，也使用了另外一种形式，也就是非对称加密，或者叫公开密钥加密。</p>
+<p>说说类似于凯撒密码的对称加密的基本工作原理。发送方会按照一定规则，把信息变成密文，密文说白了就是谁也看不懂的东西。等密文到了接收方手里，接收者需要按照同样的规则，也就是同一个 key ，把密文翻译成信息。加密通信过程就完成了。</p>
+<p><img src="https://img.haoqicat.com/2018092601.jpg" alt="img"></p>
+<p>但是对称加密的问题就在于如何安全的传递 key 本身。没有 key ，就不能建立安全的通信通道，没有安全的通信通道，就无法安全的把 key 传递给接收方，所以这就是一个鸡生蛋蛋生鸡的问题了。于是，互联网上做加密通信就用到了非对称加密。非对称加密，也叫做公开密钥加密，<strong>特点是发送方和接收方使用的不是同一个 key</strong> 。这种方式略微有点反直觉了吧，具体原理稍候会讲到。</p>
+<p><img src="https://img.haoqicat.com/2018092602.jpg" alt="img"></p>
+<p>总之，加密通信可以采用的方式有两种，一种是对称加密，一种是非对称或者叫公开密钥加密。对称加密的特点是发送方和接收方采用相同的 key ，非对称加密发送方和接收方采用的是不同的 key 。</p>
+<h2 id="公开密钥加密基本原理"><a href="#公开密钥加密基本原理" class="headerlink" title="公开密钥加密基本原理"></a>公开密钥加密基本原理</h2><p>下面来详细说说用公开密钥加密的基本原理。主要是要理解公钥和私钥的关系。</p>
+<p>首先，可以在自己的机器上安装类似 ssh-keygen 这样的软件来生成公钥和私钥。公钥和私钥之所以是一对，是因为二者有天然的数学联系，但是同时要保证给定公钥不能够算出私钥，不然就相当于加密方法被破解了。公钥和私钥的联系一般就是通过一些无解的数学问题来确定的，这类问题只能正向运算，不能反向运算。比如 8616460799 这个数是两个数相乘得到的，但是要从结果反推出这两个数，是基本不可能的。实际中 RSA 和 ECC 算法，都是基于这一类的数学问题。</p>
+<p><strong>加密通信过程是怎么样的呢？</strong></p>
+<p>首先，如果 Alice 想让 Bob 给她发信息，注意这里 Bob 是发送方，而 Alice 是接收方。首先 Alice 要把自己的公钥传递给 Bob ，然后 Bob 用 Alice 的公钥去加密信息，Alice 收到密文之后可以用私钥进行解密。这就是非对称加密的基本逻辑了，<strong>发送者将接收者公钥用于加密，接收者将自己的私钥用于解密</strong>。</p>
+<p><img src="https://img.haoqicat.com/2018092603.jpg" alt="img"></p>
+<p>当然，上面所说的过程还只是单向通信，要实现双向通信，就需要双方把各自的公钥传递给对方了。</p>
+<h2 id="公开密钥加密的更多技术细节"><a href="#公开密钥加密的更多技术细节" class="headerlink" title="公开密钥加密的更多技术细节"></a>公开密钥加密的更多技术细节</h2><p>公开密钥加密的基本思路是比较简单的，就是用公钥去加密，用私钥去解密。</p>
+<p>如果公钥就是用来加密信息的，那为啥不叫 lock 也就是锁，而要叫 key ，钥匙呢？所以说既然公钥也是钥匙，那么它就是一定也有解密功能。公钥加密技术其实有两个重大应用，一个就是我们本文所述的加密通信，但是还有第二个，就是数字签名。<strong>加密通信是用来保证机密性的，而数字签名是用来认证的</strong>。<strong>数字签名的基本原理是用私钥去加密，而用公钥去解密。</strong>也就是我用私钥签名一份文件，而全世界的人都可以用我的公钥去解密数字签名，如果解密成功，就可以认定，这个文件的确是我签署的。所以说，加密通信条件下，私钥可以叫做“解密 key”，而在数字签名条件下，公钥可以叫做“验证 key”。这样，我们就理解了为啥公钥也是 key 了。</p>
+<p>另外一个问题是，公开密钥加密都有哪些实际应用呢？首先就是加密通信，银行政府传递数据也是用这个思路的，所以加密通信还真是关系重大。如果你是程序员，可能会经常用 ssh 登录服务器，这个背后也是用公开密钥加密技术来实现安全通信的。另外网站现在都流行使用 HTTPS 协议，也就是安全的 HTTP ，来达成浏览器跟服务器之间的加密通信，这个背后也是公开密钥加密技术。另外，比特币等加密货币，背后也都是公开密钥加密技术。</p>
+<p>最后一个问题会引发我们进一步的学习，那就是如何解决公钥加密过程中的一些具体问题，例如，如何安全的把公钥发送给对方，保证公钥没有被篡改过。实际上这个问题还真的是非常困难的，所以会涉及到发证机构（ CA ）这样的概念。后面我们专门有一节介绍 CA 。</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>要实现加密通信，有对称加密和非对称加密，也就是公开密钥加密两种方式。所谓非对称，就是加密和解密是采用不同的 key 。<strong>公钥用来加密信息，私钥用来解密信息</strong>。双方通信之前，要先互相交换公钥，这样才能建立起安全的双向通道。公钥加密的应用有两个，一个就是本节聊的加密通信，另一个就是数字签名。】</p>
+
+    </div>
+
+    
+    
+    
+    <div>
+      
+        <div>
+    
+        <div style="text-align:center;color: #ccc;font-size:14px;">-------------本文结束<i class="fa fa-paw"></i>感谢您的阅读-------------</div>
+    
+</div>
+
+      
+    </div>
+        <div class="reward-container">
+  <div>坚持原创技术分享，您的支持将鼓励我继续创作！</div>
+  <button disable="enable" onclick="var qr = document.getElementById(&quot;qr&quot;); qr.style.display = (qr.style.display === 'none') ? 'block' : 'none';">
+    打赏
+  </button>
+  <div id="qr" style="display: none;">
+      
+      <div style="display: inline-block;">
+        <img src="/images/wechatpay.jpg" alt="Hongery 微信支付">
+        <p>微信支付</p>
+      </div>
+      
+      <div style="display: inline-block;">
+        <img src="/images/alipay.jpg" alt="Hongery 支付宝">
+        <p>支付宝</p>
+      </div>
+
+  </div>
+</div>
+
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>Hongery
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="http://yoursite.com/2020/03/09/%E5%AF%86%E7%A0%81%E5%AD%A6/04%E5%8A%A0%E5%AF%86%E9%80%9A%E4%BF%A1/" title="密码学&#x2F;04加密通信">http://yoursite.com/2020/03/09/密码学/04加密通信/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/03/03/kafka%E8%BD%AF%E4%BB%B6%E9%85%8D%E7%BD%AE/" rel="prev" title="kafka软件配置">
+      <i class="fa fa-chevron-left"></i> kafka软件配置
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2020/03/09/%E5%AF%86%E7%A0%81%E5%AD%A6/05%E6%95%B0%E5%AD%97%E7%AD%BE%E5%90%8D/" rel="next" title="密码学/05数字签名">
+      密码学/05数字签名 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let activeClass = CONFIG.comments.activeClass;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#加密通信"><span class="nav-text">加密通信</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#对称加密和非对称加密"><span class="nav-text">对称加密和非对称加密</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#公开密钥加密基本原理"><span class="nav-text">公开密钥加密基本原理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#公开密钥加密的更多技术细节"><span class="nav-text">公开密钥加密的更多技术细节</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结"><span class="nav-text">总结</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Hongery"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">Hongery</p>
+  <div class="site-description" itemprop="description">直到这一刻微笑着说话为止，我至少留下了一公升眼泪</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">51</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/Hongery" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;Hongery" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://blog.csdn.net/weixin_40098405" title="CSDN → https:&#x2F;&#x2F;blog.csdn.net&#x2F;weixin_40098405" rel="noopener" target="_blank"><i class="fa fa-fw fa-crosshairs"></i>CSDN</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:1281185088@qq.com" title="E-Mail1 → mailto:1281185088@qq.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail1</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:hongery@yeah.net" title="E-Mail2 → mailto:hongery@yeah.net" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail2</a>
+      </span>
+  </div>
+  <div class="cc-license motion-element" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">hongery</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+      <span class="post-meta-item-text">站点总字数：</span>
+    <span title="站点总字数">NaNm</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span class="post-meta-item-text">站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">NaN:aN字</span>
+</div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>
+<!-- 页面点击小红心 -->
+<script type="text/javascript" src="/js/clicklove.js"></script>

@@ -1,0 +1,638 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.1.1">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/avatar.jpg">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/avatar.jpg">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    hostname: new URL('http://yoursite.com').hostname,
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.6.0',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},
+    copycode: {"enable":true,"show_result":true,"style":"mac"},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":true},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    comments: {"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: 'search.xml',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}
+  };
+</script>
+
+  <meta name="description" content="RSA 算法–基本原理篇RSA 算法是非对称加密算法鼻祖，至今仍然是最为广泛使用的算法之一，所以我们就来拆解一下 RSA 算法本身。 宏观思路说到最底层，RSA 算法的作用非常简单，就是生成公钥和私钥的。公钥用于加密信息，私钥用来解密，先上锁，后开锁。实现加密和解密的第一步就是找到一个函数，函数的正向运算很容易，但是逆向运算很难。对应 RSA 的情况，也就是把公钥和信息作为参数进行运算，得到密文，">
+<meta property="og:type" content="article">
+<meta property="og:title" content="密码学&#x2F;07RSA-基础原理">
+<meta property="og:url" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2020&#x2F;03&#x2F;09&#x2F;%E5%AF%86%E7%A0%81%E5%AD%A6&#x2F;07RSA-%E5%9F%BA%E7%A1%80%E5%8E%9F%E7%90%86&#x2F;index.html">
+<meta property="og:site_name" content="Hongery">
+<meta property="og:description" content="RSA 算法–基本原理篇RSA 算法是非对称加密算法鼻祖，至今仍然是最为广泛使用的算法之一，所以我们就来拆解一下 RSA 算法本身。 宏观思路说到最底层，RSA 算法的作用非常简单，就是生成公钥和私钥的。公钥用于加密信息，私钥用来解密，先上锁，后开锁。实现加密和解密的第一步就是找到一个函数，函数的正向运算很容易，但是逆向运算很难。对应 RSA 的情况，也就是把公钥和信息作为参数进行运算，得到密文，">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https:&#x2F;&#x2F;img.haoqicat.com&#x2F;2018100401.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;img.haoqicat.com&#x2F;2018100402.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;img.haoqicat.com&#x2F;2018100403.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;img.haoqicat.com&#x2F;2018100404.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;img.haoqicat.com&#x2F;2018100402.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;img.haoqicat.com&#x2F;2018100403.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;img.haoqicat.com&#x2F;2018100601.jpg">
+<meta property="og:image" content="https:&#x2F;&#x2F;img.haoqicat.com&#x2F;2018100602.jpg">
+<meta property="article:published_time" content="2020-03-09T10:58:37.537Z">
+<meta property="article:modified_time" content="2020-03-09T07:28:25.962Z">
+<meta property="article:author" content="Hongery">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https:&#x2F;&#x2F;img.haoqicat.com&#x2F;2018100401.jpg">
+
+<link rel="canonical" href="http://yoursite.com/2020/03/09/%E5%AF%86%E7%A0%81%E5%AD%A6/07RSA-%E5%9F%BA%E7%A1%80%E5%8E%9F%E7%90%86/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true
+  };
+</script>
+
+  <title>密码学/07RSA-基础原理 | Hongery</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Hongery</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">记录学习中的点点滴滴</p>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="none"
+           placeholder="搜索..." spellcheck="false"
+           type="text" id="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+  <a href="https://github.com/Hongery" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/03/09/%E5%AF%86%E7%A0%81%E5%AD%A6/07RSA-%E5%9F%BA%E7%A1%80%E5%8E%9F%E7%90%86/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="Hongery">
+      <meta itemprop="description" content="直到这一刻微笑着说话为止，我至少留下了一公升眼泪">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hongery">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          密码学/07RSA-基础原理
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2020-03-09 18:58:37 / 修改时间：15:28:25" itemprop="dateCreated datePublished" datetime="2020-03-09T18:58:37+08:00">2020-03-09</time>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span><br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-file-word-o"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>3.7k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-clock-o"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>3 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="RSA-算法–基本原理篇"><a href="#RSA-算法–基本原理篇" class="headerlink" title="RSA 算法–基本原理篇"></a>RSA 算法–基本原理篇</h1><p>RSA 算法是非对称加密算法鼻祖，至今仍然是最为广泛使用的算法之一，所以我们就来拆解一下 RSA 算法本身。</p>
+<h2 id="宏观思路"><a href="#宏观思路" class="headerlink" title="宏观思路"></a>宏观思路</h2><p>说到最底层，<strong>RSA 算法的作用非常简单，就是生成公钥和私钥的</strong>。公钥用于加密信息，私钥用来解密，先上锁，后开锁。实现加密和解密的第一步就是找到一个函数，函数的正向运算很容易，但是逆向运算很难。对应 RSA 的情况，也就是把公钥和信息作为参数进行运算，得到密文，这个过程要很容易，而逆向运算，由密文和公钥想要获得信息，是很难做到的。</p>
+<p><img src="https://img.haoqicat.com/2018100401.jpg" alt="img"></p>
+<p>当然，这个函数还必须有另外一个特点。就是逆向操作虽然默认很难做到的，但是如果拥有了特定的提示信息，操作就变得非常容易了。这里的提示信息，显然就是<strong>私钥</strong>。</p>
+<p>总之，找到这样一个正向容易运算，反向默认很难，但是如果有了私钥就很容易运算的函数，就是实现 RSA 算法的核心思路。</p>
+<h2 id="具体实现"><a href="#具体实现" class="headerlink" title="具体实现"></a>具体实现</h2><p>下面我们就来看看 RSA 算法具体的实现方式。</p>
+<p>先来补充一个数学知识：取模运算。取模运算其实就是算余数。例如 3 mod 2 的结果就是1，mod 就是取模的意思。</p>
+<p><img src="https://img.haoqicat.com/2018100402.jpg" alt="img"></p>
+<p>RSA 使用的单向函数是这样的，拿出要<strong>加密的信息 m</strong> ，我们知道任何的计算机信息都能转换成二进制数，所以当然也能转换成十进制的一个整数。这里 m 是一个整数，接下来<strong>随机选择一个 e</strong> ，来作为 m 的指数。注意，这里的指数 e 的选择范围是有一定限制的，但是在这个范围内是任意选择的。接下来，进行 m 的 e 次方运算，然后对另一个<strong>随机选取整数 N</strong> 进行取模运算，最后得到的结果就是<strong>密文，用 c</strong> 表示 。举个例子，m 等于7 ，e 选择为2 ，N 选择23，这样，最后的密文 c 就等于49对23取模，结果是6。也就是说7经过加密，最后密文是6。这个运算有个特点，给定 m 和 e 以及 N 的值，很容易算出 c ，但是给定 c 和 e 以及 N 很难算出 m 来。这就是我们需要的单向函数。</p>
+<p><img src="https://img.haoqicat.com/2018100403.jpg" alt="img"></p>
+<p>于是，我们的锁就有了，也就是 ”e 次方然后对 N 取模“。那么，开这把锁的钥匙是什么呢？简单来说，就是让逆向运算过程变得简单的信息。</p>
+<p><img src="https://img.haoqicat.com/2018100404.jpg" alt="img"></p>
+<p>逆向运算，就是从密文得到信息。经过数学推导，可以得到这样的逆向运算过程，一定存在一个整数 d ，使得 c 的 d 次方对 N 取模，是可以得到 m 的。最终，<strong>e 和 N 按照一定规范组合到一起，就是公钥，（加密），而 d 和 N 组合到一起就是私钥。（解密）</strong></p>
+<p>总之，RSA 算法的单向函数找到了，于是加密用的锁也就找到了。但是其实这个函数本身不是 RSA 算法最复杂的地方，最复杂的内容在于如何由 e 算出 d 。<strong>而如何给定 e ，算出合适的 d ，其实是要引入第二个单向运算了，这就是整数分解问题了。</strong></p>
+<h2 id="安全性取决与整数分解问题"><a href="#安全性取决与整数分解问题" class="headerlink" title="安全性取决与整数分解问题"></a>安全性取决与整数分解问题</h2><p>如何运算出 d 的过程本节不展开。粗略来讲，从 e 运算出 d 的过程，涉及到 N 的整数分解问题。整个 RSA 算法的安全性就取决于整数分解这个基本数学问题。</p>
+<p>来解释一下整数分解问题。<strong>整数分解就是把一个数分解成多个素数的乘积</strong>。<strong>素数就是那些只能被1和自己整除的整数</strong>，这个小时候咱们学过的。例如 45 可以分解成 3x3x5 。而 RSA 算法中的整数分解有一定的特殊性。<strong>被分解的数需要是两个</strong>，而不是多个素数的乘积。虽然由两个素数相乘获得结果非常简单，但是反过来，分解过程是很难的。很难的意思就是如果数足够大，即使用计算机也需要成千上万年才能算出来的问题，或者可以说“很难”就等于”实际中不能实现“。而这一点就是 RSA 算法的安全基石。如果有一天，有数学家找出整数分解的有效运算方法，那么 RSA 算法也就不能用了。</p>
+<p>实际生成公钥和私钥的过程是，我们选出 p1 和 p2 两个大素数，让 N = p1 * p2 。随机选择一个指数 e ，这样公钥就有了。而在知道 p1 和 p2 的前提下，从公钥算出私钥，也就是算出 d ，是非常容易的。而外人，因为不知道 p1 和 p2 ，而只知道 N ，所以不可能从 e 算出 d ，<strong>也就是不可能用公钥算出私钥。</strong></p>
+<p>总之只要整数分解问题无解，那么 RSA 就是安全的。</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>宏观上的思路就是，要找到一个包含取模运算的单向函数，保证信息加密容易，而反向解密很难。另外，还要找到第二个单向函数，也就是整数分解问题的函数，保证在知道分解结果的条件下，从公钥算出私钥是容易的，而如果不知道，就不可能算出私钥。真正的 RSA 算法，是这两个单向函数的综合使用。但是对于如何进行解密，公钥和私钥生成的细节，我们没有展开，因为这涉及到更多的数学推导，下个小节 Peter 再给大家介绍。</p>
+<h1 id="RSA-算法–粗略数学推导篇"><a href="#RSA-算法–粗略数学推导篇" class="headerlink" title="RSA 算法–粗略数学推导篇"></a>RSA 算法–粗略数学推导篇</h1><p>上节我们介绍完 RSA 算法的基本原理了，了解了 RSA 算法的加密锁就是先幂后模的运算。这个锁的特点是正向运算很容易，也就是<strong>加密过程很容易，但是解密过程很难</strong>，也就是要直接反向运算是不可能的。而要想让反向运算成为可能，就要在先幂后模运算的各项参数上做文章，让各项参数之间通过整数分解问题建立关系，这样只要我们把握住这种关系，那么反向运算就变得容易了。所以本节就来深入到整数分解问题，看看如何来构建先幂后模中的各项参数之间的关系，进而引申出如何生成公钥和私钥。</p>
+<h2 id="提出问题"><a href="#提出问题" class="headerlink" title="提出问题"></a>提出问题</h2><p>下面我们把要解决的问题进一步明确一下，抽象成具体的数学任务。先幂后模函数的正向运算，从信息 m 获得密文 c 是简单的，而反向运算，从 c 运算获得 m 是很难的。但是如果我们能够合理的构建 e 和 N 之间的关系，同时把握体现 e 和 N 之间关系的关键信息，这个反向运算将不再困难。</p>
+<p><img src="https://img.haoqicat.com/2018100402.jpg" alt="img"></p>
+<p>实际上，我们总能找到一个合适的 d ，<strong>使得 c 的 d 次方对 N 求模的结果就是 m</strong> 。所以问题进一步的就是要构建 e , d 以及 N 的数学联系。</p>
+<p><img src="https://img.haoqicat.com/2018100403.jpg" alt="img"></p>
+<p>实际上我们要做到的是，给定两个大素数 p1 和 p2 ，让 p1*p2 = N ，由 e 容易算出 d 的前提是我们知道 p1 和 p2 的值，也就是是知道 N 的整数分解的结果。而如果不知道 ，那么根据 e 和 N 算出 d 的难度就相当于对两个大素数的乘积做反向分解，这个是很难的。“很难”在这里的意思就是没有有效的求解方法，只能靠暴力搜索去解决，于是运算量超大，所以实际中不可能做到。</p>
+<h2 id="解决步骤"><a href="#解决步骤" class="headerlink" title="解决步骤"></a>解决步骤</h2><p>问题的关键就是使用<strong>欧拉函数</strong>。</p>
+<p>在 RSA 这里，欧拉函数的本来目的不重要，重要的是要使用的是它的一个属性：也就是，只有满足特定条件下才容易计算出它的结果，否则，就很难。推导过程我们就不说了，那这个特定条件是什么呢？<strong>其实就是当 N 是两个素数 p1 和 p2 的乘积的时候</strong>，因为此时可以保证下面的等式成立。</p>
+<figure class="highlight gcode"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">φ<span class="comment">(N)</span> = <span class="comment">(p1-1)</span><span class="comment">(p2-1)</span></span><br></pre></td></tr></table></figure>
+
+<p>例如 ，77 的欧拉函数其实是很难运算出来了，但是如果我们知道 77 可以分解为 7 和 11，那么就可以很容易得到结果 60 了。</p>
+<figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">φ(<span class="number">77</span>) = (<span class="number">7</span><span class="number">-1</span>)*(<span class="number">11</span><span class="number">-1</span>) = <span class="number">60</span></span><br></pre></td></tr></table></figure>
+
+<p>基于欧拉函数的这个特点，只要我们能推导出 e ，d 跟 φ(n) 的关系，那就能保证在 φ（n) 能够运算出结果的时候，从 e 很容易得到 d ，否则，从 e 就很难算出 d 。推导过程要基于欧拉定理来进行。欧拉定理的具体意义我们不必深究。</p>
+<p><img src="https://img.haoqicat.com/2018100601.jpg" alt="img"></p>
+<p>其中三个横杠是组成的等式叫做同余式。例如，正整数 a，b 对 p 取模，它们的余数相同，就记做 a ≡ b (mod p)。</p>
+<p>推导过程我们也从略了。最终，经过欧拉定义和上面其他结论进行推导，可以得到下面两个等式是同时成立的。</p>
+<p><img src="https://img.haoqicat.com/2018100602.jpg" alt="img"></p>
+<p>这样，就可以得到 e 和 d 的关系了：也就是 e 和 d 的乘积，等于 k 乘以 φ(N) 加 1 ：</p>
+<figure class="highlight lisp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">d = (<span class="name">k*</span>φ(<span class="name">N</span>) + <span class="number">1</span>)/e</span><br></pre></td></tr></table></figure>
+
+<p>只要知道 φ(N) ，d 就可以算出来了。而如果不知道 φ(N) ，有了 e 也根本算不出 d 来。上面的 k 没有预先的固定值，而是要在运算过程中算出来的。<strong>k 的取值要保证给定一个 e 的数值</strong>， d 最终可以算出整数来。</p>
+<p>通过上面的讨论，如何生成公钥和私钥的方法就有了，公钥是 N 和 e ，e 是在一定范围内随机选择的，而且是公开的。私钥是由 N 和 d 组成的，而 d 是在知道 N 的整数分解结果的条件下，通过上面的运算计算出来的。同时，加密函数也有了，就是信息 m 的 e 次方对 N 取模，解密函数就是密文 c 的 d 次方对 N 取模。</p>
+<h2 id="运算公钥和私钥"><a href="#运算公钥和私钥" class="headerlink" title="运算公钥和私钥"></a>运算公钥和私钥</h2><p>下面我们就来实际使用一下上面的结论，生成一下公钥和私钥，并且做一遍加密和解密。</p>
+<p>首先选择两个比较大的素数，实际中一般是几百位，但是我们这里为了演示方便，选择小的一点的。p1 = 53 , p2 = 59 ，这样 N = 53*59=3127 。</p>
+<p>首先来生成公钥和私钥，Alice 选取 e = 3 。于是公钥就是 e 和 N 这两个数的组合。公钥有了。下一步来生成私钥，也就是去运算 d 。 因为知道 p1 和 p2 的值，所以 φ(N) 很容易算出结果，就是 3016 。根据上面运算 d 的公式，当 k 等于 2 的时候，d 可以取得整数值，d 就等于</p>
+<figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">d = (<span class="number">2</span>*<span class="number">3016</span>+<span class="number">1</span>)/<span class="number">3</span> = <span class="number">2011</span></span><br></pre></td></tr></table></figure>
+
+<p>私钥就是 N 和 d 的组合。</p>
+<p>接下来看加密和解密过程。Alice 把 e 和 N ，也就是公钥发送给了 Bob 。</p>
+<figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">89</span>^<span class="number">3</span> mod <span class="number">3127</span> = <span class="number">1394</span></span><br></pre></td></tr></table></figure>
+
+<p>Bob 把原文 89 ，e 和 N 带入到加密函数中，最终得到密文 c = 1394 。加密过程完成。</p>
+<p>Alice 收到密文之后，可以用私钥进行解密。</p>
+<figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">1394</span>^<span class="number">2011</span> mod <span class="number">3127</span> = <span class="number">89</span></span><br></pre></td></tr></table></figure>
+
+<p>也就是，把密文，d 和 n 都带入解密函数，这样就得到了信息 m = 89 。</p>
+<p>这样我们就完成了整个的过程。</p>
+<h2 id="总结-1"><a href="#总结-1" class="headerlink" title="总结"></a>总结</h2><p>我们的问题是，如何构建先幂后模运算的各项参数之间的关系，从而保证如果一个人掌握了这种关系，是可以对加密锁进行反向运算的。关系是通过整数分解问题去构建的，推导过程中会用到欧拉函数的一个重要特性，也就是如果参数的整数分解结果是知道的，那么欧拉函数的结果也就很容易算出来，否则欧拉函数很难被求解。于是经过推导，我们可以得出 <code>e*d</code> 跟欧拉函数的值有着固定的联系，于是得到了从公钥（基本就是 e ）运算出私钥（基本就是 d ）的方法。</p>
+
+    </div>
+
+    
+    
+    
+    <div>
+      
+        <div>
+    
+        <div style="text-align:center;color: #ccc;font-size:14px;">-------------本文结束<i class="fa fa-paw"></i>感谢您的阅读-------------</div>
+    
+</div>
+
+      
+    </div>
+        <div class="reward-container">
+  <div>坚持原创技术分享，您的支持将鼓励我继续创作！</div>
+  <button disable="enable" onclick="var qr = document.getElementById(&quot;qr&quot;); qr.style.display = (qr.style.display === 'none') ? 'block' : 'none';">
+    打赏
+  </button>
+  <div id="qr" style="display: none;">
+      
+      <div style="display: inline-block;">
+        <img src="/images/wechatpay.jpg" alt="Hongery 微信支付">
+        <p>微信支付</p>
+      </div>
+      
+      <div style="display: inline-block;">
+        <img src="/images/alipay.jpg" alt="Hongery 支付宝">
+        <p>支付宝</p>
+      </div>
+
+  </div>
+</div>
+
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>Hongery
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="http://yoursite.com/2020/03/09/%E5%AF%86%E7%A0%81%E5%AD%A6/07RSA-%E5%9F%BA%E7%A1%80%E5%8E%9F%E7%90%86/" title="密码学&#x2F;07RSA-基础原理">http://yoursite.com/2020/03/09/密码学/07RSA-基础原理/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/03/09/%E5%AF%86%E7%A0%81%E5%AD%A6/06%E6%95%B0%E5%AD%97%E8%AF%81%E4%B9%A6/" rel="prev" title="密码学/06数字证书">
+      <i class="fa fa-chevron-left"></i> 密码学/06数字证书
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2020/03/09/%E5%AF%86%E7%A0%81%E5%AD%A6/08Merkle%E6%A0%91/" rel="next" title="密码学/08Merkle树">
+      密码学/08Merkle树 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let activeClass = CONFIG.comments.activeClass;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#RSA-算法–基本原理篇"><span class="nav-text">RSA 算法–基本原理篇</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#宏观思路"><span class="nav-text">宏观思路</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#具体实现"><span class="nav-text">具体实现</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#安全性取决与整数分解问题"><span class="nav-text">安全性取决与整数分解问题</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结"><span class="nav-text">总结</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#RSA-算法–粗略数学推导篇"><span class="nav-text">RSA 算法–粗略数学推导篇</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#提出问题"><span class="nav-text">提出问题</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#解决步骤"><span class="nav-text">解决步骤</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#运算公钥和私钥"><span class="nav-text">运算公钥和私钥</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结-1"><span class="nav-text">总结</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Hongery"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">Hongery</p>
+  <div class="site-description" itemprop="description">直到这一刻微笑着说话为止，我至少留下了一公升眼泪</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">51</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/Hongery" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;Hongery" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://blog.csdn.net/weixin_40098405" title="CSDN → https:&#x2F;&#x2F;blog.csdn.net&#x2F;weixin_40098405" rel="noopener" target="_blank"><i class="fa fa-fw fa-crosshairs"></i>CSDN</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:1281185088@qq.com" title="E-Mail1 → mailto:1281185088@qq.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail1</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:hongery@yeah.net" title="E-Mail2 → mailto:hongery@yeah.net" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail2</a>
+      </span>
+  </div>
+  <div class="cc-license motion-element" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">hongery</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+      <span class="post-meta-item-text">站点总字数：</span>
+    <span title="站点总字数">NaNm</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span class="post-meta-item-text">站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">NaN:aN字</span>
+</div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>
+<!-- 页面点击小红心 -->
+<script type="text/javascript" src="/js/clicklove.js"></script>
