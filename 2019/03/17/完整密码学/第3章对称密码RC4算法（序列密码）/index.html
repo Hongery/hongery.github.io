@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.1.1">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/avatar.jpg">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/avatar.jpg">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    hostname: new URL('http://yoursite.com').hostname,
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.6.0',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},
+    copycode: {"enable":true,"show_result":true,"style":"mac"},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":true},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    comments: {"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: 'search.xml',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}
+  };
+</script>
+
+  <meta name="description" content="对称密码RC4算法（序列密码）对称加密分为序列密码和分组加密。序列密码，也叫流加密(stream cyphers)，依次加密明文中的每一个字节。加密是指利用用户的密钥通过某种复杂的运算（密码算法）产生大量的伪随机流，对明文流的加密。解密是指用同样的密钥和密码算法及与加密相同的伪随机流，用以还原明文流。分组密码，也叫块加密(block cyphers)，一次加密明文中的一个块。是将明文按一定的位长分">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Go变量和常量">
+<meta property="og:url" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2019&#x2F;03&#x2F;17&#x2F;%E5%AE%8C%E6%95%B4%E5%AF%86%E7%A0%81%E5%AD%A6&#x2F;%E7%AC%AC3%E7%AB%A0%E5%AF%B9%E7%A7%B0%E5%AF%86%E7%A0%81RC4%E7%AE%97%E6%B3%95%EF%BC%88%E5%BA%8F%E5%88%97%E5%AF%86%E7%A0%81%EF%BC%89&#x2F;index.html">
+<meta property="og:site_name" content="Hongery">
+<meta property="og:description" content="对称密码RC4算法（序列密码）对称加密分为序列密码和分组加密。序列密码，也叫流加密(stream cyphers)，依次加密明文中的每一个字节。加密是指利用用户的密钥通过某种复杂的运算（密码算法）产生大量的伪随机流，对明文流的加密。解密是指用同样的密钥和密码算法及与加密相同的伪随机流，用以还原明文流。分组密码，也叫块加密(block cyphers)，一次加密明文中的一个块。是将明文按一定的位长分">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http:&#x2F;&#x2F;img.kongyixueyuan.com&#x2F;RC4%E5%8A%A0%E5%AF%86.jpg">
+<meta property="article:published_time" content="2019-03-17T07:59:45.000Z">
+<meta property="article:modified_time" content="2020-03-17T05:53:45.391Z">
+<meta property="article:author" content="Hongery">
+<meta property="article:tag" content="密码学">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http:&#x2F;&#x2F;img.kongyixueyuan.com&#x2F;RC4%E5%8A%A0%E5%AF%86.jpg">
+
+<link rel="canonical" href="http://yoursite.com/2019/03/17/%E5%AE%8C%E6%95%B4%E5%AF%86%E7%A0%81%E5%AD%A6/%E7%AC%AC3%E7%AB%A0%E5%AF%B9%E7%A7%B0%E5%AF%86%E7%A0%81RC4%E7%AE%97%E6%B3%95%EF%BC%88%E5%BA%8F%E5%88%97%E5%AF%86%E7%A0%81%EF%BC%89/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true
+  };
+</script>
+
+  <title>Go变量和常量 | Hongery</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Hongery</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">记录学习中的点点滴滴</p>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="none"
+           placeholder="搜索..." spellcheck="false"
+           type="text" id="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+  <a href="https://github.com/Hongery" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/03/17/%E5%AE%8C%E6%95%B4%E5%AF%86%E7%A0%81%E5%AD%A6/%E7%AC%AC3%E7%AB%A0%E5%AF%B9%E7%A7%B0%E5%AF%86%E7%A0%81RC4%E7%AE%97%E6%B3%95%EF%BC%88%E5%BA%8F%E5%88%97%E5%AF%86%E7%A0%81%EF%BC%89/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="Hongery">
+      <meta itemprop="description" content="直到这一刻微笑着说话为止，我至少留下了一公升眼泪">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hongery">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Go变量和常量
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-03-17 15:59:45" itemprop="dateCreated datePublished" datetime="2019-03-17T15:59:45+08:00">2019-03-17</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-03-17 13:53:45" itemprop="dateModified" datetime="2020-03-17T13:53:45+08:00">2020-03-17</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E5%AF%86%E7%A0%81%E5%AD%A6/" itemprop="url" rel="index">
+                    <span itemprop="name">密码学</span>
+                  </a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span><br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-file-word-o"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>2.5k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-clock-o"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>2 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="对称密码RC4算法（序列密码）"><a href="#对称密码RC4算法（序列密码）" class="headerlink" title="对称密码RC4算法（序列密码）"></a>对称密码RC4算法（序列密码）</h2><p>对称加密分为<strong>序列密码</strong>和<strong>分组加密</strong>。<br><strong>序列密码，也叫流加密(stream cyphers)</strong>，<strong>依次加密明文中的每一个字节。</strong>加密是指利用用户的密钥通过某种复杂的运算（密码算法）产生大量的伪随机流，对明文流的加密。解密是指用同样的密钥和密码算法及与加密相同的伪随机流，用以还原明文流。<br><strong>分组密码，也叫块加密(block cyphers)</strong>，<strong>一次加密明文中的一个块</strong>。是将明文按一定的位长分组，明文组经过加密运算得到密文组，密文组经过解密运算（加密运算的逆运算），还原成明文组。</p>
+<a id="more"></a>
+
+<h2 id="1-RC4实现过程"><a href="#1-RC4实现过程" class="headerlink" title="1. RC4实现过程"></a>1. RC4实现过程</h2><p>RC4算法的实现非常简单，使用从1到256个字节（8到2048位）可变长度密钥初始化一个256个字节的状态向量S，S的元素记为S[0]，S[1]，S[2]，…，S[255]，S先初始化为S[i]=i。以后自始至终都包含从0到255的所有8比特数，只是对它进行置换操作。每次生成的密钥字节ki由S中256个元素按一定方法选出一个元素而生成。每生成一个密钥字节，S向量中元素会进行一次置换操作。则RC4算法分为两部分：初始化S和密钥流的生成，其中密钥流的生成过程中每次产生的密钥字与对应明文的元素进行异或运算得到密文字。</p>
+<h3 id="1-1-初始化S"><a href="#1-1-初始化S" class="headerlink" title="1.1 初始化S"></a>1.1 初始化S</h3><p>生成S的步骤如下：<br>1）声明一个长度为256的字节数组，并给S中的元素从0到255以升序的方式填充，即S[0]=0，S[1]=1，S[2]=2，…，S[255]=255。<br>2）j:=0<br>3）对于0&lt;=i&lt;=255，循环下边两个方法：<br>j = (j + S[i] + int(K[i%keylen])) % 256<br>S[i], S[j]=S[j], S[i]</p>
+<h3 id="1-2-密钥流的生成"><a href="#1-2-密钥流的生成" class="headerlink" title="1.2 密钥流的生成"></a>1.2 密钥流的生成</h3><p>步骤如下：<br>1）i=0；j=0<br>2）i = (i + 1) % 256<br>3）j = (j + S[i]) % 256<br>4）S[i], S[j]=S[j], S[i]<br>5）输出密钥字key = S[(S[i]+S[j])%256]</p>
+<h3 id="1-3-RC4的安全性"><a href="#1-3-RC4的安全性" class="headerlink" title="1.3 RC4的安全性"></a>1.3 RC4的安全性</h3><p>由于RC4算法加密采用的是异或方式，所以，一旦子密钥序列出现了重复，密文就有可能被破解，但是目前还没有发现密钥长度达到128位的RC4有重复的可能性，所以，RC4也是目前最安全的加密算法之一。</p>
+<h3 id="1-4-RC4加密过程"><a href="#1-4-RC4加密过程" class="headerlink" title="1.4 RC4加密过程"></a>1.4 RC4加密过程</h3><p>简单介绍下RC4的加密过程：<br>1）利用自己的密钥，产生密钥流发生器<br>2）密钥流发生器根据明文的长度产生伪随机序列<br>3）伪随机序列每个位元素与明文对应的位元素进行异或运算，生成密文<br>示意图：<br><img src="http://img.kongyixueyuan.com/RC4%E5%8A%A0%E5%AF%86.jpg" alt="img"></p>
+<h2 id="2-golang实现RC4加密"><a href="#2-golang实现RC4加密" class="headerlink" title="2. golang实现RC4加密"></a>2. golang实现RC4加密</h2><h3 id="2-1-golang实现RC4加密："><a href="#2-1-golang实现RC4加密：" class="headerlink" title="2.1 golang实现RC4加密："></a>2.1 golang实现RC4加密：</h3><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> <span class="string">"fmt"</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line"></span><br><span class="line">    data := []<span class="keyword">byte</span>(<span class="string">"helloworld"</span>);</span><br><span class="line">    output:=<span class="built_in">make</span>([]<span class="keyword">byte</span>,<span class="built_in">len</span>(data))</span><br><span class="line">    fmt.Printf(<span class="string">"明文:%s\n"</span>, data);</span><br><span class="line"></span><br><span class="line">    K := []<span class="keyword">byte</span>(<span class="string">"qwuoaknfabbalafbj"</span>);</span><br><span class="line">    keylen := <span class="built_in">len</span>(K);</span><br><span class="line">    SetKey(K, keylen);</span><br><span class="line"></span><br><span class="line">    output=Transform(output, data, <span class="built_in">len</span>(data));</span><br><span class="line">    fmt.Printf(<span class="string">"密文: %x\n"</span>, output);</span><br><span class="line"></span><br><span class="line">    SetKey(K, keylen);</span><br><span class="line">    output1:=<span class="built_in">make</span>([]<span class="keyword">byte</span>,<span class="built_in">len</span>(data))</span><br><span class="line">    output1=Transform(output1, output, <span class="built_in">len</span>(data));</span><br><span class="line">    fmt.Printf(<span class="string">"解密后明文:%s"</span>, output1);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> S = [<span class="number">256</span>]<span class="keyword">int</span>&#123;&#125;</span><br><span class="line"><span class="comment">//初始化S盒</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">SetKey</span><span class="params">(K []<span class="keyword">byte</span>, keylen <span class="keyword">int</span>)</span></span> &#123;</span><br><span class="line">    <span class="keyword">for</span> i := <span class="number">0</span>; i &lt; <span class="number">256</span>; i++ &#123;</span><br><span class="line">        S[i] = i;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    j := <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">for</span> i := <span class="number">0</span>; i &lt; <span class="number">256</span>; i++ &#123;</span><br><span class="line">        j = (j + S[i] + <span class="keyword">int</span>(K[i%keylen])) % <span class="number">256</span>;</span><br><span class="line"></span><br><span class="line">        S[i], S[j]=S[j], S[i];</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//生成密钥流</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">Transform</span><span class="params">(output []<span class="keyword">byte</span>, data []<span class="keyword">byte</span>, lenth <span class="keyword">int</span>)</span>[]<span class="title">byte</span></span> &#123;</span><br><span class="line">    i := <span class="number">0</span>;</span><br><span class="line">    j := <span class="number">0</span></span><br><span class="line">    output=<span class="built_in">make</span>([]<span class="keyword">byte</span>,lenth)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> k := <span class="number">0</span>; k &lt; lenth; k++ &#123;</span><br><span class="line">        i = (i + <span class="number">1</span>) % <span class="number">256</span>;</span><br><span class="line">        j = (j + S[i]) % <span class="number">256</span>;</span><br><span class="line">        S[i], S[j]=S[j], S[i];</span><br><span class="line">        key := S[(S[i]+S[j])%<span class="number">256</span>];</span><br><span class="line">        <span class="comment">//按位异或操作</span></span><br><span class="line"></span><br><span class="line">        output[k] = <span class="keyword">uint8</span>(key)^data[k];</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> output</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//结果</span></span><br><span class="line">明文:helloworld</span><br><span class="line">密文: bed0b7fdabdb0be88956</span><br><span class="line">解密后明文:helloworld</span><br></pre></td></tr></table></figure>
+
+<h3 id="2-2-利用goland封装好的方法实现RC4加密，但是没有解密"><a href="#2-2-利用goland封装好的方法实现RC4加密，但是没有解密" class="headerlink" title="2.2 利用goland封装好的方法实现RC4加密，但是没有解密"></a>2.2 利用goland封装好的方法实现RC4加密，但是没有解密</h3><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">    <span class="string">"fmt"</span></span><br><span class="line">    <span class="string">"crypto/rc4"</span></span><br><span class="line">)</span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span>  &#123;</span><br><span class="line"><span class="keyword">var</span> key []<span class="keyword">byte</span> = []<span class="keyword">byte</span>(<span class="string">"fd6cde7c2f4913f22297c948dd530c84"</span>) <span class="comment">//初始化用于加密的KEY</span></span><br><span class="line">rc4obj, _ := rc4.NewCipher(key) <span class="comment">//返回 Cipher</span></span><br><span class="line"></span><br><span class="line">str := []<span class="keyword">byte</span>(<span class="string">"helloworld"</span>)  <span class="comment">//需要加密的字符串</span></span><br><span class="line">plaintext := <span class="built_in">make</span>([]<span class="keyword">byte</span>, <span class="built_in">len</span>(str)) <span class="comment">//</span></span><br><span class="line">rc4obj.XORKeyStream(plaintext, str)</span><br><span class="line"><span class="comment">//XORKeyStream方法将src的数据与秘钥生成的伪随机位流取XOR并写入dst。</span></span><br><span class="line"><span class="comment">//plaintext就是你加密的返回过来的结果了，注意：plaintext为base-16 编码的字符串，每个字节使用2个字符表示 必须格式化成字符串</span></span><br><span class="line"></span><br><span class="line">stringinf := fmt.Sprintf(<span class="string">"%x\n"</span>, plaintext) <span class="comment">//转换字符串</span></span><br><span class="line">fmt.Println(stringinf)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+    </div>
+
+    
+    
+    
+    <div>
+      
+        <div>
+    
+        <div style="text-align:center;color: #ccc;font-size:14px;">-------------本文结束<i class="fa fa-paw"></i>感谢您的阅读-------------</div>
+    
+</div>
+
+      
+    </div>
+        <div class="reward-container">
+  <div>坚持原创技术分享，您的支持将鼓励我继续创作！</div>
+  <button disable="enable" onclick="var qr = document.getElementById(&quot;qr&quot;); qr.style.display = (qr.style.display === 'none') ? 'block' : 'none';">
+    打赏
+  </button>
+  <div id="qr" style="display: none;">
+      
+      <div style="display: inline-block;">
+        <img src="/images/wechatpay.jpg" alt="Hongery 微信支付">
+        <p>微信支付</p>
+      </div>
+      
+      <div style="display: inline-block;">
+        <img src="/images/alipay.jpg" alt="Hongery 支付宝">
+        <p>支付宝</p>
+      </div>
+
+  </div>
+</div>
+
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>Hongery
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="http://yoursite.com/2019/03/17/%E5%AE%8C%E6%95%B4%E5%AF%86%E7%A0%81%E5%AD%A6/%E7%AC%AC3%E7%AB%A0%E5%AF%B9%E7%A7%B0%E5%AF%86%E7%A0%81RC4%E7%AE%97%E6%B3%95%EF%BC%88%E5%BA%8F%E5%88%97%E5%AF%86%E7%A0%81%EF%BC%89/" title="Go变量和常量">http://yoursite.com/2019/03/17/完整密码学/第3章对称密码RC4算法（序列密码）/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E5%AF%86%E7%A0%81%E5%AD%A6/" rel="tag"># 密码学</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2019/03/16/%E5%AE%8C%E6%95%B4%E5%AF%86%E7%A0%81%E5%AD%A6/%E7%AC%AC2%E7%AB%A0%E5%AF%B9%E7%A7%B0%E5%8A%A0%E5%AF%86/" rel="prev" title="Go变量和常量">
+      <i class="fa fa-chevron-left"></i> Go变量和常量
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2019/03/21/Gin%E6%A1%86%E6%9E%B6%E7%9A%84%E4%BD%BF%E7%94%A8/gin%E6%A1%86%E6%9E%B6%E7%9A%84%E4%BD%BF%E7%94%A8/" rel="next" title="Gin框架的介绍和使用">
+      Gin框架的介绍和使用 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let activeClass = CONFIG.comments.activeClass;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#对称密码RC4算法（序列密码）"><span class="nav-text">对称密码RC4算法（序列密码）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-RC4实现过程"><span class="nav-text">1. RC4实现过程</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-1-初始化S"><span class="nav-text">1.1 初始化S</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-2-密钥流的生成"><span class="nav-text">1.2 密钥流的生成</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-3-RC4的安全性"><span class="nav-text">1.3 RC4的安全性</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-4-RC4加密过程"><span class="nav-text">1.4 RC4加密过程</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-golang实现RC4加密"><span class="nav-text">2. golang实现RC4加密</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-1-golang实现RC4加密："><span class="nav-text">2.1 golang实现RC4加密：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-2-利用goland封装好的方法实现RC4加密，但是没有解密"><span class="nav-text">2.2 利用goland封装好的方法实现RC4加密，但是没有解密</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Hongery"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">Hongery</p>
+  <div class="site-description" itemprop="description">直到这一刻微笑着说话为止，我至少留下了一公升眼泪</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">71</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/Hongery" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;Hongery" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://blog.csdn.net/weixin_40098405" title="CSDN → https:&#x2F;&#x2F;blog.csdn.net&#x2F;weixin_40098405" rel="noopener" target="_blank"><i class="fa fa-fw fa-crosshairs"></i>CSDN</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:1281185088@qq.com" title="E-Mail1 → mailto:1281185088@qq.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail1</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:hongery@yeah.net" title="E-Mail2 → mailto:hongery@yeah.net" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail2</a>
+      </span>
+  </div>
+  <div class="cc-license motion-element" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">hongery</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+      <span class="post-meta-item-text">站点总字数：</span>
+    <span title="站点总字数">NaNm</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span class="post-meta-item-text">站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">NaN:aN字</span>
+</div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>
+<!-- 页面点击小红心 -->
+<script type="text/javascript" src="/js/clicklove.js"></script>

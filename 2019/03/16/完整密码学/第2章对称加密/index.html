@@ -1,0 +1,734 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.1.1">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/avatar.jpg">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/avatar.jpg">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    hostname: new URL('http://yoursite.com').hostname,
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.6.0',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},
+    copycode: {"enable":true,"show_result":true,"style":"mac"},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":true},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    comments: {"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: 'search.xml',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}
+  };
+</script>
+
+  <meta name="description" content="对称加密对称加密算法是应用较早的加密算法，技术成熟。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Go变量和常量">
+<meta property="og:url" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2019&#x2F;03&#x2F;16&#x2F;%E5%AE%8C%E6%95%B4%E5%AF%86%E7%A0%81%E5%AD%A6&#x2F;%E7%AC%AC2%E7%AB%A0%E5%AF%B9%E7%A7%B0%E5%8A%A0%E5%AF%86&#x2F;index.html">
+<meta property="og:site_name" content="Hongery">
+<meta property="og:description" content="对称加密对称加密算法是应用较早的加密算法，技术成熟。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http:&#x2F;&#x2F;img.kongyixueyuan.com&#x2F;%E5%8A%A0%E8%A7%A3%E5%AF%86.png">
+<meta property="og:image" content="http:&#x2F;&#x2F;img.kongyixueyuan.com&#x2F;%E5%AF%84%E5%AD%98%E5%99%A8.png">
+<meta property="og:image" content="http:&#x2F;&#x2F;img.kongyixueyuan.com&#x2F;ECB%E5%8A%A0%E5%AF%86.jpg">
+<meta property="og:image" content="http:&#x2F;&#x2F;img.kongyixueyuan.com&#x2F;ECB%E8%A7%A3%E5%AF%86.jpg">
+<meta property="og:image" content="http:&#x2F;&#x2F;img.kongyixueyuan.com&#x2F;CBC%E5%8A%A0%E5%AF%86.jpg">
+<meta property="og:image" content="http:&#x2F;&#x2F;img.kongyixueyuan.com&#x2F;CBC%E8%A7%A3%E5%AF%86.png">
+<meta property="og:image" content="http:&#x2F;&#x2F;img.kongyixueyuan.com&#x2F;CFB%E5%8A%A0%E5%AF%86.png">
+<meta property="og:image" content="http:&#x2F;&#x2F;img.kongyixueyuan.com&#x2F;CFB%E8%A7%A3%E5%AF%86.png">
+<meta property="og:image" content="http:&#x2F;&#x2F;img.kongyixueyuan.com&#x2F;OFB%E5%8A%A0%E5%AF%86.png">
+<meta property="og:image" content="http:&#x2F;&#x2F;img.kongyixueyuan.com&#x2F;OFB%E8%A7%A3%E5%AF%86.png">
+<meta property="og:image" content="http:&#x2F;&#x2F;img.kongyixueyuan.com&#x2F;CTR%E5%8A%A0%E5%AF%86.png">
+<meta property="og:image" content="http:&#x2F;&#x2F;img.kongyixueyuan.com&#x2F;CTR%E8%A7%A3%E5%AF%86.png">
+<meta property="article:published_time" content="2019-03-16T07:59:45.000Z">
+<meta property="article:modified_time" content="2020-03-16T15:32:34.103Z">
+<meta property="article:author" content="Hongery">
+<meta property="article:tag" content="密码学">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http:&#x2F;&#x2F;img.kongyixueyuan.com&#x2F;%E5%8A%A0%E8%A7%A3%E5%AF%86.png">
+
+<link rel="canonical" href="http://yoursite.com/2019/03/16/%E5%AE%8C%E6%95%B4%E5%AF%86%E7%A0%81%E5%AD%A6/%E7%AC%AC2%E7%AB%A0%E5%AF%B9%E7%A7%B0%E5%8A%A0%E5%AF%86/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true
+  };
+</script>
+
+  <title>Go变量和常量 | Hongery</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Hongery</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">记录学习中的点点滴滴</p>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="none"
+           placeholder="搜索..." spellcheck="false"
+           type="text" id="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+  <a href="https://github.com/Hongery" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/03/16/%E5%AE%8C%E6%95%B4%E5%AF%86%E7%A0%81%E5%AD%A6/%E7%AC%AC2%E7%AB%A0%E5%AF%B9%E7%A7%B0%E5%8A%A0%E5%AF%86/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="Hongery">
+      <meta itemprop="description" content="直到这一刻微笑着说话为止，我至少留下了一公升眼泪">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hongery">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Go变量和常量
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-03-16 15:59:45" itemprop="dateCreated datePublished" datetime="2019-03-16T15:59:45+08:00">2019-03-16</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-03-16 23:32:34" itemprop="dateModified" datetime="2020-03-16T23:32:34+08:00">2020-03-16</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E5%AF%86%E7%A0%81%E5%AD%A6/" itemprop="url" rel="index">
+                    <span itemprop="name">密码学</span>
+                  </a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span><br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-file-word-o"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>6.8k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-clock-o"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>6 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h3 id="对称加密"><a href="#对称加密" class="headerlink" title="对称加密"></a>对称加密</h3><p>对称加密算法是应用较早的加密算法，技术成熟。</p>
+<a id="more"></a>
+
+<h2 id="1-对称加密的使用过程"><a href="#1-对称加密的使用过程" class="headerlink" title="1 对称加密的使用过程"></a>1 对称加密的使用过程</h2><p>在对称加密算法中，数据发信方将明文（原始数据）和加密密钥一起经过特殊加密算法处理后，使其变成复杂的加密密文发送出去。收信方收到密文后，若想解读原文，则需要使用加密用过的密钥及相同算法的逆算法对密文进行解密，才能使其恢复成可读明文。在对称加密算法中，使用的密钥只有一个，发收信双方都使用这个密钥对数据进行加密和解密，这就要求解密方事先必须知道加密密钥。</p>
+<h2 id="2-对称加密的特点"><a href="#2-对称加密的特点" class="headerlink" title="2 对称加密的特点"></a>2 对称加密的特点</h2><p>对称加密算法的<strong>特点</strong>是<strong>算法公开、计算量小、加密速度快、加密效率高</strong>。<strong>不足</strong>之处是，<strong>交易双方都使用同样钥匙，安全性得不到保证。</strong>此外，每对用户每次使用对称加密算法时，都需要使用其他人不知道的惟一钥匙，这会使得发收信双方所拥有的钥匙数量呈几何级数增长，密钥管理成为用户的负担。对称加密算法的安全性取决于加密密钥的保存情况。<br>对称加密算法在分布式网络系统上使用较为困难，主要是因为密钥管理困难，使用成本较高。而与公开密钥加密算法也就是非对称加密算法比起来，对称加密算法能够提供加密和认证，却缺乏了签名功能，使得使用范围有所缩小。</p>
+<h2 id="3-对称加密的划分"><a href="#3-对称加密的划分" class="headerlink" title="3 对称加密的划分"></a>3 对称加密的划分</h2><p>对称加密分为<strong>序列密码</strong>和<strong>分组加密</strong>。<br><strong>序列密码，也叫流加密(stream cyphers)</strong>，<strong>依次加密明文中的每一个字节。</strong>加密是指利用用户的密钥通过某种复杂的运算（密码算法）产生大量的伪随机流，对明文流的加密。解密是指用同样的密钥和密码算法及与加密相同的伪随机流，用以还原明文流。<br><strong>分组密码，也叫块加密(block cyphers)</strong>，<strong>一次加密明文中的一个块</strong>。是将明文按一定的位长分组，明文组经过加密运算得到密文组，密文组经过解密运算（加密运算的逆运算），还原成明文组。</p>
+<h3 id="序列密码"><a href="#序列密码" class="headerlink" title="序列密码"></a>序列密码</h3><p>序列密码，也叫流密码，是利用种子密钥通过密钥流生成器产生与明文长度一致的伪随机序列，该随机序列与明文进行某种算法相结合产生的密文的一种密码算法。</p>
+<p>使用序列密码对某一消息m执行加密操作时，都是按<strong>字</strong>进行加密的，一般是先将m分成连续的字符，m=m1m2m3…;然后使用密钥流k=k1k2k3…中的第i个字符ki对明文消息的第i字符mi执行加密变换，i=1,2,3…；所有的加密输出连接在一起就构成了对m执行加密后的密文。解密需要和加密同步进行，所以使用序列密码，发送方和接收方需要对明文或密文在信息的同一位置进行操作。<br>加解密过程示意图如下：<br><img src="http://img.kongyixueyuan.com/%E5%8A%A0%E8%A7%A3%E5%AF%86.png" alt="img" style="zoom:120%;" /></p>
+<p><strong>序列密码</strong>具有实现简单、便于硬件实施、加解密处理速度快、没有或只有有限的错误传播等特点，但是因为这类密码主要运用在军事，政治机密机构上，因此它的研究成果较少有公开。目前可以公开在其他领域应用的算法有<strong>RC4</strong>，SEAL，A5等。</p>
+<h4 id="1-一次一密密码"><a href="#1-一次一密密码" class="headerlink" title="1 . 一次一密密码"></a>1 . 一次一密密码</h4><p>一次一密加密是1917年Mauborgne和Vernam联合提出的一种理想加密方案，它要求对明文消息逐字符加密，每个字符加密都是独立的，加密的密钥是与明文长度一致的毫无规则随机的密钥序列，这个密钥序列就是一次一密乱码本。在使用时，密文发送方和接收方手里头都拥有一个一模一样的乱码本，该乱码本是由双方协商确定的一个足够长的随机密钥序列。发送方对明文进行加密时，用到的密钥序列是来自乱码本发送消息长度的最前面的一段，加密完后，立马对用过的密钥序列进行销毁。接收方收到密文后，用乱码本的密钥序列依次对密文进行解密，得到明，同时也要把用过的密钥序列进行销毁，不再使用。</p>
+<p>一次一密的乱码本被认为是无条件安全的密码体制，即是一种不可攻破的密码体制。窃听者得到密文信息，根本没有可能对其进行解密，因为加密的密钥是完全随机的，毫无规律，攻击者没有任何信息对它进行密文分析。但前提是一次一密乱码本不能泄漏。<br>一次一密概念的提出对序列密码的产生提供了方向。正是基于这个概念，越来越多的序列密码算法不断产生。</p>
+<h4 id="2-序列密码的结构"><a href="#2-序列密码的结构" class="headerlink" title="2. 序列密码的结构"></a>2. 序列密码的结构</h4><p><strong>序列密码的结构</strong>可细分为<strong>同步流密码和自同步流密码</strong>。</p>
+<p>（1）同步流密码指它的<strong>密钥流的产生与明文无关</strong>，而是通过某种独立的随机方法产生的伪随机数字流。</p>
+<p>（2）自同步流密码也叫异步流密码，它与同步流密码相反，<strong>密钥流的产生与明文有关</strong>，具体是后一个密钥字的产生与前一个明文加密后的字有关。自同步密码这个特性，使得它非常难以研究，所以大部分序列密码的研究都集中在同步密码上。</p>
+<h5 id="2-1-同步流密码"><a href="#2-1-同步流密码" class="headerlink" title="2.1 同步流密码"></a>2.1 同步流密码</h5><p>同步流密码产生密码流的过程分为两部分，一个是密钥流产生器，另一个是加密变换器。<br>加密过程表达式是：ci=E(ki,mi)，参数都是字节数组的单个元素。解密过程和加密过程必须同步，表达式是一个。因为密钥流的产生每次都是不一样的。所以加密时，每次产生的密钥流元素先缓存到寄存器中，等解密用完这个元素以后再继续进行加密。整个过程有点类似tcp协议。目前最为常用的流密码体制是有限域GF(2)上的二元加法流密码，其加密变换可表示为ci=ki⊕mi。<br>特点：<br>1）<strong>同步要求</strong><br>在同步流密码中，发送方和接收方必须是同步的，即双方使用同样的密钥，对同一位置进行操作。一旦密文字符在传输中出现丢失，损坏或者删除，那么解密将失败<br>2）<strong>无错误传播</strong><br>密文字符在传输过程中被修改，只是对该字符产生影响，并不影响其他密文字符的解密。<br>3）<strong>主动攻击性破坏同步性</strong><br>作为同步要求的结果，主动攻击者对传输中的密文字符进行重放，插入，删除等破坏操作，直接会造成加解密过程的同步性。所以在使用时，需要借助其他密码学技术对传输的密文进行认证和完整性的验证操作。</p>
+<h5 id="2-2-自同步流密码"><a href="#2-2-自同步流密码" class="headerlink" title="2.2 自同步流密码"></a>2.2 自同步流密码</h5><p>自同步密码的密钥流的产生不独立于明文流和密文流，通常第i个密钥字的产生不仅与主密钥有关，而且与前面已经产生的若干个密文字有关。<br>特点：<br>1）<strong>自同步</strong><br>发送方在传输密文流过程中，某些密文字符被攻击，接收方的解密只是在这些被攻击过的密文与发送方不同步，而其他密文流解密同步不会有问题。<br>2）<strong>有限的错误传播</strong><br>接收方的解密只是对攻击过的i个密文字符有影响，而对其他密文流不会有问题。所以产生的明文至多有i个错误。<br>3）<strong>主动攻击破坏当前的同步性</strong><br>4）<strong>明文统计扩算</strong><br>每个明文字符都会影响其后的整个密文，即明文的统计学特性扩散到了密文中。因此，自同步流密码在抵抗利用明文冗余而发起的攻击方面要强于同步流密码。</p>
+<h5 id="2-3-密钥流生成器"><a href="#2-3-密钥流生成器" class="headerlink" title="2.3 密钥流生成器"></a>2.3 密钥流生成器</h5><p>流密钥的重要部分是密钥流生成器。理想的密钥流生成器是生成完全随机的密钥流，但实际中因为它是根据用户的私钥通过一定的算法产生的，不可能做到真正的随机，所以产生的密钥流是伪随机序列。<br>一个密钥流生成器通常由一个线形反馈移位寄存器（LFSR）和一个非线形组合部分构成。线形反馈移位寄存器可以称为驱动部分。其工作原理是将驱动部分在j时刻的状态变量x作为输入，输入到非线形组合部分f，将f（x）作为当前时刻的kj。驱动部分负责提供非线形组合部分使用的序列，而非线形部分以各时刻移位寄存器的状态组合出密钥序列j时刻的值kj。通俗讲就是驱动部分内部的变量是不断变化的，在每个不同时刻的值都是不一样的，它不断向非线形组合部分输入变量x的不同时刻的值，非线形组合部分接收到此时刻的x，通过函数f产生当前的密钥流字节。</p>
+<h5 id="2-4-反馈移位寄存器"><a href="#2-4-反馈移位寄存器" class="headerlink" title="2.4 反馈移位寄存器"></a>2.4 反馈移位寄存器</h5><p>反馈移位寄存器是流密码产生密钥流的一个重要组成部分，GF(2)上一个n级反馈移位寄存器由n个二元存储器和一个反馈函数f(a1,a2,a3,a4,…,an)组成，n级反馈移位寄存器如下图所示。<br><img src="http://img.kongyixueyuan.com/%E5%AF%84%E5%AD%98%E5%99%A8.png" alt="img">)每一存储器称为移位寄存器的一级，在任一时刻，这些级的内容构成反馈位移寄存器的状态，在每一状态对应GF(2)上一个维向量，总共有2^n 种可能的状态。每一时刻的状态可用长为n的序列a1，a2，a3，…，an或者n维向量（a1，a2，a3，…，an）表示，其中ai是当前时刻第i级存储器的内容。初始状态由用户确定，当第i个移位时钟脉冲到来时，每一级存储器ai都将其内容向下一级ai-1传递，反馈函数f(a1,a2,a3,a4,…,an)根据寄存器当前的状态计算出下一时刻的an。反馈函数是一个n元布尔函数，即n个变量a1，a2，a3，…，an可以分别独立地取0和1两个可能的值，函数中的运算有逻辑与、逻辑或、逻辑补等运算，最后的函数值为0或1.</p>
+<h3 id="分组密码"><a href="#分组密码" class="headerlink" title="分组密码"></a>分组密码</h3><p><strong>分组密码，也叫块加密，</strong>英文Block Cyper，一般先对明文m进行填充得到一个长度是固定分组长度s的整数倍明文串M；然后将M划分成一个个长度为s的分组；最后对每个分组使用同一个密钥执行加密变换。比较常见的算法有<strong>AES;DES;3DES。</strong></p>
+<p>分组密码中，无论是明文块还是密文块，块与块之间都有一些逻辑运算关系，这些关系即为运算的模式。<br>比较常见的分组密码运算的五种模式：</p>
+<ul>
+<li>Electronic Code Book(ECB)电子密码本模式</li>
+<li>Cipher Block Chaining(CBC)密码分组链接模式</li>
+<li>Cipher Feedback Mode(CFB)加密反馈模式</li>
+<li>Output Feedback Mode(OFB)输出反馈模式</li>
+<li>Counter mode（CTR）计数器模式<br>目前推荐使用的是CBC模式和CTR模式，其它模式较少使用或不推荐使用。</li>
+</ul>
+<h4 id="1-Electronic-Code-Book-ECB-电子密码本模式"><a href="#1-Electronic-Code-Book-ECB-电子密码本模式" class="headerlink" title="1.Electronic Code Book(ECB)电子密码本模式"></a>1.Electronic Code Book(ECB)电子密码本模式</h4><p>ECB又称电子密码本模式，英文全称是Electronic codebook，是最基本的块密码加密模式，加密前根据加密块大小（如AES为128位）分成若干块，如果最后一块不足128位，使用填充(具体看算法，默认是0x00)，之后将每个块使用相同的密钥单独加密得到密文块，然后将密文块连在一起就得到密文了。解密同理。<br>下图展示ECB模式加解密的过程：<br>加密过程：<br><img src="http://img.kongyixueyuan.com/ECB%E5%8A%A0%E5%AF%86.jpg" alt="img"></p>
+<p>解密过程：<br><img src="http://img.kongyixueyuan.com/ECB%E8%A7%A3%E5%AF%86.jpg" alt="img"></p>
+<p>由此得知相同的明文内容将永远加密成相同的密文，而且密文的格式和明文也相同。这是很不安全的，尤其是传输图片或明文内容重复很多的情况下。由于所有分组的加密方式一致，明文中的重复内容会在密文中有所体现，因此难以抵抗统计分析攻击。还有因为明文和密文的内容顺序一致，攻击者很容易破坏密文。攻击者在密文传输过程中截获，并对密文内容次序打乱，接收密文信息者得到的密文就不可能解密成原本的明文信息了。这也是ECB模式很少使用的原因。</p>
+<p>特点：<br>1.操作简单，易于实现，有利于并行计算，误差不会被传送；<br>2.不能隐藏明文的模式；<br>3.可能对明文进行主动攻击；</p>
+<h4 id="2-Cipher-Block-Chaining-CBC-密码分组链接模式"><a href="#2-Cipher-Block-Chaining-CBC-密码分组链接模式" class="headerlink" title="2. Cipher Block Chaining(CBC)密码分组链接模式"></a>2. Cipher Block Chaining(CBC)密码分组链接模式</h4><p>CBC又称密文分组链接模式，英文全称是Cipher Block Chaining，之所以叫这个名字，是因为<strong>密文分组像链条一样相互连接在一起。</strong></p>
+<p>在CBC模式中，每个明文块先与前一个密文块进行异或后，再进行加密。在这种方法中，每个密文块都依赖于它前面的所有明文块。同时，为了保证每条消息的唯一性，在第一个块中需要使用初始化向量。<br>若第一个块的下标为1，则CBC模式的加密过程为：<br>Ci = Ek (P ⊕ Ci-1), C0 = IV.<br>而其解密过程则为：<br>Pi = Dk (Ci) ⊕Ci-1, C0 = IV.</p>
+<p>CBC模式运算过程示意图：<br><img src="http://img.kongyixueyuan.com/CBC%E5%8A%A0%E5%AF%86.jpg" alt="img"></p>
+<p><img src="http://img.kongyixueyuan.com/CBC%E8%A7%A3%E5%AF%86.png" alt="img"></p>
+<p>CBC算法优点：</p>
+<ol>
+<li><p>明文的重复排列不会反映在密文中</p>
+</li>
+<li><p>支持并行计算（仅解密）</p>
+</li>
+<li><p>能够解密任意密文分组</p>
+<p>CBC算法缺点：</p>
+</li>
+<li><p>对包含某些错误比特的密文进行解密时，第一个分组的全部比特以及后一个分组的相应比特会出错</p>
+</li>
+<li><p>加密不支持并行计算</p>
+</li>
+</ol>
+<h4 id="3-Cipher-Feedback-Mode-CFB-加密反馈模式"><a href="#3-Cipher-Feedback-Mode-CFB-加密反馈模式" class="headerlink" title="3. Cipher Feedback Mode(CFB)加密反馈模式"></a>3. Cipher Feedback Mode(CFB)加密反馈模式</h4><p>CFB又称密文反馈，英文全称为Cipher feedback。模式类似于CBC，可以将块密码变为自同步的流密码；工作过程亦非常相似。需要使用一个与块的大小相同的移位寄存器，并用IV将寄存器初始化。然后，将寄存器内容使用块密码加密，然后将结果的最高x位与平文的x进行异或，以产生密文的x位。下一步将生成的x位密文移入寄存器中，并对下面的x位平文重复这一过程。解密过程与加密过程相似，以IV开始，对寄存器加密，将结果的高x与密文异或，产生x位平文，再将密文的下面x位移入寄存器。<br>与CBC相似，明文的改变会影响接下来所有的密文，因此加密过程不能并行化；而同样的，与CBC类似，解密过程是可以并行化的。</p>
+<p>CFB模式运算过程示意图：<br>加密过程：<br><img src="http://img.kongyixueyuan.com/CFB%E5%8A%A0%E5%AF%86.png" alt="img">解密过程：<br><img src="http://img.kongyixueyuan.com/CFB%E8%A7%A3%E5%AF%86.png" alt="img"></p>
+<p>CFB模式的优点：</p>
+<ol>
+<li>不需要填充（padding）</li>
+<li>支持并行计算（仅解密）</li>
+<li>能够解密任意密文分组</li>
+</ol>
+<p>CFB模式的缺点：</p>
+<ol>
+<li>加密不支持并行计算</li>
+<li>对包含某些错误比特的密文进行解密时，第一个分组的全部比特以及后一个分组的相应比特会出错</li>
+<li>不能抵御重放攻击</li>
+</ol>
+<h4 id="4-Output-Feedback-Mode-OFB-输出反馈模式"><a href="#4-Output-Feedback-Mode-OFB-输出反馈模式" class="headerlink" title="4. Output Feedback Mode(OFB)输出反馈模式"></a>4. Output Feedback Mode(OFB)输出反馈模式</h4><p>OFB：将分组密码作为同步序列密码运行，和CFB相似，不过OFB用的是前一个n位密文输出分组反馈回移位寄存器，OFB没有错误扩散问题。<br>输出反馈模式（Output feedback, OFB）可以将块密码变成同步的流密码。它产生密钥流的块，然后将其与平文块进行异或，得到密文。与其它流密码一样，密文中一个位的翻转会使平文中同样位置的位也产生翻转。这种特性使得许多错误校正码，例如奇偶校验位，即使在加密前计算而在加密后进行校验也可以得出正确结果。<br>每个使用OFB的输出块与其前面所有的输出块相关，因此不能并行化处理。然而，由于平文和密文只在最终的异或过程中使用，因此可以事先对IV进行加密，最后并行的将平文或密文进行并行的异或处理。<br>可以利用输入全0的CBC模式产生OFB模式的密钥流。这种方法十分实用，因为可以利用快速的CBC硬件实现来加速OFB模式的加密过程。</p>
+<p>加密过程：<br><img src="http://img.kongyixueyuan.com/OFB%E5%8A%A0%E5%AF%86.png" alt="img"></p>
+<p>解密过程：<br><img src="http://img.kongyixueyuan.com/OFB%E8%A7%A3%E5%AF%86.png" alt="img"></p>
+<p>OFB模式的优点：</p>
+<ol>
+<li>不需要填充（padding）</li>
+<li>可事先进行加密、解密的准备</li>
+<li>加密、解密使用相同结构</li>
+<li>对包含某些错误比特的密文进行解密时，只有铭文中相应的比特会出错</li>
+</ol>
+<p>OFB模式的缺点：</p>
+<ol>
+<li>不支持并行运算</li>
+<li>主动攻击这反转密文分组中的某些比特时，明文分组中相对应的比特也会被反转</li>
+</ol>
+<h4 id="5-Counter-mode（CTR）计数器模式"><a href="#5-Counter-mode（CTR）计数器模式" class="headerlink" title="5. Counter mode（CTR）计数器模式"></a>5. Counter mode（CTR）计数器模式</h4><p>计数模式（CTR模式）加密是对一系列输入数据块(称为计数)进行加密，产生一系列的流密码，流密码与明文异或得到密文，同样解密就是流密码与密文异或得到明文。<br>数据块是加密之前通过将逐次累加的计数器产生不同的比特序列，它是由nonce和counter（分组序号）构成的。CTR计数器，长度是128比特(16字节)。前8个字节是叫做nonce的初始值，这个值每次加密都不相同。后8个字节则是分组序号，也就是不断+1得到的值。nonce的作用是让数据块内容复杂化。如果没有nonce，只有counter，数据块过于单一。Golang里封装的计数器实现与这里讲的有些许不同，首先初始化一个长度为BLOCK.SIZE()的初始向量iv，然后iv最后一个字节通过计数器逐组递增，同样也会产生分组加密之前不同的数据块。<br>加密的过程就是生成一个初始的计数器。假设有8个分组，就通过初始计数器不断+1得到8个计数器值，每个计数器值再加密得到密钥流，每个密钥流和对应分组明文异或得到密文。所以它的加密过程相当于一次一密。<br>CTR模式中可以以任意顺序对分组进行加密和解密，因为在加密和解密时需要用到的“计数器”的值可以由nonce和分组序号直接计算出来。这就意味着能够实现并行计算。在支持并行计算的系统中，CTR模式的速度是非常快的。<br>下图展示CTR模式的加解密的过程：<br>加密过程：<br><img src="http://img.kongyixueyuan.com/CTR%E5%8A%A0%E5%AF%86.png" alt="img">解密过程：<br><img src="http://img.kongyixueyuan.com/CTR%E8%A7%A3%E5%AF%86.png" alt="img"></p>
+<p>CTR模式的优点：</p>
+<ol>
+<li>不需要填充（padding）</li>
+<li>可事先进行加密、解密的准备</li>
+<li>加密、解密使用相同的结构</li>
+<li>对包含某些错误比特的密文进行解密时，只有明文中相对应的比特会出错</li>
+<li>支持并行计算（加密、解密）<br>CTR模式的缺点：</li>
+<li>主动攻击者反转密文分组中的某些比特时，明文分组中对应的比特也会被反转</li>
+<li>没有错误传播，不适合用于数据完整性认证。</li>
+</ol>
+<h4 id="6-分组密码模式比较"><a href="#6-分组密码模式比较" class="headerlink" title="6. 分组密码模式比较"></a>6. 分组密码模式比较</h4><table>
+<thead>
+<tr>
+<th align="left">模式</th>
+<th align="left">优点</th>
+<th align="left">缺点</th>
+<th align="left">备注</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">ECB模式</td>
+<td align="left">简单 快速 支持并行运算</td>
+<td align="left">明文中的重复排列反映在密文中 通过删除、替换密文分组可以对明文进行操作 对包含某些比特错误的密文进行解密时对应的分组会出错 不能抵御重放攻击</td>
+<td align="left">不应使用</td>
+</tr>
+<tr>
+<td align="left">CBC模式</td>
+<td align="left">明文的重复排列不会反映在密文中 支持并行运算（仅解密） 能够解密任意密文分组</td>
+<td align="left">对包含某些错误比特的密文进行解密时，第一个分组的全部比特以及后一个分组的相应比特会出错 加密不支持并行运算</td>
+<td align="left">CRYPRTREC推荐 《应用密码学》推荐</td>
+</tr>
+<tr>
+<td align="left">CFB模式</td>
+<td align="left">不需要填充 支持并行计算（仅解密） 能够解密任意密文分组</td>
+<td align="left">加密不支持并行计算 对包含某些错误比特的密文进行解密时，第一个分组的全部比特以及后一个分组的相应比特会出错 不能抵御重放攻击</td>
+<td align="left">CRYPRTREC推荐</td>
+</tr>
+<tr>
+<td align="left">OFB模式</td>
+<td align="left">不需要填充 可事先进行加密、解密的准备 加密、解密使用相同结构 对包含某些错误比特的密文进行解密时，只有明文中相对应的比特会出错</td>
+<td align="left">不支持并行计算 主动攻击者反转密文分组中的某些比特时，明文分组中相对应的比特也会被反转</td>
+<td align="left">CRYPRTREC推荐</td>
+</tr>
+<tr>
+<td align="left">CTR模式</td>
+<td align="left">不需要填充 可事先进行加密、解密的准备 加密、解密使用相同结构 对包含某些错误比特的密文进行解密时，只有明文中相对应的比特会出错 支持并行计算（加密、解密）</td>
+<td align="left">主动攻击者反转密文分组中的某些比特时，明文分组中相对应的比特也会被反转</td>
+<td align="left">CRYPRTREC推荐 《应用密码学》推荐</td>
+</tr>
+</tbody></table>
+
+    </div>
+
+    
+    
+    
+    <div>
+      
+        <div>
+    
+        <div style="text-align:center;color: #ccc;font-size:14px;">-------------本文结束<i class="fa fa-paw"></i>感谢您的阅读-------------</div>
+    
+</div>
+
+      
+    </div>
+        <div class="reward-container">
+  <div>坚持原创技术分享，您的支持将鼓励我继续创作！</div>
+  <button disable="enable" onclick="var qr = document.getElementById(&quot;qr&quot;); qr.style.display = (qr.style.display === 'none') ? 'block' : 'none';">
+    打赏
+  </button>
+  <div id="qr" style="display: none;">
+      
+      <div style="display: inline-block;">
+        <img src="/images/wechatpay.jpg" alt="Hongery 微信支付">
+        <p>微信支付</p>
+      </div>
+      
+      <div style="display: inline-block;">
+        <img src="/images/alipay.jpg" alt="Hongery 支付宝">
+        <p>支付宝</p>
+      </div>
+
+  </div>
+</div>
+
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>Hongery
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="http://yoursite.com/2019/03/16/%E5%AE%8C%E6%95%B4%E5%AF%86%E7%A0%81%E5%AD%A6/%E7%AC%AC2%E7%AB%A0%E5%AF%B9%E7%A7%B0%E5%8A%A0%E5%AF%86/" title="Go变量和常量">http://yoursite.com/2019/03/16/完整密码学/第2章对称加密/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E5%AF%86%E7%A0%81%E5%AD%A6/" rel="tag"># 密码学</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2019/03/16/%E5%AE%8C%E6%95%B4%E5%AF%86%E7%A0%81%E5%AD%A6/%E7%AC%AC1%E7%AB%A0%E5%AF%86%E7%A0%81%E5%AD%A6%E7%9A%84%E5%8F%91%E5%B1%95%E5%8F%8A%E5%9C%A8%E5%8C%BA%E5%9D%97%E9%93%BE%E4%B8%AD%E7%9A%84%E5%BA%94%E7%94%A8/" rel="prev" title="Go变量和常量">
+      <i class="fa fa-chevron-left"></i> Go变量和常量
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2019/03/17/%E5%AE%8C%E6%95%B4%E5%AF%86%E7%A0%81%E5%AD%A6/%E7%AC%AC3%E7%AB%A0%E5%AF%B9%E7%A7%B0%E5%AF%86%E7%A0%81RC4%E7%AE%97%E6%B3%95%EF%BC%88%E5%BA%8F%E5%88%97%E5%AF%86%E7%A0%81%EF%BC%89/" rel="next" title="Go变量和常量">
+      Go变量和常量 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let activeClass = CONFIG.comments.activeClass;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#对称加密"><span class="nav-text">对称加密</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-对称加密的使用过程"><span class="nav-text">1 对称加密的使用过程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-对称加密的特点"><span class="nav-text">2 对称加密的特点</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-对称加密的划分"><span class="nav-text">3 对称加密的划分</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#序列密码"><span class="nav-text">序列密码</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-一次一密密码"><span class="nav-text">1 . 一次一密密码</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-序列密码的结构"><span class="nav-text">2. 序列密码的结构</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#2-1-同步流密码"><span class="nav-text">2.1 同步流密码</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2-2-自同步流密码"><span class="nav-text">2.2 自同步流密码</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2-3-密钥流生成器"><span class="nav-text">2.3 密钥流生成器</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2-4-反馈移位寄存器"><span class="nav-text">2.4 反馈移位寄存器</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#分组密码"><span class="nav-text">分组密码</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-Electronic-Code-Book-ECB-电子密码本模式"><span class="nav-text">1.Electronic Code Book(ECB)电子密码本模式</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-Cipher-Block-Chaining-CBC-密码分组链接模式"><span class="nav-text">2. Cipher Block Chaining(CBC)密码分组链接模式</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-Cipher-Feedback-Mode-CFB-加密反馈模式"><span class="nav-text">3. Cipher Feedback Mode(CFB)加密反馈模式</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-Output-Feedback-Mode-OFB-输出反馈模式"><span class="nav-text">4. Output Feedback Mode(OFB)输出反馈模式</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#5-Counter-mode（CTR）计数器模式"><span class="nav-text">5. Counter mode（CTR）计数器模式</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#6-分组密码模式比较"><span class="nav-text">6. 分组密码模式比较</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Hongery"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">Hongery</p>
+  <div class="site-description" itemprop="description">直到这一刻微笑着说话为止，我至少留下了一公升眼泪</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">71</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/Hongery" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;Hongery" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://blog.csdn.net/weixin_40098405" title="CSDN → https:&#x2F;&#x2F;blog.csdn.net&#x2F;weixin_40098405" rel="noopener" target="_blank"><i class="fa fa-fw fa-crosshairs"></i>CSDN</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:1281185088@qq.com" title="E-Mail1 → mailto:1281185088@qq.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail1</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:hongery@yeah.net" title="E-Mail2 → mailto:hongery@yeah.net" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail2</a>
+      </span>
+  </div>
+  <div class="cc-license motion-element" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">hongery</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+      <span class="post-meta-item-text">站点总字数：</span>
+    <span title="站点总字数">NaNm</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span class="post-meta-item-text">站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">NaN:aN字</span>
+</div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>
+<!-- 页面点击小红心 -->
+<script type="text/javascript" src="/js/clicklove.js"></script>

@@ -54,7 +54,7 @@
 <meta property="og:description" content="公开密钥加密当代密码学的核心是“公开密钥加密”（ Public-key cryptography ）。本节的目的是梳理清楚学习密码学的大思路，以便在后续课程中，遇到椭圆曲线，RSA ，加密通信，数字签名这些术语的时候，起码知道它们的大致归属。">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2020-03-09T11:01:01.000Z">
-<meta property="article:modified_time" content="2020-03-09T11:13:58.172Z">
+<meta property="article:modified_time" content="2020-03-16T12:45:53.812Z">
 <meta property="article:author" content="Hongery">
 <meta property="article:tag" content="密码学">
 <meta name="twitter:card" content="summary">
@@ -235,10 +235,16 @@
                 <i class="fa fa-calendar-o"></i>
               </span>
               <span class="post-meta-item-text">发表于</span>
-              
 
-              <time title="创建时间：2020-03-09 19:01:01 / 修改时间：19:13:58" itemprop="dateCreated datePublished" datetime="2020-03-09T19:01:01+08:00">2020-03-09</time>
+              <time title="创建时间：2020-03-09 19:01:01" itemprop="dateCreated datePublished" datetime="2020-03-09T19:01:01+08:00">2020-03-09</time>
             </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-03-16 20:45:53" itemprop="dateModified" datetime="2020-03-16T20:45:53+08:00">2020-03-16</time>
+              </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="fa fa-folder-o"></i>
@@ -306,7 +312,7 @@
 <td>加密                                                                                                   解密</td>
 </tr>
 </tbody></table>
-<h5 id="数字签名"><a href="#数字签名" class="headerlink" title="数字签名"></a>数字签名</h5><p>发送者A先用哈希函数对原文生成一个摘要（Digest），然后使用私钥对摘要进行加密，生成数字签名（Signature）之后将数字签名与原文一起发送给接收者B；B收到信息后使用A的公钥对数字签名进行签名得到摘要，由此确保信息是A发出的，然后再对收到的原文使用哈希函数产生摘要，并与解密得到的摘要进行对比，如果相同，则说明收到的信息在传输过程中没有被修改过。</p>
+<h5 id="数字签名"><a href="#数字签名" class="headerlink" title="数字签名"></a>数字签名</h5><p>发送者A先用哈希函数对原文生成一个摘要（Digest），然后使用私钥对摘要进行加密，生成数字签名（Signature）之后将数字签名与原文用B的公钥加密形成密文一起发送给接收者B；B收到信息后使用A的公钥对数字签名进行签名得到摘要，由此确保信息是A发出的，然后再对收到的密文使用B的私钥解密得到原文，原文使用哈希函数产生摘要，并与解密得到的摘要进行对比，如果相同，则说明收到的信息在传输过程中没有被修改过。</p>
 <h2 id="主要算法"><a href="#主要算法" class="headerlink" title="主要算法"></a>主要算法</h2><p>最知名的算法有两个，一个是 RSA 算法，一个是 ECC 算法。</p>
 <p>RSA 算法是开山鼻祖。1970 年，一位英国密码学家预见了“无秘密加密”的可能性，公钥加密思想产生了。公钥加密的比对称加密有明显优势，因为通信之前，双方不用传递密码，只需要传递公钥即可，而公钥不是秘密，被截获也不会影响通信安全。之后几年，人们开发了 RSA 算法，第一次真正实现了这个想法。RSA 算法标志着公开密钥加密真正诞生了。RSA 算法的安全性基于整数分解问题，具体来说就是根据大素数相乘的结果，不可能被反向分解的数学原理。</p>
 <p>另外一种加密算法叫做 ECC ，也就是椭圆曲线算法。世界上不可解的数学问题并不是只有整数分解一个，ECC 就是基于另外一个问题：离散对数。一个加密算法的安全性取决于，由公钥去运算私钥的难度。毕竟私钥的位数是有限的，所以即使用暴力搜索的方式，也肯定是能够算出来的。而且各种单向函数虽然无解，但是不代表不能缩小求解范围，所以不同的算法其实安全性还是有差别的。而 ECC 用离散对数原理，同样的 Key 长度，<strong>安全性比 RSA 更高。</strong>比特币就是用 ECC 来生成地址和私钥。这里你可能会有疑问，为何不能把私钥位数尽量弄长一些呢？的确，越长就越安全，但是同时执行效率也低，所以实际使用中还是要保证一种平衡的。</p>
@@ -459,14 +465,14 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">55</span>
+          <span class="site-state-item-count">71</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
           
-        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-count">8</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
