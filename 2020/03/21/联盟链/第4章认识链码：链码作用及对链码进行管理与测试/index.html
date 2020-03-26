@@ -1,0 +1,1007 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.1.1">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/avatar.jpg">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/avatar.jpg">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    hostname: new URL('http://yoursite.com').hostname,
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.6.0',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},
+    copycode: {"enable":true,"show_result":true,"style":"mac"},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":true},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    comments: {"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: 'search.xml',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}
+  };
+</script>
+
+  <meta name="description" content="初识链码：链码概念与原理一、初识链码：链码概念与原理目标 认识 Hyperledger Fabric 中的链码（智能合约） 明确系统链码的种类及作用 熟知链码的生命周期管理  1 链码概念 网络运行环境我们已经启动完成，现在我们从开发者的角度来认识一下完成交易所必须的智能合约（在 Hyperledger Fabric 中被称之为 Chaincode，也就是链上代码）的相关知识，以便于理解账本中的数">
+<meta property="og:type" content="article">
+<meta property="og:title" content="第4章认识链码：链码作用及对链码进行管理与测试">
+<meta property="og:url" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2020&#x2F;03&#x2F;21&#x2F;%E8%81%94%E7%9B%9F%E9%93%BE&#x2F;%E7%AC%AC4%E7%AB%A0%E8%AE%A4%E8%AF%86%E9%93%BE%E7%A0%81%EF%BC%9A%E9%93%BE%E7%A0%81%E4%BD%9C%E7%94%A8%E5%8F%8A%E5%AF%B9%E9%93%BE%E7%A0%81%E8%BF%9B%E8%A1%8C%E7%AE%A1%E7%90%86%E4%B8%8E%E6%B5%8B%E8%AF%95&#x2F;index.html">
+<meta property="og:site_name" content="Hongery">
+<meta property="og:description" content="初识链码：链码概念与原理一、初识链码：链码概念与原理目标 认识 Hyperledger Fabric 中的链码（智能合约） 明确系统链码的种类及作用 熟知链码的生命周期管理  1 链码概念 网络运行环境我们已经启动完成，现在我们从开发者的角度来认识一下完成交易所必须的智能合约（在 Hyperledger Fabric 中被称之为 Chaincode，也就是链上代码）的相关知识，以便于理解账本中的数">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2020-03-21T12:36:33.000Z">
+<meta property="article:modified_time" content="2020-03-26T16:09:10.296Z">
+<meta property="article:author" content="Hongery">
+<meta property="article:tag" content="blockchain">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://yoursite.com/2020/03/21/%E8%81%94%E7%9B%9F%E9%93%BE/%E7%AC%AC4%E7%AB%A0%E8%AE%A4%E8%AF%86%E9%93%BE%E7%A0%81%EF%BC%9A%E9%93%BE%E7%A0%81%E4%BD%9C%E7%94%A8%E5%8F%8A%E5%AF%B9%E9%93%BE%E7%A0%81%E8%BF%9B%E8%A1%8C%E7%AE%A1%E7%90%86%E4%B8%8E%E6%B5%8B%E8%AF%95/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true
+  };
+</script>
+
+  <title>第4章认识链码：链码作用及对链码进行管理与测试 | Hongery</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Hongery</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">记录学习中的点点滴滴</p>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="none"
+           placeholder="搜索..." spellcheck="false"
+           type="text" id="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+  <a href="https://github.com/Hongery" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/03/21/%E8%81%94%E7%9B%9F%E9%93%BE/%E7%AC%AC4%E7%AB%A0%E8%AE%A4%E8%AF%86%E9%93%BE%E7%A0%81%EF%BC%9A%E9%93%BE%E7%A0%81%E4%BD%9C%E7%94%A8%E5%8F%8A%E5%AF%B9%E9%93%BE%E7%A0%81%E8%BF%9B%E8%A1%8C%E7%AE%A1%E7%90%86%E4%B8%8E%E6%B5%8B%E8%AF%95/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="Hongery">
+      <meta itemprop="description" content="直到这一刻微笑着说话为止，我至少留下了一公升眼泪">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hongery">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          第4章认识链码：链码作用及对链码进行管理与测试
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-03-21 20:36:33" itemprop="dateCreated datePublished" datetime="2020-03-21T20:36:33+08:00">2020-03-21</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-03-27 00:09:10" itemprop="dateModified" datetime="2020-03-27T00:09:10+08:00">2020-03-27</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Hyperledger-Fabric/" itemprop="url" rel="index">
+                    <span itemprop="name">Hyperledger Fabric</span>
+                  </a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span><br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-file-word-o"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>16k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-clock-o"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>15 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h3 id="初识链码：链码概念与原理"><a href="#初识链码：链码概念与原理" class="headerlink" title="初识链码：链码概念与原理"></a>初识链码：链码概念与原理</h3><h3 id="一、初识链码：链码概念与原理"><a href="#一、初识链码：链码概念与原理" class="headerlink" title="一、初识链码：链码概念与原理"></a>一、初识链码：链码概念与原理</h3><h4 id="目标"><a href="#目标" class="headerlink" title="目标"></a>目标</h4><ol>
+<li>认识 Hyperledger Fabric 中的链码（智能合约）</li>
+<li>明确系统链码的种类及作用</li>
+<li>熟知链码的生命周期管理</li>
+</ol>
+<h3 id="1-链码概念"><a href="#1-链码概念" class="headerlink" title="1 链码概念"></a>1 链码概念</h3><blockquote>
+<p>网络运行环境我们已经启动完成，现在我们从开发者的角度来认识一下完成交易所必须的智能合约（在 Hyperledger Fabric 中被称之为 Chaincode，也就是链上代码）的相关知识，以便于理解账本中的数据到底是通过什么方式进行操作。</p>
+</blockquote>
+<p>Chaincode：链上代码，简称链码，一般是指由开发人员使用Go语言（也支持Java等语言）编写的应用程序代码，<strong>提供分布式账本的状态处理逻辑</strong>。链码被部署在Fabric的网络节点中，能够独立运行在具有安全特性的受保护的 Docker 容器中，<strong>以 gRPC 协议与相应的 peer 节点进行通信</strong>，以操作（初始化或管理）分布式账本中的数据。可以根据不同的需求开发出不同的复杂的应用。</p>
+<a id="more"></a>
+
+<p><strong>链码分类</strong></p>
+<p>在 Hyperledger Fabric 中，链码一般分为：</p>
+<ul>
+<li><strong>系统链码</strong></li>
+<li><strong>用户链码</strong></li>
+</ul>
+<h3 id="2-Fabric提供了什么－系统链码"><a href="#2-Fabric提供了什么－系统链码" class="headerlink" title="2 Fabric提供了什么－系统链码"></a>2 Fabric提供了什么－系统链码</h3><p>负责 Fabric 节点自身的处理逻辑, 包括系统配置、背书、校验等工作</p>
+<p>系统链码仅支持 Go 语言, 在 Peer 节点启动时会自动完成注册和部署</p>
+<p><strong>系统链码共有五种类型：</strong></p>
+<ol>
+<li><p><strong>配置系统链码(CSCC)</strong></p>
+<p>CSCC：Configuration System Chaincode，负责处理 Peer 端的 Channel 配置。</p>
+</li>
+<li><p><strong>生命周期系统链码(LSCC)</strong></p>
+<p>LSCC：Lifecycle System Chaincode，负责对用户链码的生命周期进行管理。</p>
+</li>
+<li><p><strong>查询系统链码(QSCC)</strong></p>
+<p>QSCC：Query System Chaincode，提供账本查询 API。如获取区块和交易等信息。</p>
+</li>
+<li><p><strong>背书管理系统链码(ESCC)</strong></p>
+<p>ESCC：Endorsement System Chaincode，负责背书(签名)过程, 并可以支持对背书策略进行管理</p>
+<p>对提交的交易提案的模拟运行结果进行签名,，之后创建响应消息返回给客户端</p>
+</li>
+<li><p><strong>验证系统链码(VSCC)</strong></p>
+<p>VSCC：Validation System Chaincode，处理交易的验证，包括检查背书策略以及多版本并发控制</p>
+</li>
+</ol>
+<h3 id="3-什么是用户链码"><a href="#3-什么是用户链码" class="headerlink" title="3 什么是用户链码"></a>3 什么是用户链码</h3><p>由应用程序开发人员根据不同场景需求及成员制定的相关规则，使用 Golang（或Java等）语言编写的基于操作区块链分布式账本的状态的业务处理逻辑代码，<strong>运行在链码容器中</strong>，通过 Fabric 提供的接口与账本状态进行交互。</p>
+<p>用户链码在整个应用程序中处于重要地位。因为它下可对账本数据进行操作，上可以给企业级应用程序提供调用接口。所以一个没有链码的企业级应用程序，不能称之为是基于区块链的企业级应用程序。</p>
+<h3 id="4-链码的生命周期管理"><a href="#4-链码的生命周期管理" class="headerlink" title="4 链码的生命周期管理"></a>4 链码的生命周期管理</h3><p>链码开发编写完成后，并不能立刻使用，而是必须经过一系列的操作之后才能应用在 Hyperledger Fabric 网络中进而处理客户端提交的交易。这一系列的操作是由链码的生命周期来负责管理。</p>
+<p><strong>管理 Chaincode 的生命周期共有五个命令：</strong></p>
+<ul>
+<li><strong>install：</strong>将已编写完成的链码安装在网络节点中。</li>
+<li><strong>instantiate：</strong>对已安装的链码进行实例化。</li>
+<li><strong>upgrade：</strong>对已有链码进行升级。链代码可以在安装后根据具体需求的变化进行升级。</li>
+<li><strong>package：</strong>对指定的链码进行打包的操作。</li>
+<li><strong>singnpackage：</strong>签名。</li>
+</ul>
+<blockquote>
+<p>安装、实例化、升级这三项操作不适用于系统链码</p>
+</blockquote>
+<p>链码的生命周期管理命令现阶段只有这五个，但未来还会支持 <code>stop</code> 和 <code>start</code> 命令, 用来停止和启动链码。</p>
+<p>链代码成功安装和实例化后，则处于活动状态（正在运行），时刻准备执行处理提交的交易提案。</p>
+<p>下一节开始我们会使用这些生命周期管理命令来实现对链码的相关操作。</p>
+<h2 id="FAQ"><a href="#FAQ" class="headerlink" title="FAQ"></a>FAQ</h2><ol>
+<li><p>文中所说的状态与账本数据是什么关系？</p>
+<p>状态其实指的就是账本中的数据。没有其它另外的含义。</p>
+</li>
+<li><p>链码可以访问所有账本中的状态吗？</p>
+<p>一个链码对应一个账本，所以一般情况下链码是不可以访问其它账本中的数据的。</p>
+</li>
+</ol>
+<h3 id="二、链码如何使用：实现对链码的安装、实例化及调用"><a href="#二、链码如何使用：实现对链码的安装、实例化及调用" class="headerlink" title="二、链码如何使用：实现对链码的安装、实例化及调用"></a>二、链码如何使用：实现对链码的安装、实例化及调用</h3><h4 id="目标-1"><a href="#目标-1" class="headerlink" title="目标"></a>目标</h4><ol>
+<li>链码的安装及实例化</li>
+<li>调用链码实现交易处理</li>
+</ol>
+<h4 id="任务实现"><a href="#任务实现" class="headerlink" title="任务实现"></a>任务实现</h4><blockquote>
+<p>我们对链码已经有了一个基础的认识，下面我们利用 fabric-samples 提供的示例链码来进行实践；如何安装、实例化及调用链码处理交易。</p>
+</blockquote>
+<p>首先确认网络是否处于开启状态，利用 docker ps 命令查看容器是否处于活动状态，</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> sudo docker ps</span></span><br></pre></td></tr></table></figure>
+
+<p>如果没有活动的容器，则先使用 docker-compose 命令启动网络然后进入CLI 容器中</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> sudo docker-compose -f docker-compose-cli.yaml up -d</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> sudo docker <span class="built_in">exec</span> -it cli bash</span></span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>如果当前已进入至 CLI 容器中，则上面的命令无需执行。如果之前使用 <strong>exit</strong> 命令退出了 cli 容器，请使用 <strong>sudo docker exec -it cli bash</strong> 命令重新进入 cli 容器。</p>
+</blockquote>
+<p>检查当前节点（默认为peer0.example.com）已加入到哪些通道中：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> peer channel list</span></span><br></pre></td></tr></table></figure>
+
+<p>执行成功后会在终端中输出：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Channels peers has joined: </span><br><span class="line">mychannel</span><br><span class="line">-----</span><br><span class="line">2020-03-23 09:10:25.812 UTC [channelCmd] InitCmdFactory -&gt; INFO 001 Endorser and orderer connections initialized</span><br><span class="line">Channels peers has joined:</span><br></pre></td></tr></table></figure>
+
+<p>根据如下的输出内容，说明当前节点已成功加入到一个名为 mychannel 的应用通道中。Peer加入应用通道后，可以执行链码调用的相关操作，进行测试。如果没有，则先将当前节点加入到已创建的应用通道中。</p>
+<p>检查环境变量是否正确设置</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> <span class="built_in">echo</span> <span class="variable">$CHANNEL_NAME</span></span></span><br></pre></td></tr></table></figure>
+
+<p>设置环境变量，指定应用通道名称为 mychannel ，因为我们创建的应用通道及当前的 peer 节点加入的应用通道名称为 mychannel</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> <span class="built_in">export</span> CHANNEL_NAME=mychannel</span></span><br></pre></td></tr></table></figure>
+
+<p>链码调用处理交易之前必须将其部署到 Peer 节点上，实现步骤如下：</p>
+<ol>
+<li>将其安装在指定的网络节点上</li>
+<li>安装完成后要对其进行实例化</li>
+</ol>
+<p>然后才可以调用链码处理交易(查询或执行事务)</p>
+<h3 id="1-安装链码"><a href="#1-安装链码" class="headerlink" title="1 安装链码"></a>1 安装链码</h3><p>安装链码使用 install 命令：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> peer chaincode install -n mycc -v 1.0 -p github.com/chaincode/chaincode_example02/go/</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>参数说明：</strong></p>
+<ul>
+<li><strong>-n：</strong> 指定要安装的链码的名称</li>
+<li><strong>-v：</strong> 指定链码的版本</li>
+<li><strong>-p：</strong> 指定要安装的链码的所在路径</li>
+</ul>
+<p>命令执行完成看到如下输出说明指定的链码被成功安装至 peer 节点：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[chaincodeCmd] checkChaincodeCmdParams -&gt; INFO 001 Using default escc</span><br><span class="line">[chaincodeCmd] checkChaincodeCmdParams -&gt; INFO 002 Using default vscc</span><br><span class="line">[chaincodeCmd] install -&gt; INFO 003 Installed remotely response:&lt;status:200 payload:"OK" &gt;</span><br></pre></td></tr></table></figure>
+
+<h3 id="2-实例化链码"><a href="#2-实例化链码" class="headerlink" title="2 实例化链码"></a>2 实例化链码</h3><p>实例化链码使用 instantiate 命令：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> peer chaincode instantiate -o orderer.example.com:7050 --tls --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem -C <span class="variable">$CHANNEL_NAME</span> -n mycc -v 1.0 -c <span class="string">'&#123;"Args":["init","a", "100", "b","200"]&#125;'</span> -P <span class="string">"OR ('Org1MSP.peer','Org2MSP.peer')"</span></span></span><br></pre></td></tr></table></figure>
+
+<p><strong>参数说明:</strong></p>
+<ul>
+<li><strong>-o：</strong> 指定Oderer服务节点地址</li>
+<li><strong>–tls：</strong> 开启 TLS 验证</li>
+<li><strong>–cafile：</strong> 指定 TLS_CA 证书的所在路径</li>
+<li><strong>-n：</strong> 指定要实例化的链码名称，必须与安装时指定的链码名称相同</li>
+<li><strong>-v：</strong> 指定要实例化的链码的版本号，必须与安装时指定的链码版本号相同</li>
+<li><strong>-C：</strong> 指定通道名称</li>
+<li><strong>-c：</strong> 实例化链码时指定的参数</li>
+<li><strong>-P：</strong> 指定背书策略</li>
+</ul>
+<p>实例化完成后，用户即可向网络中发起交易。</p>
+<h3 id="3-查询链码"><a href="#3-查询链码" class="headerlink" title="3 查询链码"></a>3 查询链码</h3><p>查询链码使用 query 命令实现：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> peer chaincode query -C <span class="variable">$CHANNEL_NAME</span> -n mycc -c <span class="string">'&#123;"Args":["query","a"]&#125;'</span></span></span><br></pre></td></tr></table></figure>
+
+<p><strong>参数说明：</strong></p>
+<ul>
+<li><strong>-n：</strong> 指定要调用的链码名称</li>
+<li><strong>-C：</strong> 指定通道名称</li>
+<li><strong>-c</strong> 指定调用链码时所需要的参数</li>
+</ul>
+<p>执行成功输出结果：<code>100</code></p>
+<h3 id="4-调用链码"><a href="#4-调用链码" class="headerlink" title="4 调用链码"></a>4 调用链码</h3><h4 id="4-1-调用"><a href="#4-1-调用" class="headerlink" title="4.1 调用"></a>4.1 调用</h4><p>调用链码使用 invoke 命令实现：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> peer chaincode invoke -o orderer.example.com:7050  --tls --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem  -C <span class="variable">$CHANNEL_NAME</span> -n mycc -c <span class="string">'&#123;"Args":["invoke","a","b","10"]&#125;'</span></span></span><br></pre></td></tr></table></figure>
+
+<p><strong>参数说明：</strong></p>
+<ul>
+<li><strong>-o：</strong> 指定orderer节点地址</li>
+<li><strong>–tls：</strong> 开启TLS验证</li>
+<li><strong>–cafile：</strong> 指定TLS_CA证书路径</li>
+<li><strong>-n:</strong> 指定链码名称</li>
+<li><strong>-C：</strong> 指定通道名称</li>
+<li><strong>-c：</strong> 指定调用链码的所需参数</li>
+</ul>
+<p>有如下输出则说明链码被调用成功且交易请求被成功处理：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[chaincodeCmd] chaincodeInvokeOrQuery -&gt; INFO 001 Chaincode invoke successful. result: status:200</span><br></pre></td></tr></table></figure>
+
+<h4 id="4-2-查询a账户的金额"><a href="#4-2-查询a账户的金额" class="headerlink" title="4.2 查询a账户的金额"></a>4.2 查询a账户的金额</h4><p>执行查询a账户的命令，并查看输出结果：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> peer chaincode query -C <span class="variable">$CHANNEL_NAME</span> -n mycc -c <span class="string">'&#123;"Args":["query","a"]&#125;'</span></span></span><br></pre></td></tr></table></figure>
+
+<p>执行成功输出结果: <code>90</code></p>
+<h2 id="FAQ-1"><a href="#FAQ-1" class="headerlink" title="FAQ"></a>FAQ</h2><ol>
+<li><p>链码是安装在一个节点中还是安装在多个节点中？有什么区别？</p>
+<p>在实际生产环境中，必须在应用通道上每一个要运行 chaincode 的背书节点上安装 chaincode。其它未安装 chaincode 的节点不能执行 chaincode。但仍可以验证交易并提交到账本中。</p>
+<p>背书节点需要由联盟的成员共同指定，然后在实例化链码时指定背书策略，但安装一定要在所有预先指定的背书 peer 中安装。</p>
+</li>
+<li><p>链码的执行查询与执行事务方式的流程相同吗？</p>
+<p>不相同，如果执行的查询操作，则客户端接收到背书的交易提案响应后不会再将交易请求提交给 Orderer 服务节点。如果是执行事务操作，则会执行完整的交易流程。</p>
+</li>
+<li><p>背书策略具体指的是什么？</p>
+<p>背书策略是在实例化链码时指定的由当前通道中的哪些节点成员进行背书签名的一种策略。</p>
+</li>
+<li><p>如果在实例化链码时没有指定背书策略会有节点进行背书吗？</p>
+<p>如果在实例化链码时没有明确指定背书策略，那么默认的背书策略是 MSP 标识 DEFAULT 成员的签名</p>
+</li>
+</ol>
+<h3 id="三、链码的其它操作：实现对链码的打包升级"><a href="#三、链码的其它操作：实现对链码的打包升级" class="headerlink" title="三、链码的其它操作：实现对链码的打包升级"></a>三、链码的其它操作：实现对链码的打包升级</h3><h4 id="目标-2"><a href="#目标-2" class="headerlink" title="目标"></a>目标</h4><ol>
+<li>实现如何对链码打包签名</li>
+<li>链码升级的实现</li>
+</ol>
+<h4 id="任务实现-1"><a href="#任务实现-1" class="headerlink" title="任务实现"></a>任务实现</h4><blockquote>
+<p>链码部署除了正常的安装、实例化操作步骤之外，还有一种部署方式，即先将链码进行打包，然后对已打包的文件进行签名，最后再进行安装与实例的操作。</p>
+</blockquote>
+<h3 id="1-链码打包及签名"><a href="#1-链码打包及签名" class="headerlink" title="1 链码打包及签名"></a>1 链码打包及签名</h3><h4 id="1-1打包"><a href="#1-1打包" class="headerlink" title="1.1打包"></a>1.1打包</h4><p>通过将链码相关数据（如链码名称、版本、实例化策略等信息）进行封装，可以实现对其进行打包和签名的操作。</p>
+<p>chaincode 包具体包含以下三个部分：</p>
+<ul>
+<li>chaincode 本身，由 ChaincodeDeploymentSpec（CDS）定义。CDS 根据代码及一些其他属性（名称，版本等）来定义 chaincode。</li>
+<li>一个可选的实例化策略，该策略可被 <strong>背书策略</strong> 描述。</li>
+<li>一组表示 chaincode 所有权的签名。</li>
+</ul>
+<p>对于一个已经编写完成的链码可以使用 <strong>package</strong> 命令进行打包操作：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> peer chaincode package -n exacc -v 1.0 -p github.com/chaincode/chaincode_example02/go/  -s -S -i <span class="string">"AND('Org1MSP.admin')"</span> ccpack.out</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>参数说明：</strong></p>
+<ul>
+<li><strong>-s：</strong> 创建一个可以被多个所有者签名的包。</li>
+<li><strong>-S：</strong> 可选参数，使用 core.yaml 文件中被 localMspId 相关属性值定义的 MSP 对包进行签名。</li>
+<li><strong>-i：</strong> 指定链码的实例化策略（指定谁可以实例化链码）。</li>
+</ul>
+<blockquote>
+<p>打包后的文件，可以直接用于 install 操作，如： <code>peer chaincode install ccpack.out</code>，但我们一般会在将打包的文件进行签名之后再做进一步的处理。</p>
+</blockquote>
+<h4 id="1-2-签名"><a href="#1-2-签名" class="headerlink" title="1.2 签名"></a>1.2 签名</h4><p>对一个打包文件进行签名操作（添加当前 MSP 签名到签名列表中）</p>
+<p>使用 <strong>signpackage</strong> 命令实现：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> peer chaincode signpackage ccpack.out signedccpack.out</span></span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>signedccpack.out 包含一个用本地 MSP 对包进行的附加签名。</p>
+</blockquote>
+<p>添加了签名的链码包可以进行进行一步的处理，如先将链码进行安装，然后对已安装的链码进行实例化或升级的操作。</p>
+<p>安装已添加签名的链码：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> peer chaincode install signedccpack.out</span></span><br></pre></td></tr></table></figure>
+
+<p>命令执行成功输出如下内容：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">2020-03-24 06:52:55.139 UTC [chaincodeCmd] install -&gt; INFO 001 Installed remotely response:&lt;status:200 payload:"OK" &gt;</span><br></pre></td></tr></table></figure>
+
+<p>安装成功之后进行链码的实例化操作，同时指定其背书策略。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> peer chaincode instantiate -o orderer.example.com:7050 --tls --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem -C <span class="variable">$CHANNEL_NAME</span> -n exacc -v 1.0 -c <span class="string">'&#123;"Args":["init","a", "100", "b","200"]&#125;'</span> -P <span class="string">"OR ('Org1MSP.peer','Org2MSP.peer')"</span></span></span><br></pre></td></tr></table></figure>
+
+<p>​    -P:指定背书策略</p>
+<p><strong>测试：</strong></p>
+<ol>
+<li><p><strong>查询链码：</strong></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> peer chaincode query -C <span class="variable">$CHANNEL_NAME</span> -n exacc -c <span class="string">'&#123;"Args":["query","a"]&#125;'</span></span></span><br></pre></td></tr></table></figure>
+
+<p>执行成功输出查询结果： <code>100</code></p>
+</li>
+<li><p><strong>调用链码：</strong></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> peer chaincode invoke -o orderer.example.com:7050  --tls --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem  -C <span class="variable">$CHANNEL_NAME</span> -n exacc -c <span class="string">'&#123;"Args":["invoke","a","b","10"]&#125;'</span></span></span><br></pre></td></tr></table></figure>
+
+<p>执行成功输出如下：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[chaincodeCmd] chaincodeInvokeOrQuery -&gt; INFO 001 Chaincode invoke successful. result: status:200</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><strong>查询链码：</strong></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> peer chaincode query -C <span class="variable">$CHANNEL_NAME</span> -n exacc -c <span class="string">'&#123;"Args":["query","a"]&#125;'</span></span></span><br></pre></td></tr></table></figure>
+
+<p>执行成功输出查询结果： <code>90</code></p>
+</li>
+</ol>
+<h3 id="2-链码的升级"><a href="#2-链码的升级" class="headerlink" title="2 链码的升级"></a>2 链码的升级</h3><p>在实际场景中，由于需求场景的变化，链码也需求实时做出修改，以适应不同的场景需求。所以我们必须能够对于已成功部署并运行状态中的链码进行升级操作。</p>
+<p>首先，先将修改之后的链码进行安装，然后使用 upgrade 命令对已安装的链码进行升级，具体实现如下：</p>
+<p><strong>安装：</strong></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> peer chaincode install -n mycc -v 2.0 -p github.com/chaincode/chaincode_example02/go/</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>升级：</strong></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> peer chaincode upgrade -o orderer.example.com:7050 --tls --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem -C <span class="variable">$CHANNEL_NAME</span> -n mycc -v 2.0 -c <span class="string">'&#123;"Args":["init","a", "100", "b","200"]&#125;'</span> -P <span class="string">"OR ('Org1MSP.peer','Org2MSP.peer')"</span></span></span><br></pre></td></tr></table></figure>
+
+<p>为了验证链码升级是否成功，我们可以使用如下步骤进行测试：</p>
+<p><strong>测试：</strong></p>
+<ol>
+<li><p><strong>查询链码：</strong></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> peer chaincode query -C <span class="variable">$CHANNEL_NAME</span> -n mycc -c <span class="string">'&#123;"Args":["query","a"]&#125;'</span></span></span><br></pre></td></tr></table></figure>
+
+<p>执行成功输出查询结果： <code>100</code></p>
+</li>
+<li><p><strong>调用链码：</strong></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> peer chaincode invoke -o orderer.example.com:7050  --tls --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem  -C <span class="variable">$CHANNEL_NAME</span> -n mycc -c <span class="string">'&#123;"Args":["invoke","a","b","10"]&#125;'</span></span></span><br></pre></td></tr></table></figure>
+
+<p>执行成功输出如下：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[chaincodeCmd] chaincodeInvokeOrQuery -&gt; INFO 001 Chaincode invoke successful. result: status:200</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><strong>查询链码：</strong></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> peer chaincode query -C <span class="variable">$CHANNEL_NAME</span> -n mycc -c <span class="string">'&#123;"Args":["query","a"]&#125;'</span></span></span><br></pre></td></tr></table></figure>
+
+<p>执行成功输出查询结果： <code>90</code></p>
+</li>
+</ol>
+<blockquote>
+<p>注意：升级过程中，chaincode 的 Init 函数会被调用以执行数据相关的操作，或者重新初始化数据；所以需要多加小心，以避免在升级 chaincode 时重设状态信息。</p>
+</blockquote>
+<h4 id="FAQ-2"><a href="#FAQ-2" class="headerlink" title="FAQ"></a>FAQ</h4><ol>
+<li><p>链码升级之后， 之前旧版本的链码还能使用吗？</p>
+<p>升级是一个类似于实例化操作的交易，它会将新版本的链码与通道绑定。<strong>其他与旧版本绑定的通道则仍旧运行旧版本的链码</strong>。换句话说，升级只会一次影响一个提交它的通道。</p>
+</li>
+</ol>
+<h3 id="四、开发模式下的测试：简化我们对链码的测试过程"><a href="#四、开发模式下的测试：简化我们对链码的测试过程" class="headerlink" title="四、开发模式下的测试：简化我们对链码的测试过程"></a>四、开发模式下的测试：简化我们对链码的测试过程</h3><h4 id="目标-3"><a href="#目标-3" class="headerlink" title="目标"></a>目标</h4><ol>
+<li>熟练掌握链码的 dev 开发测试模式</li>
+</ol>
+<h4 id="任务实现-2"><a href="#任务实现-2" class="headerlink" title="任务实现"></a>任务实现</h4><blockquote>
+<p>从之前对链码操作来看，我们需要在相关操作（安装、实例化、升级、调用、查询）命令中加入大量的参数，尤其是开启 TLS 验证之后指定 TLS 证书时的那一长串路径会让人不厌其烦。如果每次都需要输入那么内容，我想大部分人都会崩溃掉的。那么我们现在就来掌握一种能够快速对链码进行测试而不需要输入那些烦琐的内容，从而简化我们对链码的测试。</p>
+</blockquote>
+<p>正常情况下 chaincode 由 peer 启动和维护。然而，在 dev “开发模式”下，链码由用户构建并启动。</p>
+<ul>
+<li><p>如果没有下载安装 Hyperledger Fabric Samples 请先下载安装；</p>
+</li>
+<li><p>如果没有下载 Docker images 请先下载。</p>
+</li>
+</ul>
+<p><strong>在 dev 开发模式下我们可以使用三个终端来实现具体的测试过程</strong></p>
+<h3 id="1-启动网络"><a href="#1-启动网络" class="headerlink" title="1 启动网络"></a>1 启动网络</h3><p><strong>终端1（当前终端）</strong></p>
+<p>为了确保我们的系统中的 Docker 镜像文件是完整的，首先使用 <code>docker images</code> 命令查看 Docker 镜像信息(显示本地 Docker Registry)：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> sudo docker images</span></span><br></pre></td></tr></table></figure>
+
+<p>终端中会看到如下类似输出：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">REPOSITORY                     TAG             IMAGE ID        CREATED        SIZE</span><br><span class="line">hyperledger/fabric-ca          1.2.0           66cc132bd09c    4 weeks ago    252 MB</span><br><span class="line">hyperledger/fabric-ca          latest          66cc132bd09c    4 weeks ago    252 MB</span><br><span class="line">hyperledger/fabric-tools       1.2.0           379602873003    4 weeks ago    1.51 GB</span><br><span class="line">hyperledger/fabric-tools       latest          379602873003    4 weeks ago    1.51 GB</span><br><span class="line">hyperledger/fabric-ccenv       1.2.0           6acf31e2d9a4    4 weeks ago    1.43 GB</span><br><span class="line">hyperledger/fabric-ccenv       latest          6acf31e2d9a4    4 weeks ago    1.43 GB</span><br><span class="line">hyperledger/fabric-orderer     1.2.0           4baf7789a8ec    4 weeks ago    152 MB</span><br><span class="line">hyperledger/fabric-orderer     latest          4baf7789a8ec    4 weeks ago    152 MB</span><br><span class="line">hyperledger/fabric-peer        1.2.0           82c262e65984    4 weeks ago    159 MB</span><br><span class="line">hyperledger/fabric-peer        latest          82c262e65984    4 weeks ago    159 MB</span><br><span class="line">hyperledger/fabric-zookeeper   0.4.10          2b51158f3898    5 weeks ago    1.44 GB</span><br><span class="line">hyperledger/fabric-zookeeper   latest          2b51158f3898    5 weeks ago    1.44 GB</span><br><span class="line">hyperledger/fabric-kafka       0.4.10          936aef6db0e6    5 weeks ago    1.45 GB</span><br><span class="line">hyperledger/fabric-kafka       latest          936aef6db0e6    5 weeks ago    1.45 GB</span><br><span class="line">hyperledger/fabric-couchdb     0.4.10          3092eca241fc    5 weeks ago    1.61 GB</span><br><span class="line">hyperledger/fabric-couchdb     latest          3092eca241fc    5 weeks ago    1.61 GB</span><br><span class="line">hyperledger/fabric-baseos      amd64-0.4.10    52190e831002    6 weeks ago    132 MB</span><br></pre></td></tr></table></figure>
+
+<p>在 dev 模式中所需的必要镜像文件为：</p>
+<ul>
+<li>hyperledger/fabric-tools</li>
+<li>hyperledger/fabric-orderer</li>
+<li>hyperledger/fabric-peer</li>
+<li>hyperledger/fabric-ccenv</li>
+</ul>
+<p>关闭之前已启动的网络环境：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> sudo docker-compose -f docker-compose-cli.yaml down</span></span><br></pre></td></tr></table></figure>
+
+<p>进入 chaincode-docker-devmode 目录</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> <span class="built_in">cd</span> ~/hyfa/fabric-samples/chaincode-docker-devmode/</span></span><br></pre></td></tr></table></figure>
+
+<p>进入 chaincode-docker-devmode 目录下我们会发现与网络、通道、初始区块相关的所有内容。如：</p>
+<ul>
+<li><p><strong>docker-compose-simple.yaml：</strong>网络启动依赖的配置文件</p>
+<p>该配置文件中指定了四个容器，分别为：orderer、peer、cli、chaincode， 各项的配置内容大家可以通过 cat 命令查看，在此不再赘述。</p>
+</li>
+<li><p><strong>msp：</strong>网络环境的 MSP，包含一系列的证书及私钥。</p>
+</li>
+<li><p><strong>myc.block：</strong>代表通道配置块文件。</p>
+</li>
+<li><p><strong>myc.tx：</strong>应用通道交易配置文件。</p>
+</li>
+<li><p><strong>orderer.block：</strong>初始区块配置文件。</p>
+</li>
+</ul>
+<p>下面，我们使用 docker-compose-simple.yaml 配置文件来启动网络：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> sudo docker-compose -f docker-compose-simple.yaml up -d</span></span><br></pre></td></tr></table></figure>
+
+<p>上面的命令以 docker-compose-simple.yaml 启动了网络，并以开发模式启动 peer。另外还启动了两个容器：</p>
+<ul>
+<li>一个 chaincode 容器，用于链码环境</li>
+<li>一个 CLI 容器，用于与链码进行交互。</li>
+</ul>
+<p>命令执行后，终端中输出如下：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Creating orderer</span><br><span class="line">Creating peer</span><br><span class="line">Creating chaincode</span><br><span class="line">Creating cli</span><br></pre></td></tr></table></figure>
+
+<p>创建和连接通道的命令嵌入到 CLI 容器中，因此我们可以立即跳转到链码调用。</p>
+<h3 id="2-构建并启动链码"><a href="#2-构建并启动链码" class="headerlink" title="2 构建并启动链码"></a>2 构建并启动链码</h3><blockquote>
+<p>网络启动成功后，下一步需要开发者自行对已经编写好的链码进行构建及启动。</p>
+</blockquote>
+<p><strong>终端2（开启一个新的终端2）</strong></p>
+<h4 id="2-1-进入chaincode容器"><a href="#2-1-进入chaincode容器" class="headerlink" title="2.1 进入chaincode容器"></a>2.1 进入chaincode容器</h4><p>chaincode 容器的作用是为了以简化的方式建立并启动链码</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> sudo docker <span class="built_in">exec</span> -it chaincode bash</span></span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>命令提示符变为：</p>
+<figure class="highlight elixir"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">root<span class="variable">@858726aed16e</span><span class="symbol">:/opt/gopath/src/chaincode</span><span class="comment">#</span></span><br></pre></td></tr></table></figure>
+
+<p>进入 chaincode 容器之后就可以构建与启动链码。</p>
+</blockquote>
+<h4 id="2-2-编译"><a href="#2-2-编译" class="headerlink" title="2.2 编译"></a>2.2 编译</h4><p>现在我们对 fabric-samples 提供的 chaincode_example02 进行测试，当然，在实际环境中，我们可以将开发的链码添加到 chaincode 子目录中并重新构建及启动链码，然后进行测试。</p>
+<p>进入 <code>chaincode_example02/go/</code> 目录编译 chaincode</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> <span class="built_in">cd</span> chaincode_example02/go/</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> go build</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="2-3-运行chaincode"><a href="#2-3-运行chaincode" class="headerlink" title="2.3 运行chaincode"></a>2.3 运行chaincode</h4><p>使用如下命令启动并运行链码：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> CORE_PEER_ADDRESS=peer:7052 CORE_CHAINCODE_ID_NAME=mycc:0 ./go</span></span><br></pre></td></tr></table></figure>
+
+<p>命令执行后输出如下：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[shim] SetupChaincodeLogging -&gt; INFO 001 Chaincode log level not provided; defaulting to: INFO</span><br><span class="line">[shim] SetupChaincodeLogging -&gt; INFO 002 Chaincode (build level: ) starting up ...</span><br></pre></td></tr></table></figure>
+
+<p><strong>命令含义：</strong></p>
+<ul>
+<li><p><strong>CORE_PEER_ADDRESS：</strong>用于指定peer。</p>
+</li>
+<li><p><strong>CORE_CHAINCODE_ID_NAME</strong>：用于注册到peer的链码。</p>
+<ul>
+<li><strong>mycc：</strong> 指定链码名称</li>
+<li><strong>0：</strong> 指定链码初始版本号</li>
+<li><strong>./go：</strong> 指定链码文件</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p>注意，此阶段，链码与任何通道都没有关联。我们需要在后续步骤中使用“实例化”命令来完成.</p>
+</blockquote>
+<h3 id="3-调用链码"><a href="#3-调用链码" class="headerlink" title="3 调用链码"></a>3 调用链码</h3><p><strong>终端3（开启一个新的终端3）</strong></p>
+<p>首先进入 cli 容器</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> sudo docker <span class="built_in">exec</span> -it cli bash</span></span><br></pre></td></tr></table></figure>
+
+<p>进入 CLI 容器后，执行如下命令安装及实例化 chaincode</p>
+<blockquote>
+<p>即使我们在 dev 模式下，也需要安装链码，使链码能够正常通过生命周期系统链码的检查 。将来可能会删除此步骤。</p>
+</blockquote>
+<p><strong>安装：</strong></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> peer chaincode install -p chaincodedev/chaincode/chaincode_example02/go -n mycc -v 0</span></span><br></pre></td></tr></table></figure>
+
+<p>注意：安装链码时指定的链码名称与版本号必须与在终端2中注册的链码名称及版本号相同。</p>
+<p>安装命令执行后，终端中输出如下：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line">......</span><br><span class="line">-----END CERTIFICATE-----</span><br><span class="line">[msp] setupSigningIdentity -&gt; DEBU 034 Signing identity expires at 2027-11-10 13:41:11 +0000 UTC</span><br><span class="line">[msp] Validate -&gt; DEBU 035 MSP DEFAULT validating identity</span><br><span class="line">[grpc] Printf -&gt; DEBU 036 parsed scheme: ""</span><br><span class="line">[grpc] Printf -&gt; DEBU 037 scheme "" not registered, fallback to default scheme</span><br><span class="line">[grpc] Printf -&gt; DEBU 038 ccResolverWrapper: sending new addresses to cc: [&#123;peer:7051 0  &lt;nil&gt;&#125;]</span><br><span class="line">[grpc] Printf -&gt; DEBU 039 ClientConn switching balancer to "pick_first"</span><br><span class="line">[grpc] Printf -&gt; DEBU 03a pickfirstBalancer: HandleSubConnStateChange: 0xc4204e7c40, CONNECTING</span><br><span class="line">[grpc] Printf -&gt; DEBU 03b pickfirstBalancer: HandleSubConnStateChange: 0xc4204e7c40, READY</span><br><span class="line">[grpc] Printf -&gt; DEBU 03c parsed scheme: ""</span><br><span class="line">[grpc] Printf -&gt; DEBU 03d scheme "" not registered, fallback to default scheme</span><br><span class="line">[grpc] Printf -&gt; DEBU 03e ccResolverWrapper: sending new addresses to cc: [&#123;peer:7051 0  &lt;nil&gt;&#125;]</span><br><span class="line">[grpc] Printf -&gt; DEBU 03f ClientConn switching balancer to "pick_first"</span><br><span class="line">[grpc] Printf -&gt; DEBU 040 pickfirstBalancer: HandleSubConnStateChange: 0xc420072170, CONNECTING</span><br><span class="line">[grpc] Printf -&gt; DEBU 041 pickfirstBalancer: HandleSubConnStateChange: 0xc420072170, READY</span><br><span class="line">[msp] GetDefaultSigningIdentity -&gt; DEBU 042 Obtaining default signing identity</span><br><span class="line">[chaincodeCmd] checkChaincodeCmdParams -&gt; INFO 043 Using default escc</span><br><span class="line">[chaincodeCmd] checkChaincodeCmdParams -&gt; INFO 044 Using default vscc</span><br><span class="line">[chaincodeCmd] getChaincodeSpec -&gt; DEBU 045 java chaincode disabled</span><br><span class="line">[golang-platform] getCodeFromFS -&gt; DEBU 046 getCodeFromFS chaincodedev/chaincode/chaincode_example02/go</span><br><span class="line">[golang-platform] func1 -&gt; DEBU 047 Discarding GOROOT package fmt</span><br><span class="line">[golang-platform] func1 -&gt; DEBU 048 Discarding provided package github.com/hyperledger/fabric/core/chaincode/shim</span><br><span class="line">[golang-platform] func1 -&gt; DEBU 049 Discarding provided package github.com/hyperledger/fabric/protos/peer</span><br><span class="line">[golang-platform] func1 -&gt; DEBU 04a Discarding GOROOT package strconv</span><br><span class="line">[golang-platform] GetDeploymentPayload -&gt; DEBU 04b done</span><br><span class="line">[container] WriteFileToPackage -&gt; DEBU 04c Writing file to tarball: src/chaincodedev/chaincode/chaincode_example02/go/chaincode_example02.go</span><br><span class="line">[msp/identity] Sign -&gt; DEBU 04d Sign: plaintext: 0AC4070A5C08031A0C08C3F492DC0510...21E3DF010000FFFF4C61C899001C0000 </span><br><span class="line">[msp/identity] Sign -&gt; DEBU 04e Sign: digest: 6F0F7CF70A07027506571AAC56B978353CA3C73E311C882AB57263543ECE7B76 </span><br><span class="line">[chaincodeCmd] install -&gt; INFO 04f Installed remotely response:&lt;status:200 payload:"OK" &gt;</span><br></pre></td></tr></table></figure>
+
+<p><strong>实例化：</strong></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> peer chaincode instantiate -n mycc -v 0 -c <span class="string">'&#123;"Args":["init","a", "100", "b","200"]&#125;'</span> -C myc</span></span><br></pre></td></tr></table></figure>
+
+<p>实例化命令执行后，终端中输出如下内容：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">......</span><br><span class="line">[common/configtx] addToMap -&gt; DEBU 091 Adding to config map: [Policy] /Channel/Application/Readers</span><br><span class="line">[common/configtx] addToMap -&gt; DEBU 092 Adding to config map: [Policy] /Channel/Application/Writers</span><br><span class="line">[common/configtx] addToMap -&gt; DEBU 093 Adding to config map: [Policy] /Channel/Application/Admins</span><br><span class="line">[common/configtx] addToMap -&gt; DEBU 094 Adding to config map: [Value]  /Channel/BlockDataHashingStructure</span><br><span class="line">[common/configtx] addToMap -&gt; DEBU 095 Adding to config map: [Value]  /Channel/OrdererAddresses</span><br><span class="line">[common/configtx] addToMap -&gt; DEBU 096 Adding to config map: [Value]  /Channel/HashingAlgorithm</span><br><span class="line">[common/configtx] addToMap -&gt; DEBU 097 Adding to config map: [Value]  /Channel/Consortium</span><br><span class="line">[common/configtx] addToMap -&gt; DEBU 098 Adding to config map: [Policy] /Channel/Writers</span><br><span class="line">[common/configtx] addToMap -&gt; DEBU 099 Adding to config map: [Policy] /Channel/Admins</span><br><span class="line">[common/configtx] addToMap -&gt; DEBU 09a Adding to config map: [Policy] /Channel/Readers</span><br><span class="line">[chaincodeCmd] InitCmdFactory -&gt; INFO 09b Retrieved channel (myc) orderer endpoint: orderer:7050</span><br><span class="line">[grpc] Printf -&gt; DEBU 09c parsed scheme: ""</span><br><span class="line">[grpc] Printf -&gt; DEBU 09d scheme "" not registered, fallback to default scheme</span><br><span class="line">[grpc] Printf -&gt; DEBU 09e ccResolverWrapper: sending new addresses to cc: [&#123;orderer:7050 0  &lt;nil&gt;&#125;]</span><br><span class="line">[grpc] Printf -&gt; DEBU 09f ClientConn switching balancer to "pick_first"</span><br><span class="line">[grpc] Printf -&gt; DEBU 0a0 pickfirstBalancer: HandleSubConnStateChange: 0xc42043d790, CONNECTING</span><br><span class="line">[grpc] Printf -&gt; DEBU 0a1 pickfirstBalancer: HandleSubConnStateChange: 0xc42043d790, READY</span><br><span class="line">[chaincodeCmd] checkChaincodeCmdParams -&gt; INFO 0a2 Using default escc</span><br><span class="line">[chaincodeCmd] checkChaincodeCmdParams -&gt; INFO 0a3 Using default vscc</span><br><span class="line">[chaincodeCmd] getChaincodeSpec -&gt; DEBU 0a4 java chaincode disabled</span><br><span class="line">[msp/identity] Sign -&gt; DEBU 0a5 Sign: plaintext: 0AC9070A6108031A0C08F2F592DC0510...30300A000A04657363630A0476736363 </span><br><span class="line">[msp/identity] Sign -&gt; DEBU 0a6 Sign: digest: B7822DC27649C2CE85206E13DC69861CDB6C4786D6D3E299032BE2A187C0A362 </span><br><span class="line">[msp/identity] Sign -&gt; DEBU 0a7 Sign: plaintext: 0AC9070A6108031A0C08F2F592DC0510...025C39086D09D5D731F33C16A2E53492 </span><br><span class="line">[msp/identity] Sign -&gt; DEBU 0a8 Sign: digest: 27E503A393AD2B63F56A02FD29E4495999D913F037FEE4BCD894C16447EDAB35</span><br></pre></td></tr></table></figure>
+
+<p><strong>测试：</strong></p>
+<ol>
+<li><p><strong>查询：</strong></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> peer chaincode query -n mycc  -c <span class="string">'&#123;"Args":["query","a"]&#125;'</span> -C myc</span></span><br></pre></td></tr></table></figure>
+
+<p>执行成功输出查询结果： <code>100</code></p>
+</li>
+<li><p><strong>调用：</strong></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> peer chaincode invoke -n mycc -c <span class="string">'&#123;"Args":["invoke","a","b","10"]&#125;'</span> -C myc</span></span><br></pre></td></tr></table></figure>
+
+<p>执行成功输出如下：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[chaincodeCmd] chaincodeInvokeOrQuery -&gt; INFO 0a8 Chaincode invoke successful. result: status:200</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><strong>查询：</strong></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> peer chaincode query -n mycc  -c <span class="string">'&#123;"Args":["query","a"]&#125;'</span> -C myc</span></span><br></pre></td></tr></table></figure>
+
+<p>执行成功输出查询结果： <code>90</code></p>
+</li>
+</ol>
+<h2 id="FAQ-3"><a href="#FAQ-3" class="headerlink" title="FAQ"></a>FAQ</h2><ol>
+<li><p>net 模式与 dev 模式到底有什么区别？</p>
+<p>使用 net 模式每次修改链码后想要测试，需要对链码进行升级重新实例化（或重新安装再实例化），指定一大堆参数，给开发调试带来了很大的不便。而 dev 模式就简化了这些过程。</p>
+</li>
+<li><p>CORE_PEER_ADDRESS=peer:7052 中的 7052 端口到底指的是什么？为什么不是 7051 ？</p>
+<p>peer:7052 是用于指定链码的专用监听地址及端口号。而7051是peer节点监听的网络端口</p>
+</li>
+</ol>
+<p>本文地址: <a href="https://www.chaindesk.cn/witbook/11/119" target="_blank" rel="noopener">https://www.chaindesk.cn/witbook/11/119</a></p>
+
+    </div>
+
+    
+    
+    
+    <div>
+      
+        <div>
+    
+        <div style="text-align:center;color: #ccc;font-size:14px;">-------------本文结束<i class="fa fa-paw"></i>感谢您的阅读-------------</div>
+    
+</div>
+
+      
+    </div>
+        <div class="reward-container">
+  <div>坚持原创技术分享，您的支持将鼓励我继续创作！</div>
+  <button disable="enable" onclick="var qr = document.getElementById(&quot;qr&quot;); qr.style.display = (qr.style.display === 'none') ? 'block' : 'none';">
+    打赏
+  </button>
+  <div id="qr" style="display: none;">
+      
+      <div style="display: inline-block;">
+        <img src="/images/wechatpay.jpg" alt="Hongery 微信支付">
+        <p>微信支付</p>
+      </div>
+      
+      <div style="display: inline-block;">
+        <img src="/images/alipay.jpg" alt="Hongery 支付宝">
+        <p>支付宝</p>
+      </div>
+
+  </div>
+</div>
+
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>Hongery
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="http://yoursite.com/2020/03/21/%E8%81%94%E7%9B%9F%E9%93%BE/%E7%AC%AC4%E7%AB%A0%E8%AE%A4%E8%AF%86%E9%93%BE%E7%A0%81%EF%BC%9A%E9%93%BE%E7%A0%81%E4%BD%9C%E7%94%A8%E5%8F%8A%E5%AF%B9%E9%93%BE%E7%A0%81%E8%BF%9B%E8%A1%8C%E7%AE%A1%E7%90%86%E4%B8%8E%E6%B5%8B%E8%AF%95/" title="第4章认识链码：链码作用及对链码进行管理与测试">http://yoursite.com/2020/03/21/联盟链/第4章认识链码：链码作用及对链码进行管理与测试/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/blockchain/" rel="tag"># blockchain</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/03/21/%E8%81%94%E7%9B%9F%E9%93%BE/%E7%AC%AC2%E7%AB%A0Fabric%E6%9E%B6%E6%9E%84%E8%AE%BE%E8%AE%A1/" rel="prev" title="第2章fabric架构设计">
+      <i class="fa fa-chevron-left"></i> 第2章fabric架构设计
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2020/03/22/%E8%81%94%E7%9B%9F%E9%93%BE/Untitled/" rel="next" title="联盟链/Untitled">
+      联盟链/Untitled <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let activeClass = CONFIG.comments.activeClass;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#初识链码：链码概念与原理"><span class="nav-text">初识链码：链码概念与原理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#一、初识链码：链码概念与原理"><span class="nav-text">一、初识链码：链码概念与原理</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#目标"><span class="nav-text">目标</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-链码概念"><span class="nav-text">1 链码概念</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-Fabric提供了什么－系统链码"><span class="nav-text">2 Fabric提供了什么－系统链码</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-什么是用户链码"><span class="nav-text">3 什么是用户链码</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-链码的生命周期管理"><span class="nav-text">4 链码的生命周期管理</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#FAQ"><span class="nav-text">FAQ</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#二、链码如何使用：实现对链码的安装、实例化及调用"><span class="nav-text">二、链码如何使用：实现对链码的安装、实例化及调用</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#目标-1"><span class="nav-text">目标</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#任务实现"><span class="nav-text">任务实现</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-安装链码"><span class="nav-text">1 安装链码</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-实例化链码"><span class="nav-text">2 实例化链码</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-查询链码"><span class="nav-text">3 查询链码</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-调用链码"><span class="nav-text">4 调用链码</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#4-1-调用"><span class="nav-text">4.1 调用</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-2-查询a账户的金额"><span class="nav-text">4.2 查询a账户的金额</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#FAQ-1"><span class="nav-text">FAQ</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#三、链码的其它操作：实现对链码的打包升级"><span class="nav-text">三、链码的其它操作：实现对链码的打包升级</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#目标-2"><span class="nav-text">目标</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#任务实现-1"><span class="nav-text">任务实现</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-链码打包及签名"><span class="nav-text">1 链码打包及签名</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-1打包"><span class="nav-text">1.1打包</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-2-签名"><span class="nav-text">1.2 签名</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-链码的升级"><span class="nav-text">2 链码的升级</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#FAQ-2"><span class="nav-text">FAQ</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#四、开发模式下的测试：简化我们对链码的测试过程"><span class="nav-text">四、开发模式下的测试：简化我们对链码的测试过程</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#目标-3"><span class="nav-text">目标</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#任务实现-2"><span class="nav-text">任务实现</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-启动网络"><span class="nav-text">1 启动网络</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-构建并启动链码"><span class="nav-text">2 构建并启动链码</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#2-1-进入chaincode容器"><span class="nav-text">2.1 进入chaincode容器</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-2-编译"><span class="nav-text">2.2 编译</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-3-运行chaincode"><span class="nav-text">2.3 运行chaincode</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-调用链码"><span class="nav-text">3 调用链码</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#FAQ-3"><span class="nav-text">FAQ</span></a></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Hongery"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">Hongery</p>
+  <div class="site-description" itemprop="description">直到这一刻微笑着说话为止，我至少留下了一公升眼泪</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">74</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/Hongery" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;Hongery" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://blog.csdn.net/weixin_40098405" title="CSDN → https:&#x2F;&#x2F;blog.csdn.net&#x2F;weixin_40098405" rel="noopener" target="_blank"><i class="fa fa-fw fa-crosshairs"></i>CSDN</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:1281185088@qq.com" title="E-Mail1 → mailto:1281185088@qq.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail1</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:hongery@yeah.net" title="E-Mail2 → mailto:hongery@yeah.net" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail2</a>
+      </span>
+  </div>
+  <div class="cc-license motion-element" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">hongery</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+      <span class="post-meta-item-text">站点总字数：</span>
+    <span title="站点总字数">NaNm</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span class="post-meta-item-text">站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">NaN:aN字</span>
+</div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>
+<!-- 页面点击小红心 -->
+<script type="text/javascript" src="/js/clicklove.js"></script>

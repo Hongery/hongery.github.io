@@ -210,6 +210,805 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/03/26/%E8%81%94%E7%9B%9F%E9%93%BE/%E7%AC%AC7%E7%AB%A0Fabric%E5%85%B1%E8%AF%86%E6%9C%BA%E5%88%B6/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="Hongery">
+      <meta itemprop="description" content="直到这一刻微笑着说话为止，我至少留下了一公升眼泪">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hongery">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/03/26/%E8%81%94%E7%9B%9F%E9%93%BE/%E7%AC%AC7%E7%AB%A0Fabric%E5%85%B1%E8%AF%86%E6%9C%BA%E5%88%B6/" class="post-title-link" itemprop="url">第7章Fabric共识机制</a>
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-03-26 20:36:33" itemprop="dateCreated datePublished" datetime="2020-03-26T20:36:33+08:00">2020-03-26</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-03-27 00:18:15" itemprop="dateModified" datetime="2020-03-27T00:18:15+08:00">2020-03-27</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Hyperledger-Fabric/" itemprop="url" rel="index">
+                    <span itemprop="name">Hyperledger Fabric</span>
+                  </a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-file-word-o"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>28k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-clock-o"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>26 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h3 id="一、Fabric中的共识实现"><a href="#一、Fabric中的共识实现" class="headerlink" title="一、Fabric中的共识实现"></a>一、Fabric中的共识实现</h3><h2 id="目标"><a href="#目标" class="headerlink" title="目标"></a>目标</h2><ol>
+<li><p>共识算法的实现目的</p>
+</li>
+<li><p>共识算法的分类</p>
+</li>
+<li><p>Hyperledger Fabric所使用的共识算法</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2020/03/26/%E8%81%94%E7%9B%9F%E9%93%BE/%E7%AC%AC7%E7%AB%A0Fabric%E5%85%B1%E8%AF%86%E6%9C%BA%E5%88%B6/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+    <div>
+      
+    </div>
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+        
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/03/25/%E8%81%94%E7%9B%9F%E9%93%BE/%E7%AC%AC6%E7%AB%A0MSP%E6%88%90%E5%91%98%E7%AE%A1%E7%90%86%E5%92%8CCA%E6%9C%8D%E5%8A%A1%E5%AE%9E%E7%8E%B0/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="Hongery">
+      <meta itemprop="description" content="直到这一刻微笑着说话为止，我至少留下了一公升眼泪">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hongery">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/03/25/%E8%81%94%E7%9B%9F%E9%93%BE/%E7%AC%AC6%E7%AB%A0MSP%E6%88%90%E5%91%98%E7%AE%A1%E7%90%86%E5%92%8CCA%E6%9C%8D%E5%8A%A1%E5%AE%9E%E7%8E%B0/" class="post-title-link" itemprop="url">第6章MSP成员管理和CA服务实现</a>
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-03-25 20:36:33" itemprop="dateCreated datePublished" datetime="2020-03-25T20:36:33+08:00">2020-03-25</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-03-27 00:08:41" itemprop="dateModified" datetime="2020-03-27T00:08:41+08:00">2020-03-27</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Hyperledger-Fabric/" itemprop="url" rel="index">
+                    <span itemprop="name">Hyperledger Fabric</span>
+                  </a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-file-word-o"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>21k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-clock-o"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>19 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h3 id="走进MSP"><a href="#走进MSP" class="headerlink" title="走进MSP"></a>走进MSP</h3><h2 id="一、走进MSP"><a href="#一、走进MSP" class="headerlink" title="一、走进MSP"></a>一、走进MSP</h2><h4 id="目标"><a href="#目标" class="headerlink" title="目标"></a>目标</h4><ol>
+<li>MSP 概念及作用</li>
+<li>MSP 的组成结构</li>
+<li>MSP 在 Hyperledger Fabric 中的应用</li>
+</ol>
+<h4 id="任务实现"><a href="#任务实现" class="headerlink" title="任务实现"></a>任务实现</h4><blockquote>
+<p>数据隐私及安全是区块链技术中的的重要组成部分，联盟链中由多个不同的组织组成，且每一个组织又可以由多个节点组成，那么在 Hyperledger Fabric 中使用了什么且如何确保数据隐私及安全，在这一章中我们来认识一下相关的重要内容。</p>
+</blockquote>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2020/03/25/%E8%81%94%E7%9B%9F%E9%93%BE/%E7%AC%AC6%E7%AB%A0MSP%E6%88%90%E5%91%98%E7%AE%A1%E7%90%86%E5%92%8CCA%E6%9C%8D%E5%8A%A1%E5%AE%9E%E7%8E%B0/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+    <div>
+      
+    </div>
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+        
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/03/24/%E8%81%94%E7%9B%9F%E9%93%BE/%E7%AC%AC5%E7%AB%A0%E9%93%BE%E7%A0%81%E7%9A%84%E5%BC%80%E5%8F%91%E4%B8%8E%E5%AE%9E%E6%88%98/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="Hongery">
+      <meta itemprop="description" content="直到这一刻微笑着说话为止，我至少留下了一公升眼泪">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hongery">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/03/24/%E8%81%94%E7%9B%9F%E9%93%BE/%E7%AC%AC5%E7%AB%A0%E9%93%BE%E7%A0%81%E7%9A%84%E5%BC%80%E5%8F%91%E4%B8%8E%E5%AE%9E%E6%88%98/" class="post-title-link" itemprop="url">第5章链码的开发与实战</a>
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-03-24 20:36:33" itemprop="dateCreated datePublished" datetime="2020-03-24T20:36:33+08:00">2020-03-24</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-03-27 00:08:56" itemprop="dateModified" datetime="2020-03-27T00:08:56+08:00">2020-03-27</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Hyperledger-Fabric/" itemprop="url" rel="index">
+                    <span itemprop="name">Hyperledger Fabric</span>
+                  </a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-file-word-o"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>21k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-clock-o"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>19 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h2 id="一、如何利用Fabric提供的接口编写链码"><a href="#一、如何利用Fabric提供的接口编写链码" class="headerlink" title="一、如何利用Fabric提供的接口编写链码"></a>一、如何利用Fabric提供的接口编写链码</h2><h4 id="目标"><a href="#目标" class="headerlink" title="目标"></a>目标</h4><ol>
+<li>牢记编写链码所需要的两个重要包</li>
+<li>开发链码所必须实现的接口及方法</li>
+<li>开发链码文件的基本结构</li>
+</ol>
+<h4 id="任务实现"><a href="#任务实现" class="headerlink" title="任务实现"></a>任务实现</h4><p>开发链码，离不开 Hyperledger Fabric 提供的 SDK ，为了方便诸多不同的应用场景且使用不同语言的开发人员，Hyperledger Fabric 提供了许多不同的 SDK 来支持各种编程语言。如：</p>
+<ul>
+<li>Hyperledger Fabric Node SDK：<a href="https://github.com/hyperledger/fabric-sdk-node" target="_blank" rel="noopener">https://github.com/hyperledger/fabric-sdk-node</a></li>
+<li>Hyperledger Fabric Java SDK：<a href="https://github.com/hyperledger/fabric-sdk-java" target="_blank" rel="noopener">https://github.com/hyperledger/fabric-sdk-java</a></li>
+<li>Hyperledger Fabric Python SDK：<a href="https://github.com/hyperledger/fabric-sdk-py" target="_blank" rel="noopener">https://github.com/hyperledger/fabric-sdk-py</a></li>
+<li>Hyperledger Fabric Go SDK：<a href="https://github.com/hyperledger/fabric-sdk-go" target="_blank" rel="noopener">https://github.com/hyperledger/fabric-sdk-go</a></li>
+</ul>
+<p>在本课程中我们将使用 Golang 进行链码的开发，所以我们应该确定在本系统中有 Hyperledger Fabric 提供的相关API，其它语言的 SDK 我们不在本课程中进行讨论。</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2020/03/24/%E8%81%94%E7%9B%9F%E9%93%BE/%E7%AC%AC5%E7%AB%A0%E9%93%BE%E7%A0%81%E7%9A%84%E5%BC%80%E5%8F%91%E4%B8%8E%E5%AE%9E%E6%88%98/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+    <div>
+      
+    </div>
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+        
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/03/22/%E8%81%94%E7%9B%9F%E9%93%BE/Untitled/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="Hongery">
+      <meta itemprop="description" content="直到这一刻微笑着说话为止，我至少留下了一公升眼泪">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hongery">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/03/22/%E8%81%94%E7%9B%9F%E9%93%BE/Untitled/" class="post-title-link" itemprop="url">联盟链/Untitled</a>
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-03-22 16:00:50" itemprop="dateCreated datePublished" datetime="2020-03-22T16:00:50+08:00">2020-03-22</time>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-file-word-o"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>0</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-clock-o"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>1 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          
+      
+    </div>
+
+    
+    
+    
+    <div>
+      
+    </div>
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+        
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/03/21/%E8%81%94%E7%9B%9F%E9%93%BE/%E7%AC%AC4%E7%AB%A0%E8%AE%A4%E8%AF%86%E9%93%BE%E7%A0%81%EF%BC%9A%E9%93%BE%E7%A0%81%E4%BD%9C%E7%94%A8%E5%8F%8A%E5%AF%B9%E9%93%BE%E7%A0%81%E8%BF%9B%E8%A1%8C%E7%AE%A1%E7%90%86%E4%B8%8E%E6%B5%8B%E8%AF%95/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="Hongery">
+      <meta itemprop="description" content="直到这一刻微笑着说话为止，我至少留下了一公升眼泪">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hongery">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/03/21/%E8%81%94%E7%9B%9F%E9%93%BE/%E7%AC%AC4%E7%AB%A0%E8%AE%A4%E8%AF%86%E9%93%BE%E7%A0%81%EF%BC%9A%E9%93%BE%E7%A0%81%E4%BD%9C%E7%94%A8%E5%8F%8A%E5%AF%B9%E9%93%BE%E7%A0%81%E8%BF%9B%E8%A1%8C%E7%AE%A1%E7%90%86%E4%B8%8E%E6%B5%8B%E8%AF%95/" class="post-title-link" itemprop="url">第4章认识链码：链码作用及对链码进行管理与测试</a>
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-03-21 20:36:33" itemprop="dateCreated datePublished" datetime="2020-03-21T20:36:33+08:00">2020-03-21</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-03-27 00:09:10" itemprop="dateModified" datetime="2020-03-27T00:09:10+08:00">2020-03-27</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Hyperledger-Fabric/" itemprop="url" rel="index">
+                    <span itemprop="name">Hyperledger Fabric</span>
+                  </a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-file-word-o"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>16k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-clock-o"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>15 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h3 id="初识链码：链码概念与原理"><a href="#初识链码：链码概念与原理" class="headerlink" title="初识链码：链码概念与原理"></a>初识链码：链码概念与原理</h3><h3 id="一、初识链码：链码概念与原理"><a href="#一、初识链码：链码概念与原理" class="headerlink" title="一、初识链码：链码概念与原理"></a>一、初识链码：链码概念与原理</h3><h4 id="目标"><a href="#目标" class="headerlink" title="目标"></a>目标</h4><ol>
+<li>认识 Hyperledger Fabric 中的链码（智能合约）</li>
+<li>明确系统链码的种类及作用</li>
+<li>熟知链码的生命周期管理</li>
+</ol>
+<h3 id="1-链码概念"><a href="#1-链码概念" class="headerlink" title="1 链码概念"></a>1 链码概念</h3><blockquote>
+<p>网络运行环境我们已经启动完成，现在我们从开发者的角度来认识一下完成交易所必须的智能合约（在 Hyperledger Fabric 中被称之为 Chaincode，也就是链上代码）的相关知识，以便于理解账本中的数据到底是通过什么方式进行操作。</p>
+</blockquote>
+<p>Chaincode：链上代码，简称链码，一般是指由开发人员使用Go语言（也支持Java等语言）编写的应用程序代码，<strong>提供分布式账本的状态处理逻辑</strong>。链码被部署在Fabric的网络节点中，能够独立运行在具有安全特性的受保护的 Docker 容器中，<strong>以 gRPC 协议与相应的 peer 节点进行通信</strong>，以操作（初始化或管理）分布式账本中的数据。可以根据不同的需求开发出不同的复杂的应用。</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2020/03/21/%E8%81%94%E7%9B%9F%E9%93%BE/%E7%AC%AC4%E7%AB%A0%E8%AE%A4%E8%AF%86%E9%93%BE%E7%A0%81%EF%BC%9A%E9%93%BE%E7%A0%81%E4%BD%9C%E7%94%A8%E5%8F%8A%E5%AF%B9%E9%93%BE%E7%A0%81%E8%BF%9B%E8%A1%8C%E7%AE%A1%E7%90%86%E4%B8%8E%E6%B5%8B%E8%AF%95/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+    <div>
+      
+    </div>
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+        
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/03/21/%E8%81%94%E7%9B%9F%E9%93%BE/%E7%AC%AC2%E7%AB%A0Fabric%E6%9E%B6%E6%9E%84%E8%AE%BE%E8%AE%A1/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="Hongery">
+      <meta itemprop="description" content="直到这一刻微笑着说话为止，我至少留下了一公升眼泪">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hongery">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/03/21/%E8%81%94%E7%9B%9F%E9%93%BE/%E7%AC%AC2%E7%AB%A0Fabric%E6%9E%B6%E6%9E%84%E8%AE%BE%E8%AE%A1/" class="post-title-link" itemprop="url">第2章fabric架构设计</a>
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-03-21 20:19:33" itemprop="dateCreated datePublished" datetime="2020-03-21T20:19:33+08:00">2020-03-21</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-03-23 15:02:30" itemprop="dateModified" datetime="2020-03-23T15:02:30+08:00">2020-03-23</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Hyperledger-Fabric/" itemprop="url" rel="index">
+                    <span itemprop="name">Hyperledger Fabric</span>
+                  </a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-file-word-o"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>14k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-clock-o"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>12 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h2 id="扒开Fabric架构：抽象的逻辑架构与实际的运行时架构"><a href="#扒开Fabric架构：抽象的逻辑架构与实际的运行时架构" class="headerlink" title="扒开Fabric架构：抽象的逻辑架构与实际的运行时架构"></a>扒开Fabric架构：抽象的逻辑架构与实际的运行时架构</h2><h2 id="一、扒开Fabric架构：抽象的逻辑架构与实际的运行时架构"><a href="#一、扒开Fabric架构：抽象的逻辑架构与实际的运行时架构" class="headerlink" title="一、扒开Fabric架构：抽象的逻辑架构与实际的运行时架构"></a>一、扒开Fabric架构：抽象的逻辑架构与实际的运行时架构</h2><h4 id="目标"><a href="#目标" class="headerlink" title="目标"></a>目标</h4><ol>
+<li>理解Hyperledger Fabric超级账本的逻辑架构。</li>
+<li>理解Hyperledger Fabric超级账本的实际运行时架构。</li>
+</ol>
+<h3 id="1-比较抽象的逻辑架构"><a href="#1-比较抽象的逻辑架构" class="headerlink" title="1 比较抽象的逻辑架构"></a>1 比较抽象的逻辑架构</h3><p>Fabric从1.X开始，在扩展性及安全性上面有了大大的提升，且新增了诸多的新特性：</p>
+<ul>
+<li><p>多通道：支持多通道，提高隔离安全性。</p>
+</li>
+<li><p>可拔插的组件：支持共识组件、权限管理组件等可拔插功能。</p>
+</li>
+<li><p>账本数据可被存储为多种格式。</p>
+</li>
+<li><p>分化了Peer节点的多种角色，可以根据具体情况实现灵活部署</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2020/03/21/%E8%81%94%E7%9B%9F%E9%93%BE/%E7%AC%AC2%E7%AB%A0Fabric%E6%9E%B6%E6%9E%84%E8%AE%BE%E8%AE%A1/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+    <div>
+      
+    </div>
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+        
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/03/21/%E8%81%94%E7%9B%9F%E9%93%BE/%E7%AC%AC3%E7%AB%A0Fabric%E7%BD%91%E7%BB%9C%E7%9A%84%E6%90%AD%E5%BB%BA/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="Hongery">
+      <meta itemprop="description" content="直到这一刻微笑着说话为止，我至少留下了一公升眼泪">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hongery">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/03/21/%E8%81%94%E7%9B%9F%E9%93%BE/%E7%AC%AC3%E7%AB%A0Fabric%E7%BD%91%E7%BB%9C%E7%9A%84%E6%90%AD%E5%BB%BA/" class="post-title-link" itemprop="url">第3章fabric网络搭建</a>
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-03-21 20:19:33" itemprop="dateCreated datePublished" datetime="2020-03-21T20:19:33+08:00">2020-03-21</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-03-27 00:09:26" itemprop="dateModified" datetime="2020-03-27T00:09:26+08:00">2020-03-27</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Hyperledger-Fabric/" itemprop="url" rel="index">
+                    <span itemprop="name">Hyperledger Fabric</span>
+                  </a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-file-word-o"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>34k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-clock-o"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>31 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h3 id="生成组织结构与身份证书"><a href="#生成组织结构与身份证书" class="headerlink" title="生成组织结构与身份证书"></a>生成组织结构与身份证书</h3><h3 id="一、生成组织结构与身份证书"><a href="#一、生成组织结构与身份证书" class="headerlink" title="一、生成组织结构与身份证书"></a>一、生成组织结构与身份证书</h3><h4 id="目标"><a href="#目标" class="headerlink" title="目标"></a>目标</h4><ol>
+<li>明确生成组织结构及身份证书所需的配置文件及其内容含义</li>
+<li>如何使用命令生成对应的组织结构信身份证书</li>
+</ol>
+<h4 id="任务实现"><a href="#任务实现" class="headerlink" title="任务实现"></a>任务实现</h4><blockquote>
+<p>自动化脚本 byfn.sh 可以自动帮我们创建网络环境运行时所需的所有内容，但在一些特定情况之下，我们根据不同的需求需要自定义一些设置。</p>
+<p>现在，我们来实现最重要的环节，哪些配置文件的相关设置会影响创建 Hyperledger Fabric 网络环境运行时所需要的相应内容。</p>
+</blockquote>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2020/03/21/%E8%81%94%E7%9B%9F%E9%93%BE/%E7%AC%AC3%E7%AB%A0Fabric%E7%BD%91%E7%BB%9C%E7%9A%84%E6%90%AD%E5%BB%BA/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+    <div>
+      
+    </div>
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+        
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/03/21/Untitled/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="Hongery">
+      <meta itemprop="description" content="直到这一刻微笑着说话为止，我至少留下了一公升眼泪">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hongery">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/03/21/Untitled/" class="post-title-link" itemprop="url">Untitled</a>
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-03-21 12:59:25" itemprop="dateCreated datePublished" datetime="2020-03-21T12:59:25+08:00">2020-03-21</time>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-file-word-o"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>0</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-clock-o"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>1 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          
+      
+    </div>
+
+    
+    
+    
+    <div>
+      
+    </div>
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+        
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/03/21/%E5%AE%8C%E6%95%B4%E5%AF%86%E7%A0%81%E5%AD%A6/Untitled/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -354,1065 +1153,6 @@
   
   
 
-        
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/03/16/%E5%AE%8C%E6%95%B4%E5%AF%86%E7%A0%81%E5%AD%A6/%E7%AC%AC5%E7%AB%A0%E5%AF%B9%E7%A7%B0%E5%AF%86%E7%A0%81DES%EF%BC%88%E5%88%86%E7%BB%84%E5%AF%86%E7%A0%81%EF%BC%89%E7%AE%97%E6%B3%95/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpg">
-      <meta itemprop="name" content="Hongery">
-      <meta itemprop="description" content="直到这一刻微笑着说话为止，我至少留下了一公升眼泪">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Hongery">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/03/16/%E5%AE%8C%E6%95%B4%E5%AF%86%E7%A0%81%E5%AD%A6/%E7%AC%AC5%E7%AB%A0%E5%AF%B9%E7%A7%B0%E5%AF%86%E7%A0%81DES%EF%BC%88%E5%88%86%E7%BB%84%E5%AF%86%E7%A0%81%EF%BC%89%E7%AE%97%E6%B3%95/" class="post-title-link" itemprop="url">完整密码学/第5章对称密码DES（分组密码）算法</a>
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2020-03-16 23:35:32" itemprop="dateCreated datePublished" datetime="2020-03-16T23:35:32+08:00">2020-03-16</time>
-            </span>
-
-          <br>
-            <span class="post-meta-item" title="本文字数">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-file-word-o"></i>
-              </span>
-                <span class="post-meta-item-text">本文字数：</span>
-              <span>0</span>
-            </span>
-            <span class="post-meta-item" title="阅读时长">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-clock-o"></i>
-              </span>
-                <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>1 分钟</span>
-            </span>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          
-      
-    </div>
-
-    
-    
-    
-    <div>
-      
-    </div>
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-        
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/03/16/%E5%AE%8C%E6%95%B4%E5%AF%86%E7%A0%81%E5%AD%A6/%E7%AC%AC6%E7%AB%A0%E5%AF%B9%E7%A7%B0%E5%AF%86%E7%A0%813DES%E7%AE%97%E6%B3%95%EF%BC%88%E5%88%86%E7%BB%84%E5%AF%86%E7%A0%81%EF%BC%89/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpg">
-      <meta itemprop="name" content="Hongery">
-      <meta itemprop="description" content="直到这一刻微笑着说话为止，我至少留下了一公升眼泪">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Hongery">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/03/16/%E5%AE%8C%E6%95%B4%E5%AF%86%E7%A0%81%E5%AD%A6/%E7%AC%AC6%E7%AB%A0%E5%AF%B9%E7%A7%B0%E5%AF%86%E7%A0%813DES%E7%AE%97%E6%B3%95%EF%BC%88%E5%88%86%E7%BB%84%E5%AF%86%E7%A0%81%EF%BC%89/" class="post-title-link" itemprop="url">完整密码学/第6章对称密码3DES算法（分组密码）</a>
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-              
-
-              <time title="创建时间：2020-03-16 23:35:32 / 修改时间：23:36:06" itemprop="dateCreated datePublished" datetime="2020-03-16T23:35:32+08:00">2020-03-16</time>
-            </span>
-
-          <br>
-            <span class="post-meta-item" title="本文字数">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-file-word-o"></i>
-              </span>
-                <span class="post-meta-item-text">本文字数：</span>
-              <span>0</span>
-            </span>
-            <span class="post-meta-item" title="阅读时长">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-clock-o"></i>
-              </span>
-                <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>1 分钟</span>
-            </span>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          
-      
-    </div>
-
-    
-    
-    
-    <div>
-      
-    </div>
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-        
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/03/16/%E5%AE%8C%E6%95%B4%E5%AF%86%E7%A0%81%E5%AD%A6/%E7%AC%AC4%E7%AB%A0%E5%AF%B9%E7%A7%B0%E5%AF%86%E7%A0%81AES%E7%AE%97%E6%B3%95%EF%BC%88%E5%88%86%E7%BB%84%E5%AF%86%E7%A0%81%EF%BC%89/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpg">
-      <meta itemprop="name" content="Hongery">
-      <meta itemprop="description" content="直到这一刻微笑着说话为止，我至少留下了一公升眼泪">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Hongery">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/03/16/%E5%AE%8C%E6%95%B4%E5%AF%86%E7%A0%81%E5%AD%A6/%E7%AC%AC4%E7%AB%A0%E5%AF%B9%E7%A7%B0%E5%AF%86%E7%A0%81AES%E7%AE%97%E6%B3%95%EF%BC%88%E5%88%86%E7%BB%84%E5%AF%86%E7%A0%81%EF%BC%89/" class="post-title-link" itemprop="url">完整密码学/第4章对称密码AES算法（分组密码）</a>
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2020-03-16 23:34:42" itemprop="dateCreated datePublished" datetime="2020-03-16T23:34:42+08:00">2020-03-16</time>
-            </span>
-
-          <br>
-            <span class="post-meta-item" title="本文字数">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-file-word-o"></i>
-              </span>
-                <span class="post-meta-item-text">本文字数：</span>
-              <span>0</span>
-            </span>
-            <span class="post-meta-item" title="阅读时长">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-clock-o"></i>
-              </span>
-                <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>1 分钟</span>
-            </span>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          
-      
-    </div>
-
-    
-    
-    
-    <div>
-      
-    </div>
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-        
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/03/12/%E8%81%94%E7%9B%9F%E9%93%BE/04%E8%B6%85%E7%BA%A7%E8%B4%A6%E6%9C%AC%E7%9A%84%E7%BB%93%E6%9E%84%E7%BD%91%E7%BB%9C/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpg">
-      <meta itemprop="name" content="Hongery">
-      <meta itemprop="description" content="直到这一刻微笑着说话为止，我至少留下了一公升眼泪">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Hongery">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/03/12/%E8%81%94%E7%9B%9F%E9%93%BE/04%E8%B6%85%E7%BA%A7%E8%B4%A6%E6%9C%AC%E7%9A%84%E7%BB%93%E6%9E%84%E7%BD%91%E7%BB%9C/" class="post-title-link" itemprop="url">超级账本结构网络</a>
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-              
-
-              <time title="创建时间：2020-03-12 20:21:33 / 修改时间：21:46:43" itemprop="dateCreated datePublished" datetime="2020-03-12T20:21:33+08:00">2020-03-12</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Hyperledger-Fabric/" itemprop="url" rel="index">
-                    <span itemprop="name">Hyperledger Fabric</span>
-                  </a>
-                </span>
-            </span>
-
-          <br>
-            <span class="post-meta-item" title="本文字数">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-file-word-o"></i>
-              </span>
-                <span class="post-meta-item-text">本文字数：</span>
-              <span>2.6k</span>
-            </span>
-            <span class="post-meta-item" title="阅读时长">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-clock-o"></i>
-              </span>
-                <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>2 分钟</span>
-            </span>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h1 id="超级账本结构网络"><a href="#超级账本结构网络" class="headerlink" title="超级账本结构网络"></a>超级账本结构网络</h1><h2 id="什么是结构网络？"><a href="#什么是结构网络？" class="headerlink" title="什么是结构网络？"></a>什么是结构网络？</h2><p>Fabric许可的区块链网络是一种技术基础架构，可为应用程序使用者和管理员提供分类帐服务。在大多数情况下，多个<a href="https://hyperledger-fabric.readthedocs.io/en/release-1.2/glossary.html#organization" target="_blank" rel="noopener">组织</a>会作为一个<a href="https://hyperledger-fabric.readthedocs.io/en/release-1.2/glossary.html#consortium" target="_blank" rel="noopener">联盟</a>聚集在一起以形成网络，并且它们的权限由最初配置网络时联盟所同意的一组<a href="https://hyperledger-fabric.readthedocs.io/en/release-1.2/glossary.html#policy" target="_blank" rel="noopener">策略</a>来确定。此外，网络政策可以根据财团组织的协议随时间变化。</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2020/03/12/%E8%81%94%E7%9B%9F%E9%93%BE/04%E8%B6%85%E7%BA%A7%E8%B4%A6%E6%9C%AC%E7%9A%84%E7%BB%93%E6%9E%84%E7%BD%91%E7%BB%9C/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-    <div>
-      
-    </div>
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-        
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/03/12/%E8%81%94%E7%9B%9F%E9%93%BE/03%E8%B6%85%E7%BA%A7%E8%B4%A6%E6%9C%AC%E7%BB%93%E6%9E%84%E6%A8%A1%E5%9E%8B/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpg">
-      <meta itemprop="name" content="Hongery">
-      <meta itemprop="description" content="直到这一刻微笑着说话为止，我至少留下了一公升眼泪">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Hongery">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/03/12/%E8%81%94%E7%9B%9F%E9%93%BE/03%E8%B6%85%E7%BA%A7%E8%B4%A6%E6%9C%AC%E7%BB%93%E6%9E%84%E6%A8%A1%E5%9E%8B/" class="post-title-link" itemprop="url">超级帐本结构模型</a>
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-              
-
-              <time title="创建时间：2020-03-12 20:20:33 / 修改时间：21:45:37" itemprop="dateCreated datePublished" datetime="2020-03-12T20:20:33+08:00">2020-03-12</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Hyperledger-Fabric/" itemprop="url" rel="index">
-                    <span itemprop="name">Hyperledger Fabric</span>
-                  </a>
-                </span>
-            </span>
-
-          <br>
-            <span class="post-meta-item" title="本文字数">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-file-word-o"></i>
-              </span>
-                <span class="post-meta-item-text">本文字数：</span>
-              <span>2.6k</span>
-            </span>
-            <span class="post-meta-item" title="阅读时长">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-clock-o"></i>
-              </span>
-                <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>2 分钟</span>
-            </span>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h1 id="超级账本结构模型"><a href="#超级账本结构模型" class="headerlink" title="超级账本结构模型"></a>超级账本结构模型</h1><p>本节概述了编织到Hyperledger Fabric中的关键设计功能，这些功能可以实现其对全面而可定制的企业区块链解决方案的承诺：</p>
-<ul>
-<li><p><a href="https://hyperledger-fabric.readthedocs.io/en/release-1.2/fabric_model.html#assets" target="_blank" rel="noopener">资产</a> -资产定义允许通过网络交换几乎所有具有货币价值的东西，从完整食品到古董车再到货币期货。</p>
-</li>
-<li><p><a href="https://hyperledger-fabric.readthedocs.io/en/release-1.2/glossary.html#chaincode" target="_blank" rel="noopener">链码</a> -链码执行从事务顺序中划分出来，限制了节点类型之间所需的信任和验证级别，并优化了网络可伸缩性和性能。</p>
-</li>
-<li><p><a href="https://hyperledger-fabric.readthedocs.io/en/release-1.2/fabric_model.html#ledger-features" target="_blank" rel="noopener">分类帐功能</a> -不变的共享分类帐对每个通道的整个交易历史进行编码，并包括类似SQL的查询功能，以进行有效的审计和争议解决。</p>
-</li>
-<li><p><a href="https://hyperledger-fabric.readthedocs.io/en/release-1.2/fabric_model.html#privacy" target="_blank" rel="noopener">隐私</a> -渠道和私人数据收集可实现私有和机密的多边交易，这通常是竞争企业和受监管行业在公共网络上交换资产所必需的。</p>
-</li>
-<li><p><a href="https://hyperledger-fabric.readthedocs.io/en/release-1.2/fabric_model.html#security-membership-services" target="_blank" rel="noopener">安全和会员服务</a> -允许的会员提供了一个受信任的区块链网络，参与者知道所有交易都可以由授权的监管机构和审计员检测和追踪。</p>
-</li>
-<li><p><a href="https://hyperledger-fabric.readthedocs.io/en/release-1.2/fabric_model.html#consensus" target="_blank" rel="noopener">共识</a> -达成<a href="https://hyperledger-fabric.readthedocs.io/en/release-1.2/fabric_model.html#consensus" target="_blank" rel="noopener">共识</a>的独特方法可实现企业所需的灵活性和可扩展性。</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2020/03/12/%E8%81%94%E7%9B%9F%E9%93%BE/03%E8%B6%85%E7%BA%A7%E8%B4%A6%E6%9C%AC%E7%BB%93%E6%9E%84%E6%A8%A1%E5%9E%8B/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-    <div>
-      
-    </div>
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-        
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/03/12/%E8%81%94%E7%9B%9F%E9%93%BE/02%E8%B6%85%E7%BA%A7%E5%B8%90%E6%9C%AC%E7%9A%84%E7%BB%93%E6%9E%84%E5%8A%9F%E8%83%BD/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpg">
-      <meta itemprop="name" content="Hongery">
-      <meta itemprop="description" content="直到这一刻微笑着说话为止，我至少留下了一公升眼泪">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Hongery">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/03/12/%E8%81%94%E7%9B%9F%E9%93%BE/02%E8%B6%85%E7%BA%A7%E5%B8%90%E6%9C%AC%E7%9A%84%E7%BB%93%E6%9E%84%E5%8A%9F%E8%83%BD/" class="post-title-link" itemprop="url">超级账本结构功能</a>
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-              
-
-              <time title="创建时间：2020-03-12 20:19:33 / 修改时间：21:44:47" itemprop="dateCreated datePublished" datetime="2020-03-12T20:19:33+08:00">2020-03-12</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Hyperledger-Fabric/" itemprop="url" rel="index">
-                    <span itemprop="name">Hyperledger Fabric</span>
-                  </a>
-                </span>
-            </span>
-
-          <br>
-            <span class="post-meta-item" title="本文字数">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-file-word-o"></i>
-              </span>
-                <span class="post-meta-item-text">本文字数：</span>
-              <span>941</span>
-            </span>
-            <span class="post-meta-item" title="阅读时长">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-clock-o"></i>
-              </span>
-                <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>1 分钟</span>
-            </span>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h1 id="超级账本结构功能"><a href="#超级账本结构功能" class="headerlink" title="超级账本结构功能"></a>超级账本结构功能</h1><p>Hyperledger Fabric是分布式账本技术（DLT）的实现，它以模块化的区块链架构提供企业就绪的网络安全性，可伸缩性，机密性和性能。Hyperledger Fabric提供以下区块链网络功能：</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2020/03/12/%E8%81%94%E7%9B%9F%E9%93%BE/02%E8%B6%85%E7%BA%A7%E5%B8%90%E6%9C%AC%E7%9A%84%E7%BB%93%E6%9E%84%E5%8A%9F%E8%83%BD/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-    <div>
-      
-    </div>
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-        
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/03/10/%E8%81%94%E7%9B%9F%E9%93%BE/01%E5%8C%BA%E5%9D%97%E9%93%BE%E4%BB%8B%E7%BB%8D/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpg">
-      <meta itemprop="name" content="Hongery">
-      <meta itemprop="description" content="直到这一刻微笑着说话为止，我至少留下了一公升眼泪">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Hongery">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/03/10/%E8%81%94%E7%9B%9F%E9%93%BE/01%E5%8C%BA%E5%9D%97%E9%93%BE%E4%BB%8B%E7%BB%8D/" class="post-title-link" itemprop="url">区块链介绍</a>
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2020-03-10 20:19:33" itemprop="dateCreated datePublished" datetime="2020-03-10T20:19:33+08:00">2020-03-10</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-03-12 11:44:26" itemprop="dateModified" datetime="2020-03-12T11:44:26+08:00">2020-03-12</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Hyperledger-Fabric/" itemprop="url" rel="index">
-                    <span itemprop="name">Hyperledger Fabric</span>
-                  </a>
-                </span>
-            </span>
-
-          <br>
-            <span class="post-meta-item" title="本文字数">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-file-word-o"></i>
-              </span>
-                <span class="post-meta-item-text">本文字数：</span>
-              <span>2.9k</span>
-            </span>
-            <span class="post-meta-item" title="阅读时长">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-clock-o"></i>
-              </span>
-                <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>3 分钟</span>
-            </span>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h1 id="区块链介绍"><a href="#区块链介绍" class="headerlink" title="区块链介绍"></a>区块链介绍</h1><p>Hyperledger Fabric是分布式账本解决方案的平台，该平台以模块化架构为基础，提供高度的机密性，灵活性，灵活性和可扩展性。它旨在支持不同组件的可插拔实现，并适应整个经济生态系统中存在的复杂性和复杂性。</p>
-<h2 id="什么是区块链？"><a href="#什么是区块链？" class="headerlink" title="什么是区块链？"></a>什么是区块链？</h2><h5 id="分布式分类帐"><a href="#分布式分类帐" class="headerlink" title="分布式分类帐"></a>分布式分类帐</h5><p>区块链网络的核心是分布式账本，记录了网络上发生的所有交易。</p>
-<p>区块链分类帐经常被描述为<strong>分散式的，</strong>因为它是在许多网络参与者之间复制的，每个参与者都在维护方面进行<strong>协作</strong>。我们将看到，分散和协作是强大的属性，反映了企业在现实世界中交换商品和服务的方式。</p>
-<p><img src="https://hyperledger-fabric.readthedocs.io/en/release-1.2/_images/basic_network.png" alt="_images / basic_network.png"></p>
-<p>除了去中心化和协作之外，记录到区块链的信息仅是追加的，使用加密技术来保证一旦将交易添加到分类账中就无法修改。“不变性”的这种特性使确定信息的来源变得简单，因为参与者可以确定事实之后信息没有被更改。这就是为什么有时将区块链描述为<strong>证明系统的原因</strong>。</p>
-<h5 id="智能合约"><a href="#智能合约" class="headerlink" title="智能合约"></a>智能合约</h5><p>为了支持信息的一致更新-并启用总账功能（交易，查询等），区块链网络使用<strong>智能合约</strong>来提供对账本的受控访问。</p>
-<p><img src="https://hyperledger-fabric.readthedocs.io/en/release-1.2/_images/Smart_Contract.png" alt="_images / Smart_Contract.png"></p>
-<p>智能合约不仅是封装信息并使之在网络上保持简单的关键机制，还可以编写为允许参与者自动执行交易的某些方面的关键机制。</p>
-<p>例如，可以编写智能合约来规定运输物品的成本，其中运输费用取决于物品到达的速度而变化。在双方同意并写入总账的条款下，相应的资金会在收到项目后自动转手。</p>
-<h5 id="共识"><a href="#共识" class="headerlink" title="共识"></a>共识</h5><p>保持分类账交易在整个网络上同步的过程-确保分类账仅在相应参与者批准交易后更新，并且当分类账确实更新时，它们将以相同顺序更新相同的交易-称为<strong>共识</strong>。</p>
-<p><img src="https://hyperledger-fabric.readthedocs.io/en/release-1.2/_images/consensus.png" alt="_images / consensus.png"></p>
-<p>稍后，您将学到更多有关分布式账本，智能合约和共识的知识。就目前而言，将区块链视为共享的，复制的交易系统就足够了，该系统通过智能合约进行更新，并通过称为共识的协作流程保持一致的同步。</p>
-<h2 id="为什么区块链有用？"><a href="#为什么区块链有用？" class="headerlink" title="为什么区块链有用？"></a>为什么区块链有用？</h2><h5 id="当今的记录系统"><a href="#当今的记录系统" class="headerlink" title="当今的记录系统"></a><strong>当今的记录系统</strong></h5><p>如今的交易网络是自保存业务记录以来已经存在的网络的稍微更新版本。<strong>业务网络</strong>的成员彼此进行事务处理，但是它们维护各自的交易记录。他们正在交易的东西-无论是16世纪的佛兰德挂毯还是今天的证券-每次出售时都必须确定其出处，以确保出售物品的企业具有所有权链来验证其所有权它。</p>
-<p>您剩下的是一个如下所示的业务网络：</p>
-<p><img src="https://hyperledger-fabric.readthedocs.io/en/release-1.2/_images/current_network.png" alt="_images / current_network.png"></p>
-<p>现代技术已将这一过程从石碑和纸质文件夹转移到硬盘驱动器和云平台，但是其基本结构是相同的。尚不存在用于管理网络参与者身份的统一系统，建立来源非常繁琐，需要数天才能完成证券交易（其全球交易量已达数万亿美元），必须手动签署和执行合同，并且系统中的每个数据库都包含唯一信息，因此代表单点故障。</p>
-<p>尽管对可见性和信任的需求很明确，但如今采用零散的信息和流程共享方法来建立跨业务网络的记录系统是不可能的。</p>
-<h5 id="区块链差异"><a href="#区块链差异" class="headerlink" title="区块链差异"></a><strong>区块链差异</strong></h5><p>如果业务网络具有在网络上建立身份，执行事务和存储数据的标准方法，而不是由“现代”交易系统所代表的效率低下的嵌套，那该怎么办？如果可以通过查看一系列交易来确定资产的来源，该交易一经写入便无法更改，因此可以被信任，该怎么办？</p>
-<p>该业务网络看起来像这样：</p>
-<p><img src="https://hyperledger-fabric.readthedocs.io/en/release-1.2/_images/future_net.png" alt="_images / future_net.png"></p>
-<p>这是一个区块链网络，其中每个参与者都有自己的总账副本。除了共享分类帐信息之外，还共享更新分类帐的过程。与当今的系统（其中参与者的<strong>私人</strong>程序用于更新其<strong>私人</strong>分类帐）不同，区块链系统具有<strong>共享</strong>程序以更新<strong>共享的</strong>分类帐。</p>
-<p>通过共享账本协调业务网络的能力，区块链网络可以减少与私人信息和处理相关的时间，成本和风险，同时提高信任度和可见性。</p>
-<p>您现在知道什么是区块链以及为什么有用。还有许多其他重要的细节，但它们都与共享信息和流程的这些基本思想有关。</p>
-<h2 id="什么是Hyperledger-Fabric？"><a href="#什么是Hyperledger-Fabric？" class="headerlink" title="什么是Hyperledger Fabric？"></a>什么是Hyperledger Fabric？</h2><p>Linux基金会于2015年创建了Hyperledger项目，以推进跨行业的区块链技术。它没有声明单一的区块链标准，而是鼓励通过社区流程以协作方式开发区块链技术，并具有鼓励开放开发和随着时间推移采用关键标准的知识产权。</p>
-<p>Hyperledger Fabric是Hyperledger中的区块链项目之一。像其他区块链技术一样，它具有分类帐，使用智能合约，并且是参与者用来管理其交易的系统。</p>
-<p>Hyperledger Fabric与其他一些区块链系统的不同之处在于它是<strong>私有的</strong>并且被<strong>许可</strong>。Hyperledger Fabric网络的成员不是通过允许未知身份参与网络的开放式无权限系统（需要诸如“工作量证明”之类的协议来验证交易并保护网络），而是通过受信任的<strong>成员资格服务提供商（MSP）来注册</strong>。</p>
-<p>Hyperledger Fabric还提供了几种可插拔选项。账本数据可以以多种格式存储，共识机制可以互换，也可以支持不同的MSP。</p>
-<p>Hyperledger Fabric还提供了创建<strong>渠道的功能</strong>，允许一组参与者创建单独的交易分类账。对于某些参与者可能是竞争对手并且不希望他们进行的每笔交易（例如，他们向某些参与者而不是其他参与者提供的特殊价格）的网络，每个参与者都知道这是一个特别重要的选择。如果有两个参与者组成一个渠道，则这些参与者（没有其他参与者）拥有该渠道的分类帐副本。</p>
-<h5 id="共享分布式账本"><a href="#共享分布式账本" class="headerlink" title="共享分布式账本"></a>共享分布式账本</h5><p>Hyperledger Fabric具有一个账本子系统，该子系统包括两个组件：<strong>世界状态</strong>和<strong>事务日志</strong>。每个参与者都有一份账本到他们所属的每个Hyperledger Fabric网络的副本。</p>
-<p>世界状态组件描述分类帐在给定时间点的状态。这是分类帐的数据库。事务日志组件记录所有导致当前世界状态值的事务；这是世界状态的更新历史。然后，分类帐是世界状态数据库和事务日志历史记录的组合。</p>
-<p>分类帐具有世界状态的可替换数据存储。默认情况下，这是一个LevelDB键值存储数据库。事务日志不需要是可插入的。它仅记录区块链网络使用的分类帐数据库的前后值。</p>
-<h5 id="智能合约-1"><a href="#智能合约-1" class="headerlink" title="智能合约"></a><strong>智能合约</strong></h5><p>Hyperledger Fabric智能合约以<strong>链码</strong>编写，并在<strong>区块</strong>链外部的应用程序需要与分类账进行交互时由该应用程序调用。在大多数情况下，chaincode仅与分类帐的数据库组件，世界状态（例如，查询状态）交互，而不与事务日志交互。</p>
-<p>链码可以用几种编程语言实现。当前，支持Go和Node。</p>
-<h5 id="隐私"><a href="#隐私" class="headerlink" title="隐私"></a><strong>隐私</strong></h5><p>根据网络的需求，企业对企业（B2B）网络的参与者可能对他们共享多少信息非常敏感。对于其他网络，隐私将不是头等大事。</p>
-<p>Hyperledger Fabric支持以隐私（使用通道）为主要操作要求的网络以及相对开放的网络。</p>
-<h5 id="共识-1"><a href="#共识-1" class="headerlink" title="共识"></a><strong>共识</strong></h5><p>即使交易可能在网络中不同的参与者集之间，也必须按照交易发生的顺序将其写入分类帐。为此，必须建立交易顺序，并且必须采用一种方法来拒绝错误（或恶意）插入分类帐中的不良交易。</p>
-<p>这是计算机科学的一个经过全面研究的领域，有很多方法可以实现，但都需要权衡取舍。例如，PBFT（实用拜占庭式容错）可以提供一种机制，使文件副本可以相互通信，即使在发生损坏的情况下也可以使每个副本保持一致。另外，在比特币中，排序是通过称为挖掘的过程进行的，在该过程中，竞争的计算机竞相解决一个密码难题，该难题定义了随后所有进程所依据的顺序。</p>
-<p>Hyperledger Fabric旨在允许网络初学者选择一种共识机制，以最能代表参与者之间存在的关系。与隐私一样，也有各种各样的需求。从关系高度结构化的网络到点对点的网络。</p>
-<p>我们将了解有关Hyperledger Fabric共识机制的更多信息，该机制目前包括SOLO和Kafka。</p>
-
-      
-    </div>
-
-    
-    
-    
-    <div>
-      
-    </div>
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-        
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/03/10/%E8%81%94%E7%9B%9F%E9%93%BE/Ubuntu%E5%AE%89%E8%A3%85fabric%E5%B9%B6%E5%90%AF%E5%8A%A8/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpg">
-      <meta itemprop="name" content="Hongery">
-      <meta itemprop="description" content="直到这一刻微笑着说话为止，我至少留下了一公升眼泪">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Hongery">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/03/10/%E8%81%94%E7%9B%9F%E9%93%BE/Ubuntu%E5%AE%89%E8%A3%85fabric%E5%B9%B6%E5%90%AF%E5%8A%A8/" class="post-title-link" itemprop="url">Ubuntu安装fabric并启动</a>
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2020-03-10 20:19:33" itemprop="dateCreated datePublished" datetime="2020-03-10T20:19:33+08:00">2020-03-10</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-03-19 21:35:04" itemprop="dateModified" datetime="2020-03-19T21:35:04+08:00">2020-03-19</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Hyperledger-Fabric/" itemprop="url" rel="index">
-                    <span itemprop="name">Hyperledger Fabric</span>
-                  </a>
-                </span>
-            </span>
-
-          <br>
-            <span class="post-meta-item" title="本文字数">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-file-word-o"></i>
-              </span>
-                <span class="post-meta-item-text">本文字数：</span>
-              <span>27k</span>
-            </span>
-            <span class="post-meta-item" title="阅读时长">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-clock-o"></i>
-              </span>
-                <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>24 分钟</span>
-            </span>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h3 id="第一步：安装必要的软件"><a href="#第一步：安装必要的软件" class="headerlink" title="第一步：安装必要的软件"></a>第一步：安装必要的软件</h3><h3 id="1-操作系统"><a href="#1-操作系统" class="headerlink" title="1. 操作系统"></a>1. 操作系统</h3><p>博主使用的操作系统为64位的 <strong>Ubuntu 16.04 LTS</strong>，系统内核为 GNU/Linux 4.13.0-36-generic x86_64。</p>
-<p>硬件资源要求：内存最低为2GB，最好3G以上； 磁盘空间为30GB或更高。</p>
-<p>如果计算机默认为Windows操作系统， 可以在Windows系统中安装一个VMware虚拟机应用程序， 然后在VMWare虚拟机中安装Ubuntu 16.04系统， 最后在Window操作系统中再安装一个远程连接工具（如XShell或SecureCRT），以方便连接并操作Ubuntu系统。</p>
-<h3 id="2-安装所需工具"><a href="#2-安装所需工具" class="headerlink" title="2.安装所需工具"></a>2.安装所需工具</h3><blockquote>
-<p>git、docker、golang、node.js、npm</p>
-</blockquote>
-<h4 id="2-1-安装git"><a href="#2-1-安装git" class="headerlink" title="2.1 安装git"></a>2.1 安装git</h4><p>首先，我们来安装git工具，git是一个非常优秀的免费、开源的版本管理控制工具， 我们可以使用git工具方便地下载官方（Golang、Hyperledger Fabric等等）在Github网站上发布的相关源代码或其它内容。</p>
-<p>安装git工具使用如下命令：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> sudo apt update</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> sudo apt install git</span></span><br><span class="line"><span class="meta">$</span><span class="bash">git version</span></span><br><span class="line">git version 2.7.0</span><br></pre></td></tr></table></figure>
-
-<blockquote>
-<p>MAC OS系统中默认已安装。如未安装，可以在git官方网站：<a href="https://git-scm.com/downloads" target="_blank" rel="noopener">https://git-scm.com/downloads</a> 页面中选择相应系统的安装包下载并安装</p>
-</blockquote>
-<h4 id="2-2-安装cURL"><a href="#2-2-安装cURL" class="headerlink" title="2.2 安装cURL"></a>2.2 安装cURL</h4><p>使用如下命令安装cURL:</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> sudo apt install curl</span></span><br></pre></td></tr></table></figure>
-
-<blockquote>
-<p>各系统的cURL安装包可以在 <a href="https://curl.haxx.se/download.html" target="_blank" rel="noopener">https://curl.haxx.se/download.html</a> 页面中选择下载并安装</p>
-</blockquote>
-<h4 id="2-3-安装Docker"><a href="#2-3-安装Docker" class="headerlink" title="2.3 安装Docker"></a>2.3 安装Docker</h4><p>查看系统中是否已经安装Docker：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> docker --version</span></span><br></pre></td></tr></table></figure>
-
-<p>使用如下命令安装Docker的最新版本：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> sudo apt update</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> sudo apt install docker.io</span></span><br></pre></td></tr></table></figure>
-
-<p><strong>查看Docker版本信息</strong></p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> docker --version</span></span><br></pre></td></tr></table></figure>
-
-<p>输出: <code>Docker version 17.03.2-ce, build f5ec1e2</code></p>
-<h4 id="2-4-安装Docker-compose"><a href="#2-4-安装Docker-compose" class="headerlink" title="2.4 安装Docker-compose"></a>2.4 安装Docker-compose</h4><p>确定系统中是否已安装docker－compose工具</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> docker-compose --version</span></span><br></pre></td></tr></table></figure>
-
-<p>如系统提示未安装，则使用如下命令安装docker-compose工具：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> sudo apt install docker-compose</span></span><br></pre></td></tr></table></figure>
-
-<p>安装成功后，查看Docker－Compose版本信息</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> docker-compose --version</span></span><br></pre></td></tr></table></figure>
-
-<p>输出: <code>docker-compose version 1.8.0, build unknown</code></p>
-<h4 id="2-5-安装Golang"><a href="#2-5-安装Golang" class="headerlink" title="2.5 安装Golang"></a>2.5 安装Golang</h4><blockquote>
-<p>Fabric1.0.0版本要求Go语言1.7以上版本，Fabric1.1.0版本要求Go1.9以上版本，Fabric1.2.0版本要求Go1.10以上版本， 我们使用Fabric1.2.0版本， 所以从官方下载最新版本的Golang。</p>
-</blockquote>
-<h5 id="1-下载Golang"><a href="#1-下载Golang" class="headerlink" title="1.下载Golang"></a>1.下载Golang</h5><h5 id="下载方式一"><a href="#下载方式一" class="headerlink" title="下载方式一"></a>下载方式一</h5><p>使用wget工具下载Golang的最新版本压缩包文件 go1.10.3.linux-amd64.tar.gz</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> wget https://dl.google.com/go/go1.10.3.linux-amd64.tar.gz</span></span><br></pre></td></tr></table></figure>
-
-<blockquote>
-<p><strong>下载Golang压缩包文件，需要操作系统能够保证正常访问Golang官方网站</strong>。</p>
-<p>下载过程可能耗时较长（取决于具体网络情况），请耐心等待。</p>
-<p>其它系统可以在Golang官方： <a href="https://golang.org/dl/" target="_blank" rel="noopener">https://golang.org/dl/</a> 下载页面中查找相应的安装包下载安装。</p>
-</blockquote>
-<p>下载完成后，文件会保存在当前目录下。可以使用 <code>ll</code> 命令查看</p>
-<p><img src="http://image.chaindesk.cn/1.1.jpg/mark" alt="Golang下载文件"></p>
-<h5 id="2-解压文件"><a href="#2-解压文件" class="headerlink" title="2 解压文件"></a>2 解压文件</h5><p>使用 tar 命令将下载后的压缩包文件解压到指定的 /usr/local/ 路径下</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> sudo tar -zxvf go1.10.3.linux-amd64.tar.gz -C /usr/<span class="built_in">local</span>/</span></span><br></pre></td></tr></table></figure>
-
-<hr>
-<p>如果在解压过程中出现如下错误：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">gzip: stdin: unexpected end of file</span><br><span class="line">tar: Unexpected EOF in archive</span><br><span class="line">tar: Unexpected EOF in archive</span><br><span class="line">tar: Error is not recoverable: exiting now</span><br><span class="line">或</span><br><span class="line">gzip: stdin: unexpected end of file</span><br><span class="line">tar: 归档文件中异常的 EOF</span><br><span class="line">tar: 归档文件中异常的 EOF</span><br><span class="line">tar: Error is not recoverable: exiting now</span><br></pre></td></tr></table></figure>
-
-<p>说明下载的tar压缩包文件有问题， 如没有下载完整或压缩包数据损坏。请删除后重新下载并解压至指定的目录中。</p>
-<hr>
-<h5 id="下载方式二"><a href="#下载方式二" class="headerlink" title="下载方式二"></a>下载方式二</h5><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ sudo apt install go   //直接下载</span><br></pre></td></tr></table></figure>
-
-<h5 id="3-配置环境变量"><a href="#3-配置环境变量" class="headerlink" title="3 配置环境变量"></a>3 配置环境变量</h5><p>解压后，Golang可以让系统的所有用户正常使用， 所以我们使用 vim 文件编辑工具打开系统的 profile 文件进行编辑：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> sudo vim /etc/profile</span></span><br></pre></td></tr></table></figure>
-
-<blockquote>
-<p>如果只想让当前登录用户使用Golang， 其它用户不能使用， 则编辑当前用户$HOME目录下的 .bashrc 或 .profile 文件， 在该文件中添加相应的环境变量即可。</p>
-</blockquote>
-<p>在profile文件最后添加如下内容:</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">export GOPATH=$HOME/go   我的是//$HOME=/home/hg</span><br><span class="line">export GOROOT=/usr/local/go</span><br><span class="line">export PATH=$GOROOT/bin:$PATH</span><br></pre></td></tr></table></figure>
-
-<p>使用 source 命令，使刚刚添加的配置信息生效：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> <span class="built_in">source</span> /etc/profile</span></span><br></pre></td></tr></table></figure>
-
-<p>通过 go version命令验证是否成功：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> go version</span></span><br></pre></td></tr></table></figure>
-
-<p>输出: <code>go version go1.13.3 linux/amd64</code></p>
-<blockquote>
-<p>如果系统中有旧版本的golang,则使用如下命令卸载旧版本的golang,然后再重新安装并配置</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> su -</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> apt-get remove golang-go --purge &amp;&amp; apt-get autoremove --purge &amp;&amp; apt-get clean</span></span><br></pre></td></tr></table></figure>
-</blockquote>
-<h3 id="1-3-安装Node及npm"><a href="#1-3-安装Node及npm" class="headerlink" title="1.3 安装Node及npm"></a>1.3 安装Node及npm</h3><h4 id="1-安装nvm"><a href="#1-安装nvm" class="headerlink" title="1 安装nvm"></a>1 安装nvm</h4><p>nvm：Node Version Manager，Node.js的版本管理软件， 可以根据不同的需求场景方便地随时在Node.js的各个版本之间进行切换。</p>
-<p>由于Node.js版本更新较快，且各版本之间差异较大；直接从Node官网安装可能需要很长时间，而且中间可能会因为网络访问及数据传输原因造成下载中断或失败等问题。为了方便安装及后期管理Node.js的版本，我们首先需要在系统中安装nvm管理工具。</p>
-<p>使用如下命令安装nvm：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> sudo apt update</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.33.10/install.sh | bash</span></span><br><span class="line"></span><br><span class="line"><span class="meta">$</span><span class="bash"> <span class="built_in">export</span> NVM_DIR=<span class="string">"<span class="variable">$HOME</span>/.nvm"</span></span></span><br><span class="line"><span class="meta">$</span><span class="bash"> [ -s <span class="string">"<span class="variable">$NVM_DIR</span>/nvm.sh"</span> ] &amp;&amp; \. <span class="string">"<span class="variable">$NVM_DIR</span>/nvm.sh"</span></span></span><br></pre></td></tr></table></figure>
-
-<h4 id="2-安装Node"><a href="#2-安装Node" class="headerlink" title="2 安装Node"></a>2 安装Node</h4><p>nvm工具安装并配置成功后， 可以直接使用nvm命令安装Node；且Node安装成功后，nvm会自动将npm工具进行安装。</p>
-<p>使用如下命令安装Node：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> nvm install v8.11.1</span></span><br></pre></td></tr></table></figure>
-
-<blockquote>
-<p>安装Node时须注意：安装版本为8.9.x或以上的Node.js，<strong>Fabric目前不支持9.x系列的Node.js版本.</strong></p>
-</blockquote>
-<p>安装成功输出如下内容：</p>
-<p><img src="http://image.chaindesk.cn/1.2.jpg/mark" alt="Node安装成功"></p>
-<h4 id="1-2-3-3-检查Node及npm版本"><a href="#1-2-3-3-检查Node及npm版本" class="headerlink" title="1.2.3.3 检查Node及npm版本"></a>1.2.3.3 检查Node及npm版本</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> node -v &amp;&amp; npm -v</span></span><br></pre></td></tr></table></figure>
-
-<p>输出内容如下:</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">v8.11.1</span><br><span class="line">5.6.0</span><br></pre></td></tr></table></figure>
-
-<h2 id="FAQ"><a href="#FAQ" class="headerlink" title="FAQ"></a>FAQ</h2><ol>
-<li><p><strong>Fabric只支持Ubuntu系统吗？</strong></p>
-<p>Hyperledger Fabric支持常见的Linux相关系统（如：Debian、CentOS等）和MacOS。</p>
-<p>由于不同操作系统或各系统的不同版本可能会造成一些问题， 所以在此推荐使用的操作系统为64位的 Ubuntu 16.04 LTS。</p>
-</li>
-<li><p><strong>cURL是什么，有什么作用？</strong></p>
-<p>cURL是一个可以终端命令行下使用URL语法执行的开源文件传输工具。cURL支持SSL证书，HTTP POST，HTTP PUT，FTP上传，基于HTTP表单的上传，代理，HTTP / 2，cookie，用户+密码认证（Basic，Plain，Digest，CRAM-MD5，NTLM，Negotiate和Kerberos），文件转移简历，代理隧道等。</p>
-</li>
-<li><p><strong>为什么要安装Docker及Docker-compose?</strong></p>
-<p>Docker是一个开源的应用容器引擎， 可以为应用创建一个轻量级的、可移植的容器。</p>
-<p>Fabric环境依赖于Docker提供的容器服务，所以必须安装Docker环境；推荐使用1.13或更高版本。</p>
-<p>Compose是一个用于定义和运行多个容器的Docker应用程序的工具， 可以使用YAML文件配置相关的指定服务，运行该服务时，只需要一个简单的命令即可。</p>
-</li>
-<li><p><strong>能否不使用Golang而换作其它语言环境？</strong></p>
-<p>Hyperledger Fabric中的很多组件使用Golang实现，并且我们会使用Golang来编写链式代码的应用程序， 所以需要在我们的系统中安装并设置Golang环境。</p>
-</li>
-<li><p><strong>一定要安装Node与npm吗？</strong></p>
-<p>Node与npm工具为可选安装工具。如果后期使用Node.js的Hyperledger Fabric SDK开发Hyperledger Fabric的应用程序，则需要安装；否则无需安装。</p>
-</li>
-</ol>
-<h3 id="第二步：安装Fabric"><a href="#第二步：安装Fabric" class="headerlink" title="第二步：安装Fabric"></a>第二步：安装Fabric</h3><h2 id="目标"><a href="#目标" class="headerlink" title="目标"></a>目标</h2><ol>
-<li>顺利下载Hyperledger Fabric</li>
-<li>明确bootstrap.sh脚本做了哪些事</li>
-</ol>
-<h3 id="1-下载Fabric-samples与二进制文件"><a href="#1-下载Fabric-samples与二进制文件" class="headerlink" title="1. 下载Fabric-samples与二进制文件"></a>1. 下载Fabric-samples与二进制文件</h3><p>为了方便后期管理，在当前登录用户的HOME目录下创建一个空目录并进入该目录我的home是/home/hg</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> mkdir hyfa &amp;&amp; <span class="built_in">cd</span> hyfa</span></span><br></pre></td></tr></table></figure>
-
-<p><strong>新建文件bootstrap.sh并添加内容</strong></p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash">sudo touch bootstrap.sh</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> vim bootstrap.sh</span></span><br></pre></td></tr></table></figure>
-
-<p>将 <code>https://github.com/hyperledger/fabric/blob/master/scripts/bootstrap.sh</code> 中的内容拷贝保存退出。这是最新v2.0</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br><span class="line">192</span><br><span class="line">193</span><br><span class="line">194</span><br><span class="line">195</span><br><span class="line">196</span><br><span class="line">197</span><br><span class="line">198</span><br><span class="line">199</span><br><span class="line">200</span><br><span class="line">201</span><br><span class="line">202</span><br></pre></td><td class="code"><pre><span class="line"> </span><br><span class="line"><span class="meta">#!/bin/bash</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line"><span class="comment"># Copyright IBM Corp. All Rights Reserved.</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line"><span class="comment"># SPDX-License-Identifier: Apache-2.0</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># if version not passed in, default to latest released version</span></span><br><span class="line">VERSION=2.0.0</span><br><span class="line"><span class="comment"># if ca version not passed in, default to latest released version</span></span><br><span class="line">CA_VERSION=1.4.6</span><br><span class="line"><span class="comment"># current version of thirdparty images (couchdb, kafka and zookeeper) released</span></span><br><span class="line">THIRDPARTY_IMAGE_VERSION=0.4.18</span><br><span class="line">ARCH=$(<span class="built_in">echo</span> <span class="string">"<span class="variable">$(uname -s|tr '[:upper:]' '[:lower:]'|sed 's/mingw64_nt.*/windows/')</span>-<span class="variable">$(uname -m | sed 's/x86_64/amd64/g')</span>"</span>)</span><br><span class="line">MARCH=$(uname -m)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="title">printHelp</span></span>() &#123;</span><br><span class="line">    <span class="built_in">echo</span> <span class="string">"Usage: bootstrap.sh [version [ca_version [thirdparty_version]]] [options]"</span></span><br><span class="line">    <span class="built_in">echo</span></span><br><span class="line">    <span class="built_in">echo</span> <span class="string">"options:"</span></span><br><span class="line">    <span class="built_in">echo</span> <span class="string">"-h : this help"</span></span><br><span class="line">    <span class="built_in">echo</span> <span class="string">"-d : bypass docker image download"</span></span><br><span class="line">    <span class="built_in">echo</span> <span class="string">"-s : bypass fabric-samples repo clone"</span></span><br><span class="line">    <span class="built_in">echo</span> <span class="string">"-b : bypass download of platform-specific binaries"</span></span><br><span class="line">    <span class="built_in">echo</span></span><br><span class="line">    <span class="built_in">echo</span> <span class="string">"e.g. bootstrap.sh 2.0.0 1.4.6 0.4.18 -s"</span></span><br><span class="line">    <span class="built_in">echo</span> <span class="string">"would download docker images and binaries for Fabric v2.0.0 and Fabric CA v1.4.6"</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment"># dockerPull() pulls docker images from fabric and chaincode repositories</span></span><br><span class="line"><span class="comment"># note, if a docker image doesn't exist for a requested release, it will simply</span></span><br><span class="line"><span class="comment"># be skipped, since this script doesn't terminate upon errors.</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="title">dockerPull</span></span>() &#123;</span><br><span class="line">    <span class="comment">#three_digit_image_tag is passed in, e.g. "1.4.6"</span></span><br><span class="line">    three_digit_image_tag=<span class="variable">$1</span></span><br><span class="line">    <span class="built_in">shift</span></span><br><span class="line">    <span class="comment">#two_digit_image_tag is derived, e.g. "1.4", especially useful as a local tag for two digit references to most recent baseos, ccenv, javaenv, nodeenv patch releases</span></span><br><span class="line">    two_digit_image_tag=$(<span class="built_in">echo</span> <span class="variable">$three_digit_image_tag</span> | cut -d<span class="string">'.'</span> -f1,2)</span><br><span class="line">    <span class="keyword">while</span> [[ <span class="variable">$#</span> -gt 0 ]]</span><br><span class="line">    <span class="keyword">do</span></span><br><span class="line">        image_name=<span class="string">"<span class="variable">$1</span>"</span></span><br><span class="line">        <span class="built_in">echo</span> <span class="string">"====&gt; hyperledger/fabric-<span class="variable">$image_name</span>:<span class="variable">$three_digit_image_tag</span>"</span></span><br><span class="line">        docker pull <span class="string">"hyperledger/fabric-<span class="variable">$image_name</span>:<span class="variable">$three_digit_image_tag</span>"</span></span><br><span class="line">        docker tag <span class="string">"hyperledger/fabric-<span class="variable">$image_name</span>:<span class="variable">$three_digit_image_tag</span>"</span> <span class="string">"hyperledger/fabric-<span class="variable">$image_name</span>"</span></span><br><span class="line">        docker tag <span class="string">"hyperledger/fabric-<span class="variable">$image_name</span>:<span class="variable">$three_digit_image_tag</span>"</span> <span class="string">"hyperledger/fabric-<span class="variable">$image_name</span>:<span class="variable">$two_digit_image_tag</span>"</span></span><br><span class="line">        <span class="built_in">shift</span></span><br><span class="line">    <span class="keyword">done</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="title">cloneSamplesRepo</span></span>() &#123;</span><br><span class="line">    <span class="comment"># clone (if needed) hyperledger/fabric-samples and checkout corresponding</span></span><br><span class="line">    <span class="comment"># version to the binaries and docker images to be downloaded</span></span><br><span class="line">    <span class="keyword">if</span> [ -d first-network ]; <span class="keyword">then</span></span><br><span class="line">        <span class="comment"># if we are in the fabric-samples repo, checkout corresponding version</span></span><br><span class="line">        <span class="built_in">echo</span> <span class="string">"===&gt; Checking out v<span class="variable">$&#123;VERSION&#125;</span> of hyperledger/fabric-samples"</span></span><br><span class="line">        git checkout v<span class="variable">$&#123;VERSION&#125;</span></span><br><span class="line">    <span class="keyword">elif</span> [ -d fabric-samples ]; <span class="keyword">then</span></span><br><span class="line">        <span class="comment"># if fabric-samples repo already cloned and in current directory,</span></span><br><span class="line">        <span class="comment"># cd fabric-samples and checkout corresponding version</span></span><br><span class="line">        <span class="built_in">echo</span> <span class="string">"===&gt; Checking out v<span class="variable">$&#123;VERSION&#125;</span> of hyperledger/fabric-samples"</span></span><br><span class="line">        <span class="built_in">cd</span> fabric-samples &amp;&amp; git checkout v<span class="variable">$&#123;VERSION&#125;</span></span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">        <span class="built_in">echo</span> <span class="string">"===&gt; Cloning hyperledger/fabric-samples repo and checkout v<span class="variable">$&#123;VERSION&#125;</span>"</span></span><br><span class="line">        git <span class="built_in">clone</span> -b master https://github.com/hyperledger/fabric-samples.git &amp;&amp; <span class="built_in">cd</span> fabric-samples &amp;&amp; git checkout v<span class="variable">$&#123;VERSION&#125;</span></span><br><span class="line">    <span class="keyword">fi</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment"># This will download the .tar.gz</span></span><br><span class="line"><span class="function"><span class="title">download</span></span>() &#123;</span><br><span class="line">    <span class="built_in">local</span> BINARY_FILE=<span class="variable">$1</span></span><br><span class="line">    <span class="built_in">local</span> URL=<span class="variable">$2</span></span><br><span class="line">    <span class="built_in">echo</span> <span class="string">"===&gt; Downloading: "</span> <span class="string">"<span class="variable">$&#123;URL&#125;</span>"</span></span><br><span class="line">    curl -L --retry 5 --retry-delay 3 <span class="string">"<span class="variable">$&#123;URL&#125;</span>"</span> | tar xz || rc=$?</span><br><span class="line">    <span class="keyword">if</span> [ -n <span class="string">"<span class="variable">$rc</span>"</span> ]; <span class="keyword">then</span></span><br><span class="line">        <span class="built_in">echo</span> <span class="string">"==&gt; There was an error downloading the binary file."</span></span><br><span class="line">        <span class="built_in">return</span> 22</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">        <span class="built_in">echo</span> <span class="string">"==&gt; Done."</span></span><br><span class="line">    <span class="keyword">fi</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="title">pullBinaries</span></span>() &#123;</span><br><span class="line">    <span class="built_in">echo</span> <span class="string">"===&gt; Downloading version <span class="variable">$&#123;FABRIC_TAG&#125;</span> platform specific fabric binaries"</span></span><br><span class="line">    download <span class="string">"<span class="variable">$&#123;BINARY_FILE&#125;</span>"</span> <span class="string">"https://github.com/hyperledger/fabric/releases/download/v<span class="variable">$&#123;VERSION&#125;</span>/<span class="variable">$&#123;BINARY_FILE&#125;</span>"</span></span><br><span class="line">    <span class="keyword">if</span> [ $? -eq 22 ]; <span class="keyword">then</span></span><br><span class="line">        <span class="built_in">echo</span></span><br><span class="line">        <span class="built_in">echo</span> <span class="string">"------&gt; <span class="variable">$&#123;FABRIC_TAG&#125;</span> platform specific fabric binary is not available to download &lt;----"</span></span><br><span class="line">        <span class="built_in">echo</span></span><br><span class="line">        <span class="built_in">exit</span></span><br><span class="line">    <span class="keyword">fi</span></span><br><span class="line"></span><br><span class="line">    <span class="built_in">echo</span> <span class="string">"===&gt; Downloading version <span class="variable">$&#123;CA_TAG&#125;</span> platform specific fabric-ca-client binary"</span></span><br><span class="line">    download <span class="string">"<span class="variable">$&#123;CA_BINARY_FILE&#125;</span>"</span> <span class="string">"https://github.com/hyperledger/fabric-ca/releases/download/v<span class="variable">$&#123;CA_VERSION&#125;</span>/<span class="variable">$&#123;CA_BINARY_FILE&#125;</span>"</span></span><br><span class="line">    <span class="keyword">if</span> [ $? -eq 22 ]; <span class="keyword">then</span></span><br><span class="line">        <span class="built_in">echo</span></span><br><span class="line">        <span class="built_in">echo</span> <span class="string">"------&gt; <span class="variable">$&#123;CA_TAG&#125;</span> fabric-ca-client binary is not available to download  (Available from 1.1.0-rc1) &lt;----"</span></span><br><span class="line">        <span class="built_in">echo</span></span><br><span class="line">        <span class="built_in">exit</span></span><br><span class="line">    <span class="keyword">fi</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="title">pullDockerImages</span></span>() &#123;</span><br><span class="line">    <span class="built_in">command</span> -v docker &gt;&amp; /dev/null</span><br><span class="line">    NODOCKER=$?</span><br><span class="line">    <span class="keyword">if</span> [ <span class="string">"<span class="variable">$&#123;NODOCKER&#125;</span>"</span> == 0 ]; <span class="keyword">then</span></span><br><span class="line">        FABRIC_IMAGES=(peer orderer ccenv tools)</span><br><span class="line">        <span class="keyword">case</span> <span class="string">"<span class="variable">$VERSION</span>"</span> <span class="keyword">in</span></span><br><span class="line">        1.*)</span><br><span class="line">            FABRIC_IMAGES+=(javaenv)</span><br><span class="line">            <span class="built_in">shift</span></span><br><span class="line">            ;;</span><br><span class="line">        2.*)</span><br><span class="line">            FABRIC_IMAGES+=(nodeenv baseos javaenv)</span><br><span class="line">            <span class="built_in">shift</span></span><br><span class="line">            ;;</span><br><span class="line">        <span class="keyword">esac</span></span><br><span class="line">        <span class="built_in">echo</span> <span class="string">"FABRIC_IMAGES:"</span> <span class="string">"<span class="variable">$&#123;FABRIC_IMAGES[@]&#125;</span>"</span></span><br><span class="line">        <span class="built_in">echo</span> <span class="string">"===&gt; Pulling fabric Images"</span></span><br><span class="line">        dockerPull <span class="string">"<span class="variable">$&#123;FABRIC_TAG&#125;</span>"</span> <span class="string">"<span class="variable">$&#123;FABRIC_IMAGES[@]&#125;</span>"</span></span><br><span class="line">        <span class="built_in">echo</span> <span class="string">"===&gt; Pulling fabric ca Image"</span></span><br><span class="line">        CA_IMAGE=(ca)</span><br><span class="line">        dockerPull <span class="string">"<span class="variable">$&#123;CA_TAG&#125;</span>"</span> <span class="string">"<span class="variable">$&#123;CA_IMAGE[@]&#125;</span>"</span></span><br><span class="line">        <span class="built_in">echo</span> <span class="string">"===&gt; Pulling thirdparty docker images"</span></span><br><span class="line">        THIRDPARTY_IMAGES=(zookeeper kafka couchdb)</span><br><span class="line">        dockerPull <span class="string">"<span class="variable">$&#123;THIRDPARTY_TAG&#125;</span>"</span> <span class="string">"<span class="variable">$&#123;THIRDPARTY_IMAGES[@]&#125;</span>"</span></span><br><span class="line">        <span class="built_in">echo</span></span><br><span class="line">        <span class="built_in">echo</span> <span class="string">"===&gt; List out hyperledger docker images"</span></span><br><span class="line">        docker images | grep hyperledger</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">        <span class="built_in">echo</span> <span class="string">"========================================================="</span></span><br><span class="line">        <span class="built_in">echo</span> <span class="string">"Docker not installed, bypassing download of Fabric images"</span></span><br><span class="line">        <span class="built_in">echo</span> <span class="string">"========================================================="</span></span><br><span class="line">    <span class="keyword">fi</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">DOCKER=<span class="literal">true</span></span><br><span class="line">SAMPLES=<span class="literal">true</span></span><br><span class="line">BINARIES=<span class="literal">true</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Parse commandline args pull out</span></span><br><span class="line"><span class="comment"># version and/or ca-version strings first</span></span><br><span class="line"><span class="keyword">if</span> [ -n <span class="string">"<span class="variable">$1</span>"</span> ] &amp;&amp; [ <span class="string">"<span class="variable">$&#123;1:0:1&#125;</span>"</span> != <span class="string">"-"</span> ]; <span class="keyword">then</span></span><br><span class="line">    VERSION=<span class="variable">$1</span>;<span class="built_in">shift</span></span><br><span class="line">    <span class="keyword">if</span> [ -n <span class="string">"<span class="variable">$1</span>"</span> ]  &amp;&amp; [ <span class="string">"<span class="variable">$&#123;1:0:1&#125;</span>"</span> != <span class="string">"-"</span> ]; <span class="keyword">then</span></span><br><span class="line">        CA_VERSION=<span class="variable">$1</span>;<span class="built_in">shift</span></span><br><span class="line">        <span class="keyword">if</span> [ -n  <span class="string">"<span class="variable">$1</span>"</span> ] &amp;&amp; [ <span class="string">"<span class="variable">$&#123;1:0:1&#125;</span>"</span> != <span class="string">"-"</span> ]; <span class="keyword">then</span></span><br><span class="line">            THIRDPARTY_IMAGE_VERSION=<span class="variable">$1</span>;<span class="built_in">shift</span></span><br><span class="line">        <span class="keyword">fi</span></span><br><span class="line">    <span class="keyword">fi</span></span><br><span class="line"><span class="keyword">fi</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># prior to 1.2.0 architecture was determined by uname -m</span></span><br><span class="line"><span class="keyword">if</span> [[ <span class="variable">$VERSION</span> =~ ^1\.[0-1]\.* ]]; <span class="keyword">then</span></span><br><span class="line">    <span class="built_in">export</span> FABRIC_TAG=<span class="variable">$&#123;MARCH&#125;</span>-<span class="variable">$&#123;VERSION&#125;</span></span><br><span class="line">    <span class="built_in">export</span> CA_TAG=<span class="variable">$&#123;MARCH&#125;</span>-<span class="variable">$&#123;CA_VERSION&#125;</span></span><br><span class="line">    <span class="built_in">export</span> THIRDPARTY_TAG=<span class="variable">$&#123;MARCH&#125;</span>-<span class="variable">$&#123;THIRDPARTY_IMAGE_VERSION&#125;</span></span><br><span class="line"><span class="keyword">else</span></span><br><span class="line">    <span class="comment"># starting with 1.2.0, multi-arch images will be default</span></span><br><span class="line">    : <span class="string">"<span class="variable">$&#123;CA_TAG:="$CA_VERSION"&#125;</span>"</span></span><br><span class="line">    : <span class="string">"<span class="variable">$&#123;FABRIC_TAG:="$VERSION"&#125;</span>"</span></span><br><span class="line">    : <span class="string">"<span class="variable">$&#123;THIRDPARTY_TAG:="$THIRDPARTY_IMAGE_VERSION"&#125;</span>"</span></span><br><span class="line"><span class="keyword">fi</span></span><br><span class="line"></span><br><span class="line">BINARY_FILE=hyperledger-fabric-<span class="variable">$&#123;ARCH&#125;</span>-<span class="variable">$&#123;VERSION&#125;</span>.tar.gz</span><br><span class="line">CA_BINARY_FILE=hyperledger-fabric-ca-<span class="variable">$&#123;ARCH&#125;</span>-<span class="variable">$&#123;CA_VERSION&#125;</span>.tar.gz</span><br><span class="line"></span><br><span class="line"><span class="comment"># then parse opts</span></span><br><span class="line"><span class="keyword">while</span> <span class="built_in">getopts</span> <span class="string">"h?dsb"</span> opt; <span class="keyword">do</span></span><br><span class="line">    <span class="keyword">case</span> <span class="string">"<span class="variable">$opt</span>"</span> <span class="keyword">in</span></span><br><span class="line">        h|\?)</span><br><span class="line">            printHelp</span><br><span class="line">            <span class="built_in">exit</span> 0</span><br><span class="line">            ;;</span><br><span class="line">        d)  DOCKER=<span class="literal">false</span></span><br><span class="line">            ;;</span><br><span class="line">        s)  SAMPLES=<span class="literal">false</span></span><br><span class="line">            ;;</span><br><span class="line">        b)  BINARIES=<span class="literal">false</span></span><br><span class="line">            ;;</span><br><span class="line">    <span class="keyword">esac</span></span><br><span class="line"><span class="keyword">done</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> [ <span class="string">"<span class="variable">$SAMPLES</span>"</span> == <span class="string">"true"</span> ]; <span class="keyword">then</span></span><br><span class="line">    <span class="built_in">echo</span></span><br><span class="line">    <span class="built_in">echo</span> <span class="string">"Clone hyperledger/fabric-samples repo"</span></span><br><span class="line">    <span class="built_in">echo</span></span><br><span class="line">    cloneSamplesRepo</span><br><span class="line"><span class="keyword">fi</span></span><br><span class="line"><span class="keyword">if</span> [ <span class="string">"<span class="variable">$BINARIES</span>"</span> == <span class="string">"true"</span> ]; <span class="keyword">then</span></span><br><span class="line">    <span class="built_in">echo</span></span><br><span class="line">    <span class="built_in">echo</span> <span class="string">"Pull Hyperledger Fabric binaries"</span></span><br><span class="line">    <span class="built_in">echo</span></span><br><span class="line">    pullBinaries</span><br><span class="line"><span class="keyword">fi</span></span><br><span class="line"><span class="keyword">if</span> [ <span class="string">"<span class="variable">$DOCKER</span>"</span> == <span class="string">"true"</span> ]; <span class="keyword">then</span></span><br><span class="line">    <span class="built_in">echo</span></span><br><span class="line">    <span class="built_in">echo</span> <span class="string">"Pull Hyperledger Fabric docker images"</span></span><br><span class="line">    <span class="built_in">echo</span></span><br><span class="line">    pullDockerImages</span><br><span class="line"><span class="keyword">fi</span></span><br></pre></td></tr></table></figure>
-
-
-
-<p>该 <code>bootstrap.sh</code> 可执行脚本文件的作用：</p>
-<ol>
-<li>如果在当前目录中没有 <code>hyperledger/fabric-samples</code>，则从 <code>github.com</code> 克隆 <code>hyperledger/fabric-samples</code> 存储库</li>
-<li>使用 <code>checkout</code> 签出对应指定的版本标签</li>
-<li>将指定版本的Hyperledger Fabric平台特定的二进制文件和配置文件安装到 <code>fabric-samples</code> 存储库的根目录中</li>
-<li>下载指定版本的 <code>Hyperledger Fabric docker</code> 镜像文件</li>
-<li>将下载的 docker 镜像文件标记为 “latest”</li>
-</ol>
-<p><strong>赋予bootstrap.sh可执行权限并运行</strong></p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> chmod +x bootstrap.sh</span></span><br></pre></td></tr></table></figure>
-
-<p><strong>执行<code>bootstrap.sh 指定版本</code></strong></p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> sudo ./bootstrap.sh 1.2.0</span></span><br></pre></td></tr></table></figure>
-
-<blockquote>
-<p>确定网络稳定，否则会导致各种问题，例如下载到一半时网络超时，下载失败等等；由于Docker的各种镜像文件下载时间较长，所以请耐心等待。</p>
-</blockquote>
-<p>下载完成后，查看相关输出内容；如果下载有失败的镜像, 可再次执行 <code>$ sudo ./bootstrap.sh 1.2.0</code> 命令重新下载。</p>
-<blockquote>
-<p>重新执行脚本命令对于已下载的Docker镜像文件不会再次重新下载。</p>
-</blockquote>
-<p>安装完成后终端自动输出：</p>
-<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">===&gt;</span> <span class="string">List</span> <span class="string">out</span> <span class="string">hyperledger</span> <span class="string">docker</span> <span class="string">images</span></span><br><span class="line"><span class="string">hyperledger/fabric-ca</span>          <span class="number">1.2</span><span class="number">.0</span>       <span class="string">66cc132bd09c</span>    <span class="number">4</span> <span class="string">weeks</span> <span class="string">ago</span>     <span class="number">252</span> <span class="string">MB</span></span><br><span class="line"><span class="string">hyperledger/fabric-ca</span>          <span class="string">latest</span>      <span class="string">66cc132bd09c</span>    <span class="number">4</span> <span class="string">weeks</span> <span class="string">ago</span>     <span class="number">252</span> <span class="string">MB</span></span><br><span class="line"><span class="string">hyperledger/fabric-tools</span>       <span class="number">1.2</span><span class="number">.0</span>       <span class="number">379602873003</span>    <span class="number">4</span> <span class="string">weeks</span> <span class="string">ago</span>     <span class="number">1.51</span> <span class="string">GB</span></span><br><span class="line"><span class="string">hyperledger/fabric-tools</span>       <span class="string">latest</span>      <span class="number">379602873003</span>    <span class="number">4</span> <span class="string">weeks</span> <span class="string">ago</span>     <span class="number">1.51</span> <span class="string">GB</span></span><br><span class="line"><span class="string">hyperledger/fabric-ccenv</span>       <span class="number">1.2</span><span class="number">.0</span>       <span class="string">6acf31e2d9a4</span>    <span class="number">4</span> <span class="string">weeks</span> <span class="string">ago</span>     <span class="number">1.43</span> <span class="string">GB</span></span><br><span class="line"><span class="string">hyperledger/fabric-ccenv</span>       <span class="string">latest</span>      <span class="string">6acf31e2d9a4</span>    <span class="number">4</span> <span class="string">weeks</span> <span class="string">ago</span>     <span class="number">1.43</span> <span class="string">GB</span></span><br><span class="line"><span class="string">hyperledger/fabric-orderer</span>     <span class="number">1.2</span><span class="number">.0</span>       <span class="string">4baf7789a8ec</span>    <span class="number">4</span> <span class="string">weeks</span> <span class="string">ago</span>     <span class="number">152</span> <span class="string">MB</span></span><br><span class="line"><span class="string">hyperledger/fabric-orderer</span>     <span class="string">latest</span>      <span class="string">4baf7789a8ec</span>    <span class="number">4</span> <span class="string">weeks</span> <span class="string">ago</span>     <span class="number">152</span> <span class="string">MB</span></span><br><span class="line"><span class="string">hyperledger/fabric-peer</span>        <span class="number">1.2</span><span class="number">.0</span>       <span class="string">82c262e65984</span>    <span class="number">4</span> <span class="string">weeks</span> <span class="string">ago</span>     <span class="number">159</span> <span class="string">MB</span></span><br><span class="line"><span class="string">hyperledger/fabric-peer</span>        <span class="string">latest</span>      <span class="string">82c262e65984</span>    <span class="number">4</span> <span class="string">weeks</span> <span class="string">ago</span>     <span class="number">159</span> <span class="string">MB</span></span><br><span class="line"><span class="string">hyperledger/fabric-zookeeper</span>   <span class="number">0.4</span><span class="number">.10</span>      <span class="string">2b51158f3898</span>    <span class="number">5</span> <span class="string">weeks</span> <span class="string">ago</span>     <span class="number">1.44</span> <span class="string">GB</span></span><br><span class="line"><span class="string">hyperledger/fabric-zookeeper</span>   <span class="string">latest</span>      <span class="string">2b51158f3898</span>    <span class="number">5</span> <span class="string">weeks</span> <span class="string">ago</span>     <span class="number">1.44</span> <span class="string">GB</span></span><br><span class="line"><span class="string">hyperledger/fabric-kafka</span>       <span class="number">0.4</span><span class="number">.10</span>      <span class="string">936aef6db0e6</span>    <span class="number">5</span> <span class="string">weeks</span> <span class="string">ago</span>     <span class="number">1.45</span> <span class="string">GB</span></span><br><span class="line"><span class="string">hyperledger/fabric-kafka</span>       <span class="string">latest</span>      <span class="string">936aef6db0e6</span>    <span class="number">5</span> <span class="string">weeks</span> <span class="string">ago</span>     <span class="number">1.45</span> <span class="string">GB</span></span><br><span class="line"><span class="string">hyperledger/fabric-couchdb</span>     <span class="number">0.4</span><span class="number">.10</span>      <span class="string">3092eca241fc</span>    <span class="number">5</span> <span class="string">weeks</span> <span class="string">ago</span>     <span class="number">1.61</span> <span class="string">GB</span></span><br><span class="line"><span class="string">hyperledger/fabric-couchdb</span>     <span class="string">latest</span>      <span class="string">3092eca241fc</span>    <span class="number">5</span> <span class="string">weeks</span> <span class="string">ago</span>     <span class="number">1.61</span> <span class="string">GB</span></span><br></pre></td></tr></table></figure>
-
-<p><strong>添加环境变量（可选执行命令）</strong></p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> <span class="built_in">export</span> PATH=&lt;path to download location&gt;/bin:<span class="variable">$PATH</span></span></span><br></pre></td></tr></table></figure>
-
-<blockquote>
-<p>表示 <code>fabric-samples</code> 文件目录所在路径</p>
-</blockquote>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">例:  $ export PATH=$HOME/hyfa/fabric-samples/bin:$PATH</span><br></pre></td></tr></table></figure>
-
-<h3 id="2-Fabric源码方式编译"><a href="#2-Fabric源码方式编译" class="headerlink" title="2 Fabric源码方式编译"></a>2 Fabric源码方式编译</h3><p>上一小节中，我们以提供脚本的方式，可以下载并安装 samples 和二进制文件到操作系统中，大大简化的安装过程。</p>
-<p>Hyperledger Fabric 还有另外的一种安装方式，就是以源代码的方式进行本地编译安装，此方式相较上一小节的方式，略微复杂，需要手动编译生成相应的工具，我们在此给大家逐一介绍</p>
-<h4 id="下载源码"><a href="#下载源码" class="headerlink" title="下载源码"></a>下载源码</h4><p>首先，使用 <code>mkdir</code> 命令创建相应的目录，然后使用 <code>git clone</code> 命令将 <code>Hyperledger Fabric</code> 源代码克隆至该目录中：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> mkdir -p <span class="variable">$GOPATH</span>/src/github.com/hyperledger/</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> <span class="built_in">cd</span> <span class="variable">$GOPATH</span>/src/github.com/hyperledger/</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> git <span class="built_in">clone</span> https://github.com/hyperledger/fabric.git</span></span><br></pre></td></tr></table></figure>
-
-<blockquote>
-<p>提示：也可以使用 <code>go get</code> 命令下载源码，需要手动创建相应的目录：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> go get github.com/hyperledger/fabric</span></span><br></pre></td></tr></table></figure>
-
-<p>注：下载时间可能需要几分钟，也可能需要十几分钟，取决于当前的网络环境，请耐心等待。</p>
-</blockquote>
-<p>然后使用 <code>git checkout</code> 命令切换至指定的分支：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> <span class="built_in">cd</span> <span class="variable">$GOPATH</span>/src/github.com/hyperledger/fabric/</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> git checkout -b v1.2.0</span></span><br></pre></td></tr></table></figure>
-
-<p>源码下载完成之后，并不能直接使用，我们需要对其进行编译，生成所需要的各种节点及相应的工具。我们直接使用源码中提供的 <code>Makefile</code> 来进行编译，首先对 <code>Makefile</code> 文件进行编辑，指定相应的版本：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> vim Makefile</span></span><br></pre></td></tr></table></figure>
-
-<p>将文件中 <code>BASE_VERSION、PREV_VERSION、CHAINTOOL_RELEASE、BASEIMAGE_RELEASE</code> 的值进行修改，修改之后的内容为：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">BASE_VERSION = 1.2.1</span><br><span class="line">PREV_VERSION = 1.2.0</span><br><span class="line">CHAINTOOL_RELEASE=1.1.1</span><br><span class="line">BASEIMAGE_RELEASE=0.4.10</span><br></pre></td></tr></table></figure>
-
-<h4 id="编译Orderer"><a href="#编译Orderer" class="headerlink" title="编译Orderer"></a>编译Orderer</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> <span class="built_in">cd</span> <span class="variable">$GOPATH</span>/src/github.com/hyperledger/fabric/</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> sudo make orderer</span></span><br></pre></td></tr></table></figure>
-
-<p>命令执行后终端输出如下：</p>
-<p><img src="http://image.chaindesk.cn/makeorderer.png/mark" alt="make_orderer"></p>
-<h4 id="编译Peer"><a href="#编译Peer" class="headerlink" title="编译Peer"></a>编译Peer</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash">sudo make peer</span></span><br></pre></td></tr></table></figure>
-
-<p><img src="http://image.chaindesk.cn/makepeer.png/mark" alt="make_peer"></p>
-<p>查看 <code>.build/bin</code> 目录</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> <span class="built_in">cd</span> build/bin/</span></span><br><span class="line"><span class="meta">$</span><span class="bash">ls</span></span><br></pre></td></tr></table></figure>
-
-<p><img src="http://image.chaindesk.cn/buildbindir.png/mark" alt="buildbindir"></p>
-<h3 id="编译生成相关工具"><a href="#编译生成相关工具" class="headerlink" title="编译生成相关工具"></a>编译生成相关工具</h3><p><code>Hyperledger Fabric</code> 除了 <code>Orderer</code> 和 <code>Peer</code> 之外，还为我们提供了在搭建网络环境时所需要的一系列辅助工具：</p>
-<ul>
-<li><strong>configtxgen：</strong>生成初始区块及通道交易配置文件的工具</li>
-<li><strong>cryptogen：</strong>生成组织结构及相应的的身份文件的工具</li>
-<li><strong>configtxlator：</strong>将指定的文件在二进制格式与JSON格式之间进行转换</li>
-</ul>
-<p>编译生成这些工具同样使用 <code>make</code> 即可：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> sudo make configtxgen </span></span><br><span class="line"><span class="meta">$</span><span class="bash"> sudo make cryptogen </span></span><br><span class="line"><span class="meta">$</span><span class="bash"> sduo make configtxlator</span></span><br></pre></td></tr></table></figure>
-
-<p><img src="http://image.chaindesk.cn/maketools.png/mark" alt="make_tools"></p>
-<h4 id="编译生成-docker-镜像"><a href="#编译生成-docker-镜像" class="headerlink" title="编译生成 docker 镜像"></a>编译生成 docker 镜像</h4><p>将当前用户添加到 docker 组</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> sudo usermod -aG docker hg  //hg使用户名</span></span><br></pre></td></tr></table></figure>
-
-<p>添加成功后注销或重启系统。</p>
-<p>安装依赖的 <code>libltdl-dev</code> 库：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> sudo apt-get install libltdl-dev</span></span><br></pre></td></tr></table></figure>
-
-<p>获取镜像方式有两种我用的第二种</p>
-<p><strong>获取镜像方式一：</strong></p>
-<p>编译生成docker镜像需要使用到Go的工具，所以我们需要通过 <code>git clone</code> 命令从 <code>github.com</code> 克隆至当前系统中：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> mkdir -p <span class="variable">$GOPATH</span>/src/golang.org/x</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> <span class="built_in">cd</span> <span class="variable">$GOPATH</span>/src/golang.org/x</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> git <span class="built_in">clone</span> https://github.com/golang/tools.git</span></span><br></pre></td></tr></table></figure>
-
-<p>执行命令后将指定的环境变量设置到用户的环境文件中(.bashrc)中</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> vim ~/.bashrc</span></span><br><span class="line"></span><br><span class="line">export PATH=$PATH:$GOPATH/bin</span><br></pre></td></tr></table></figure>
-
-<p>执行 <code>source</code> 命令：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> <span class="built_in">source</span> ~/.bashrc</span></span><br></pre></td></tr></table></figure>
-
-<p>Fabric代码由Golang 构建，所以需要安装Go相关的工具，以方便开发和调试：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> mkdir -p <span class="variable">$GOPATH</span>/src/golang.org/x</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> <span class="built_in">cd</span> <span class="variable">$GOPATH</span>/src/golang.org/x</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> git <span class="built_in">clone</span> https://github.com/golang/net.git</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> git <span class="built_in">clone</span> https://github.com/golang/tools.git</span></span><br><span class="line"></span><br><span class="line"><span class="meta">$</span><span class="bash"> <span class="built_in">cd</span> <span class="variable">$GOPATH</span></span></span><br><span class="line"><span class="meta">$</span><span class="bash"> go get github.com/kardianos/govendor</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> go get github.com/onsi/ginkgo/ginkgo</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> go get github.com/golang/protobuf/protoc-gen-go</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> go get -u github.com/axw/gocov/...</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> go get -u github.com/AlekSi/gocov-xml</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> go get -u github.com/client9/misspell/cmd/misspell</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> go get -u golang.org/x/tools/cmd/goimports</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> go get -u github.com/golang/lint/golint</span></span><br></pre></td></tr></table></figure>
-
-<p>将之前安装的 Go工具复制到Fabric目录：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> <span class="built_in">cd</span> <span class="variable">$GOPATH</span>/src/github.com/hyperledger/fabric/</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> mkdir -p .build/docker/gotools/bin</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> cp ~/go/bin/* .build/docker/gotools/bin</span></span><br></pre></td></tr></table></figure>
-
-<p>使用 <code>make docker</code> 编译生成相关的 <code>docker</code> 镜像：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> <span class="built_in">cd</span> <span class="variable">$GOPATH</span>/src/github.com/hyperledger/fabric/</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> make docker</span></span><br></pre></td></tr></table></figure>
-
-<p><strong>获取镜像方式二：</strong></p>
-<p>可以直接从Dockerhub拉取镜像，使用 <code>docker pull</code> 命令拉取指定的 docker 镜像</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> <span class="built_in">export</span> FABRIC_TAG=1.2.0</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> <span class="built_in">export</span> CA_TAG=1.2.0</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> <span class="built_in">export</span> THIRDPARTY_IMAGE_VERSION=0.4.10</span></span><br><span class="line"></span><br><span class="line"><span class="meta">$</span><span class="bash"> docker pull hyperledger/fabric-peer:<span class="variable">$FABRIC_TAG</span> \</span></span><br><span class="line">&amp;&amp; docker pull hyperledger/fabric-orderer:$FABRIC_TAG \</span><br><span class="line">&amp;&amp; docker pull hyperledger/fabric-ca:$CA_TAG \</span><br><span class="line">&amp;&amp; docker pull hyperledger/fabric-tools:$FABRIC_TAG \</span><br><span class="line">&amp;&amp; docker pull hyperledger/fabric-ccenv:$FABRIC_TAG \</span><br><span class="line">&amp;&amp; docker pull hyperledger/fabric-baseimage:$THIRDPARTY_IMAGE_VERSION \</span><br><span class="line">&amp;&amp; docker pull hyperledger/fabric-baseos:$THIRDPARTY_IMAGE_VERSION \</span><br><span class="line">&amp;&amp; docker pull hyperledger/fabric-couchdb:$THIRDPARTY_IMAGE_VERSION \</span><br><span class="line">&amp;&amp; docker pull hyperledger/fabric-kafka:$THIRDPARTY_IMAGE_VERSION \</span><br><span class="line">&amp;&amp; docker pull hyperledger/fabric-zookeeper:$THIRDPARTY_IMAGE_VERSION</span><br></pre></td></tr></table></figure>
-
-<p>将已下载的镜像标记为最新</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> docker tag hyperledger/fabric-peer:<span class="variable">$FABRIC_TAG</span> hyperledger/fabric-peer \</span></span><br><span class="line">&amp;&amp; docker tag hyperledger/fabric-orderer:$FABRIC_TAG hyperledger/fabric-orderer \</span><br><span class="line">&amp;&amp; docker tag hyperledger/fabric-ca:$CA_TAG hyperledger/fabric-ca \</span><br><span class="line">&amp;&amp; docker tag hyperledger/fabric-tools:$FABRIC_TAG hyperledger/fabric-tools \</span><br><span class="line">&amp;&amp; docker tag hyperledger/fabric-ccenv:$FABRIC_TAG hyperledger/fabric-ccenv \</span><br><span class="line">&amp;&amp; docker tag hyperledger/fabric-baseimage:$THIRDPARTY_IMAGE_VERSION hyperledger/fabric-baseimage \</span><br><span class="line">&amp;&amp; docker tag hyperledger/fabric-baseos:$THIRDPARTY_IMAGE_VERSION hyperledger/fabric-baseos \</span><br><span class="line">&amp;&amp; docker tag hyperledger/fabric-couchdb:$THIRDPARTY_IMAGE_VERSION hyperledger/fabric-couchdb \</span><br><span class="line">&amp;&amp; docker tag hyperledger/fabric-kafka:$THIRDPARTY_IMAGE_VERSION hyperledger/fabric-kafka \</span><br><span class="line">&amp;&amp; docker tag hyperledger/fabric-zookeeper:$THIRDPARTY_IMAGE_VERSION hyperledger/fabric-zookeeper</span><br></pre></td></tr></table></figure>
-
-<p>之后使用 <code>docker images</code> 命令查看相关的镜像信息：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> docker images</span></span><br></pre></td></tr></table></figure>
-
-<p><img src="http://image.chaindesk.cn/docker-tag.png/mark" alt="dockertag"></p>
-<blockquote>
-<p>Hyperledger Fabric 可以有两种方式进行编译安装，第一种方式（bootstrap.sh脚本方式）进行环境的安装，优点是简单、方便，能够快速上手；第二种方式以 Fabric 源码方式进行编译，适合动手能力较强的人员，优点是可以对 Hyperledger Fabric 相关组件有深入的理解，但缺点是容易出现各种错误且修正比较麻烦。</p>
-<p>注：本书的 Hyperledger Fabric 环境为方便起见，所以采用第一种方式（bootstrap.sh脚本方式）进行的安装构建。</p>
-</blockquote>
-<h2 id="FAQ-1"><a href="#FAQ-1" class="headerlink" title="FAQ"></a>FAQ</h2><ol>
-<li><p><strong>bootstrap.sh脚本中的内容是干什么用的？</strong></p>
-<p>脚本执行后将下载并提取设置网络所需的所有特定于平台的二进制文件，并保存在本地仓库中，</p>
-<p>然后将Docker Hub中的Hyperledger Fabric docker镜像下载到本地Docker注册表中，并将其标记为”最新”。</p>
-</li>
-<li><p><strong>下载Docker镜像文件速度特别慢，有什么好的解决方式？</strong></p>
-<p>可在 <code>https://www.daocloud.io/</code> 网站中注册一个账号, 注册成功后， 可以点击加速器图标（如下图所示）以获取Docker加速器。</p>
-<p><img src="http://image.chaindesk.cn/1.3.jpg/mark" alt="Docker加速器图标"></p>
-<p><strong>配置Docker加速器</strong></p>
-<p>在命令提示符中输入如下图所示的daocloud.io分配的加速器脚本命令（将输入框中的脚本命令复制到命令提示符窗口中执行即可）， 执行完脚本之后， 不要忘记重启Docker服务</p>
-<p><img src="http://image.chaindesk.cn/1.4.jpg/mark" alt="Docker加速器脚本命令"></p>
-<p><strong>重启Docker服务</strong></p>
-<p>执行完该命令后，必须重启Docker服务以生效</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> sudo systemctl restart docker.service</span></span><br></pre></td></tr></table></figure>
-</li>
-<li><p><strong>下载完成后，添加的环境变量有什么意义？</strong></p>
-<p>执行该命令后，意义为在系统中任何路径下使用Fabric相关的命令都可以让系统能够找到该命令并且顺利执行。后期我们会进入到Fabric目录中执行相应的命令，所以该环境变量也可以不添加。</p>
-</li>
-</ol>
-<h2 id="第三步：测试Fabric网络环境"><a href="#第三步：测试Fabric网络环境" class="headerlink" title="第三步：测试Fabric网络环境"></a>第三步：测试Fabric网络环境</h2><h2 id="目标-1"><a href="#目标-1" class="headerlink" title="目标"></a>目标</h2><ol>
-<li><p>熟悉 byfn.sh 脚本的相关命令</p>
-</li>
-<li><p>能够自动实现你的第一个Fabric网络环境</p>
-<h2 id="任务实现"><a href="#任务实现" class="headerlink" title="任务实现"></a>任务实现</h2><p><code>Hyperledger Fabric</code> 网络环境的构成较为复杂，由N个节点组成一个分布式网络，每个节点都有自己的实体身份标识；而且 <code>Hyperledger Fabric</code> 还可以通过 <code>channel（通道）</code> 将一个网络分割成为不同的私有子网，从而实现不同账本数据的隔离性。所以，我们在使用 <code>Hyperledger Fabric</code> 之前，必须先搭建所需的网络环境。</p>
-<p>搭建 <code>Hyperledger Fabric</code> 网络环境可以有两种方式实现：</p>
-</li>
-<li><p>使用自动化脚本实现</p>
-<p>使用一个名为自动化脚本 <code>byfn.sh</code> 的脚本文件自动构建一个简易的 <code>Hyperledger Fabric</code> 网络环境并引导启动，且自动生成相应的一些配置文件，一般作为测试环境使用，本节内容主要就是讲解此方式。</p>
-</li>
-<li><p>手动实现</p>
-<p>为了适应不同的且较为复杂的场景，自动化脚本方式就有些力不从心，这时，必须由开发/运维人员根据不同的情况，手动输入相关命令构建一个相当复杂的网络环境。此种实现方式参见第三章的相关内容。</p>
-<h3 id="1-测试Fabric环境"><a href="#1-测试Fabric环境" class="headerlink" title="1. 测试Fabric环境"></a>1. 测试Fabric环境</h3><h4 id="1-1-byfn-sh都有哪些命令"><a href="#1-1-byfn-sh都有哪些命令" class="headerlink" title="1.1 byfn.sh都有哪些命令"></a>1.1 byfn.sh都有哪些命令</h4><p>进入fabric-samples目录中的 first-networkd 子目录</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> <span class="built_in">cd</span> fabric-samples/first-network</span></span><br></pre></td></tr></table></figure>
-
-<p>在<code>first-network</code>目录下有一个自动化脚本 <code>byfn.sh</code>，可以查看相应命令：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> ./byfn.sh --<span class="built_in">help</span></span></span><br></pre></td></tr></table></figure>
-
-<p>部分输出内容如下：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">up：启动</span><br><span class="line">down：清除网络</span><br><span class="line">restart：重新启动</span><br><span class="line">generate：生成证书及创世区块</span><br><span class="line">upgrade：将网络从1.1.x升级到1.2.x</span><br><span class="line"></span><br><span class="line">-c：用于指定channelName，默认值"mychannel"</span><br><span class="line">-t：CLI timeout时间，默认值10</span><br><span class="line">-d：延迟启动，默认值3</span><br><span class="line">-f：使用指定的网络拓扑结构文件，默认使用docker-compose-cli.yaml</span><br><span class="line">-s：指定使用的数据库，可选 goleveldb/couchdb</span><br><span class="line">-l：指定chaincode使用的语言，可选golang/node</span><br><span class="line">-i：指定镜像tag，默认 "latest"</span><br><span class="line">详细参数可通过./byfn.sh help查看</span><br></pre></td></tr></table></figure>
-
-<h3 id="2-构建你的第一个Fabric网络"><a href="#2-构建你的第一个Fabric网络" class="headerlink" title="2 构建你的第一个Fabric网络"></a>2 构建你的第一个Fabric网络</h3><h4 id="2-1-生成证书和密钥"><a href="#2-1-生成证书和密钥" class="headerlink" title="2.1 生成证书和密钥"></a>2.1 生成证书和密钥</h4><p><code>byfn.sh</code> 自动化脚本文件为各种 <code>fabric</code> 网络实体生成所有证书和密钥，并且可以实现引导服务启动及配置通道所需的一系列配置文件：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> sudo ./byfn.sh -m generate</span></span><br></pre></td></tr></table></figure>
-
-<p>命令成功执行后会生成1个orderer + 4个peer + 1个CLI的网络结构，4个peer包含在2个org中。</p>
-<p>在提示中输入 <code>y</code>，之后 终端输出日志内容如下：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br></pre></td><td class="code"><pre><span class="line">Generating certs and genesis block for channel 'mychannel' with CLI timeout of '10' seconds and CLI delay of '3' seconds</span><br><span class="line">Continue? [Y/n] y</span><br><span class="line">proceeding ...</span><br><span class="line">/home/kevin/hyfa/fabric-samples/first-network/../bin/cryptogen</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"><span class="comment">#########################################################</span></span></span><br><span class="line"><span class="meta">#</span><span class="bash"><span class="comment">#### Generate certificates using cryptogen tool #########</span></span></span><br><span class="line"><span class="meta">#</span><span class="bash"><span class="comment">#########################################################</span></span></span><br><span class="line">+ cryptogen generate --config=./crypto-config.yaml</span><br><span class="line">org1.example.com</span><br><span class="line">org2.example.com</span><br><span class="line">+ res=0</span><br><span class="line">+ set +x</span><br><span class="line"></span><br><span class="line">/home/kevin/hyfa/fabric-samples/first-network/../bin/configtxgen</span><br><span class="line"><span class="meta">#</span><span class="bash"><span class="comment">#########################################################</span></span></span><br><span class="line"><span class="meta">#</span><span class="bash"><span class="comment">########  Generating Orderer Genesis block ##############</span></span></span><br><span class="line"><span class="meta">#</span><span class="bash"><span class="comment">#########################################################</span></span></span><br><span class="line">+ configtxgen -profile TwoOrgsOrdererGenesis -outputBlock ./channel-artifacts/genesis.block</span><br><span class="line">2018-08-28 10:33:52.689 CST [common/tools/configtxgen] main -&gt; WARN 001 Omitting the channel ID for configtxgen is deprecated.  Explicitly passing the channel ID will be required in the future, defaulting to 'testchainid'.</span><br><span class="line">2018-08-28 10:33:52.691 CST [common/tools/configtxgen] main -&gt; INFO 002 Loading configuration</span><br><span class="line">2018-08-28 10:33:52.700 CST [common/tools/configtxgen/encoder] NewChannelGroup -&gt; WARN 003 Default policy emission is deprecated, please include policy specificiations for the channel group in configtx.yaml</span><br><span class="line">2018-08-28 10:33:52.700 CST [common/tools/configtxgen/encoder] NewOrdererGroup -&gt; WARN 004 Default policy emission is deprecated, please include policy specificiations for the orderer group in configtx.yaml</span><br><span class="line">2018-08-28 10:33:52.701 CST [common/tools/configtxgen/encoder] NewOrdererOrgGroup -&gt; WARN 005 Default policy emission is deprecated, please include policy specificiations for the orderer org group OrdererOrg in configtx.yaml</span><br><span class="line">2018-08-28 10:33:52.702 CST [msp] getMspConfig -&gt; INFO 006 Loading NodeOUs</span><br><span class="line">2018-08-28 10:33:52.703 CST [common/tools/configtxgen/encoder] NewOrdererOrgGroup -&gt; WARN 007 Default policy emission is deprecated, please include policy specificiations for the orderer org group Org1MSP in configtx.yaml</span><br><span class="line">2018-08-28 10:33:52.703 CST [msp] getMspConfig -&gt; INFO 008 Loading NodeOUs</span><br><span class="line">2018-08-28 10:33:52.703 CST [common/tools/configtxgen/encoder] NewOrdererOrgGroup -&gt; WARN 009 Default policy emission is deprecated, please include policy specificiations for the orderer org group Org2MSP in configtx.yaml</span><br><span class="line">2018-08-28 10:33:52.704 CST [common/tools/configtxgen] doOutputBlock -&gt; INFO 00a Generating genesis block</span><br><span class="line">2018-08-28 10:33:52.720 CST [common/tools/configtxgen] doOutputBlock -&gt; INFO 00b Writing genesis block</span><br><span class="line">+ res=0</span><br><span class="line">+ set +x</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"><span class="comment">################################################################</span></span></span><br><span class="line"><span class="meta">#</span><span class="bash"><span class="comment">## Generating channel configuration transaction 'channel.tx' ###</span></span></span><br><span class="line"><span class="meta">#</span><span class="bash"><span class="comment">################################################################</span></span></span><br><span class="line">+ configtxgen -profile TwoOrgsChannel -outputCreateChannelTx ./channel-artifacts/channel.tx -channelID mychannel</span><br><span class="line">2018-08-28 10:33:52.754 CST [common/tools/configtxgen] main -&gt; INFO 001 Loading configuration</span><br><span class="line">2018-08-28 10:33:52.762 CST [common/tools/configtxgen] doOutputChannelCreateTx -&gt; INFO 002 Generating new channel configtx</span><br><span class="line">2018-08-28 10:33:52.763 CST [common/tools/configtxgen/encoder] NewApplicationGroup -&gt; WARN 003 Default policy emission is deprecated, please include policy specificiations for the application group in configtx.yaml</span><br><span class="line">2018-08-28 10:33:52.763 CST [msp] getMspConfig -&gt; INFO 004 Loading NodeOUs</span><br><span class="line">2018-08-28 10:33:52.764 CST [common/tools/configtxgen/encoder] NewApplicationOrgGroup -&gt; WARN 005 Default policy emission is deprecated, please include policy specificiations for the application org group Org1MSP in configtx.yaml</span><br><span class="line">2018-08-28 10:33:52.764 CST [msp] getMspConfig -&gt; INFO 006 Loading NodeOUs</span><br><span class="line">2018-08-28 10:33:52.765 CST [common/tools/configtxgen/encoder] NewApplicationOrgGroup -&gt; WARN 007 Default policy emission is deprecated, please include policy specificiations for the application org group Org2MSP in configtx.yaml</span><br><span class="line">2018-08-28 10:33:52.768 CST [common/tools/configtxgen] doOutputChannelCreateTx -&gt; INFO 008 Writing new channel tx</span><br><span class="line">+ res=0</span><br><span class="line">+ set +x</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"><span class="comment">################################################################</span></span></span><br><span class="line"><span class="meta">#</span><span class="bash"><span class="comment">######    Generating anchor peer update for Org1MSP   ##########</span></span></span><br><span class="line"><span class="meta">#</span><span class="bash"><span class="comment">################################################################</span></span></span><br><span class="line">+ configtxgen -profile TwoOrgsChannel -outputAnchorPeersUpdate ./channel-artifacts/Org1MSPanchors.tx -channelID mychannel -asOrg Org1MSP</span><br><span class="line">2018-08-28 10:33:52.801 CST [common/tools/configtxgen] main -&gt; INFO 001 Loading configuration</span><br><span class="line">2018-08-28 10:33:52.813 CST [common/tools/configtxgen] doOutputAnchorPeersUpdate -&gt; INFO 002 Generating anchor peer update</span><br><span class="line">2018-08-28 10:33:52.815 CST [common/tools/configtxgen] doOutputAnchorPeersUpdate -&gt; INFO 003 Writing anchor peer update</span><br><span class="line">+ res=0</span><br><span class="line">+ set +x</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"><span class="comment">################################################################</span></span></span><br><span class="line"><span class="meta">#</span><span class="bash"><span class="comment">######    Generating anchor peer update for Org2MSP   ##########</span></span></span><br><span class="line"><span class="meta">#</span><span class="bash"><span class="comment">################################################################</span></span></span><br><span class="line">+ configtxgen -profile TwoOrgsChannel -outputAnchorPeersUpdate ./channel-artifacts/Org2MSPanchors.tx -channelID mychannel -asOrg Org2MSP</span><br><span class="line">2018-08-28 10:33:52.852 CST [common/tools/configtxgen] main -&gt; INFO 001 Loading configuration</span><br><span class="line">2018-08-28 10:33:52.864 CST [common/tools/configtxgen] doOutputAnchorPeersUpdate -&gt; INFO 002 Generating anchor peer update</span><br><span class="line">2018-08-28 10:33:52.865 CST [common/tools/configtxgen] doOutputAnchorPeersUpdate -&gt; INFO 003 Writing anchor peer update</span><br><span class="line">+ res=0</span><br><span class="line">+ set +x</span><br></pre></td></tr></table></figure>
-
-<h4 id="2-2-启动网络"><a href="#2-2-启动网络" class="headerlink" title="2.2 启动网络"></a>2.2 启动网络</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> sudo ./byfn.sh -m up</span></span><br></pre></td></tr></table></figure>
-
-<p>在提示符中输入 <code>y</code>，最后输出如下内容代表启动且测试成功</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line">Starting for channel 'mychannel' with CLI timeout of '10' seconds and CLI delay of '3' seconds</span><br><span class="line">Continue? [Y/n] y</span><br><span class="line">proceeding ...</span><br><span class="line">LOCAL_VERSION=1.2.0</span><br><span class="line">DOCKER_IMAGE_VERSION=1.2.0</span><br><span class="line">Creating network "net_byfn" with the default driver</span><br><span class="line">Creating volume "net_peer0.org2.example.com" with default driver</span><br><span class="line">Creating volume "net_peer1.org2.example.com" with default driver</span><br><span class="line">Creating volume "net_peer1.org1.example.com" with default driver</span><br><span class="line">Creating volume "net_peer0.org1.example.com" with default driver</span><br><span class="line">Creating volume "net_orderer.example.com" with default driver</span><br><span class="line">Creating peer0.org2.example.com</span><br><span class="line">Creating peer0.org1.example.com</span><br><span class="line">Creating peer1.org2.example.com</span><br><span class="line">Creating orderer.example.com</span><br><span class="line">Creating peer1.org1.example.com</span><br><span class="line">Creating cli</span><br><span class="line"></span><br><span class="line"> ____    _____      _      ____    _____ </span><br><span class="line">/ ___|  |_   _|    / \    |  _ \  |_   _|</span><br><span class="line">\___ \    | |     / _ \   | |_) |   | |  </span><br><span class="line"> ___) |   | |    / ___ \  |  _ &lt;    | |  </span><br><span class="line">|____/    |_|   /_/   \_\ |_| \_\   |_|  </span><br><span class="line"></span><br><span class="line">Build your first network (BYFN) end-to-end test</span><br><span class="line"></span><br><span class="line">......</span><br><span class="line"></span><br><span class="line">===================== Query successful on peer1.org2 on channel 'mychannel' ===================== </span><br><span class="line"></span><br><span class="line">========= All GOOD, BYFN execution completed =========== </span><br><span class="line"></span><br><span class="line"> _____   _   _   ____   </span><br><span class="line">| ____| | \ | | |  _ \  </span><br><span class="line">|  _|   |  \| | | | | | </span><br><span class="line">| |___  | |\  | | |_| | </span><br><span class="line">|_____| |_| \_| |____/</span><br></pre></td></tr></table></figure>
-
-<h4 id="2-3-关闭网络"><a href="#2-3-关闭网络" class="headerlink" title="2.3 关闭网络"></a>2.3 关闭网络</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> sudo ./byfn.sh -m down</span></span><br></pre></td></tr></table></figure>
-
-<p>在提示符中输入 <code>y</code>， 命令执行后终端输出如下日志内容：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line">Stopping for channel 'mychannel' with CLI timeout of '10' seconds and CLI delay of '3' seconds</span><br><span class="line">Continue? [Y/n] y</span><br><span class="line">proceeding ...</span><br><span class="line">Stopping cli ... done</span><br><span class="line">Stopping peer1.org1.example.com ... done</span><br><span class="line">Stopping peer1.org2.example.com ... done</span><br><span class="line">Stopping orderer.example.com ... done</span><br><span class="line">Stopping peer0.org1.example.com ... done</span><br><span class="line">Stopping peer0.org2.example.com ... done</span><br><span class="line">Removing cli ... done</span><br><span class="line">Removing peer1.org1.example.com ... done</span><br><span class="line">Removing peer1.org2.example.com ... done</span><br><span class="line">Removing orderer.example.com ... done</span><br><span class="line">Removing peer0.org1.example.com ... done</span><br><span class="line">Removing peer0.org2.example.com ... done</span><br><span class="line">Removing network net_byfn</span><br><span class="line">Removing volume net_peer0.org3.example.com</span><br><span class="line">WARNING: Volume net_peer0.org3.example.com not found.</span><br><span class="line">Removing volume net_peer1.org3.example.com</span><br><span class="line">WARNING: Volume net_peer1.org3.example.com not found.</span><br><span class="line">Removing volume net_orderer.example.com</span><br><span class="line">Removing volume net_peer0.org2.example.com</span><br><span class="line">Removing volume net_peer0.org1.example.com</span><br><span class="line">Removing volume net_peer1.org1.example.com</span><br><span class="line">Removing volume net_peer1.org2.example.com</span><br><span class="line">7fb4e7907b3c</span><br><span class="line">708576aff44f</span><br><span class="line">0a8805ff393d</span><br><span class="line">Untagged: dev-peer1.org2.example.com-mycc-1.0-26c2ef32838554aac4f7ad6f100aca865e87959c9a126e86d764c8d01f8346ab:latest</span><br><span class="line">Deleted: sha256:687d517a67c1b236724deb84c50e310fb87f39341de5c66857e3049222a99504</span><br><span class="line">Deleted: sha256:6d8c7e0948accd5bc445134533008f6f34946a49f880088a7cf3db1882412448</span><br><span class="line">Deleted: sha256:e37dd3859185b936bbed2206a865785dddc0cfad1de53fe11ae6a462edd39073</span><br><span class="line">Deleted: sha256:9a71f7af36db323a66ef9fb259d5b91ed36b272fcbab3d1b8c535d2b3c605862</span><br><span class="line">Untagged: dev-peer0.org1.example.com-mycc-1.0-384f11f484b9302df90b453200cfb25174305fce8f53f4e94d45ee3b6cab0ce9:latest</span><br><span class="line">Deleted: sha256:8d42a6a8edc43269d12833eced7dc7a5c3ab4fa93f42d9fe478f5d71059ee93f</span><br><span class="line">Deleted: sha256:044f5beb69724fc61c0a2320deaa63a60f61e253057e16d55f37716467045ea3</span><br><span class="line">Deleted: sha256:63ba54da2202bc9e96002b45b0a2be7978c2063dcb160cdfddf6cbac36d9ad34</span><br><span class="line">Deleted: sha256:c2136be4ddeccb607ca5e5ac54eb6fcd0c568f402cd37a66e459389c3ff41c5f</span><br><span class="line">Untagged: dev-peer0.org2.example.com-mycc-1.0-15b571b3ce849066b7ec74497da3b27e54e0df1345daff3951b94245ce09c42b:latest</span><br><span class="line">Deleted: sha256:828c1b18f7e8e811f7b06adab1bdf2f6c33bfc7cc49cfe38b9281293f917d7da</span><br><span class="line">Deleted: sha256:bb7469d1a150118cc475568fe11325a6e53a0fc5d61db54ec50b3efbd44d5eeb</span><br><span class="line">Deleted: sha256:4609bc59481cb8c10dee0bd85c48f3e1c36bd897f5176cf35d43860beda5acd7</span><br><span class="line">Deleted: sha256:be2477e444d06842e81fb691e4e94f7ed4a547aeb8ba4a963660356a915b61c7</span><br></pre></td></tr></table></figure>
-
-<p>关闭网络之后， 将杀死容器，删除加密文件，并从Docker Registry中删除链码图像。</p>
-<blockquote>
-<p>请在网络不再使用时，务必关闭网络，以防止后期启动网络时造成的错误。</p>
-</blockquote>
-<h2 id="FAQ-2"><a href="#FAQ-2" class="headerlink" title="FAQ"></a>FAQ</h2></li>
-<li><p><strong>如果启动网络失败怎么办？</strong></p>
-<p>如果启动网络时发生错误，则执行关闭命令后重新生成组织结构及证书，然后再次执行启动网络的命令。</p>
-</li>
-</ol>
-<p>转载：<a href="https://www.chaindesk.cn/witbook/11/99" target="_blank" rel="noopener">https://www.chaindesk.cn/witbook/11/99</a></p>
-
-      
-    </div>
-
-    
-    
-    
-    <div>
-      
-    </div>
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
   </div>
 
   
@@ -1485,7 +1225,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">71</span>
+          <span class="site-state-item-count">74</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>

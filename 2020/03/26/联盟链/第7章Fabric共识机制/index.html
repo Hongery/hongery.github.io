@@ -1,0 +1,926 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.1.1">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/avatar.jpg">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/avatar.jpg">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    hostname: new URL('http://yoursite.com').hostname,
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.6.0',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},
+    copycode: {"enable":true,"show_result":true,"style":"mac"},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":true},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    comments: {"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: 'search.xml',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}
+  };
+</script>
+
+  <meta name="description" content="一、Fabric中的共识实现目标 共识算法的实现目的  共识算法的分类  Hyperledger Fabric所使用的共识算法">
+<meta property="og:type" content="article">
+<meta property="og:title" content="第7章Fabric共识机制">
+<meta property="og:url" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2020&#x2F;03&#x2F;26&#x2F;%E8%81%94%E7%9B%9F%E9%93%BE&#x2F;%E7%AC%AC7%E7%AB%A0Fabric%E5%85%B1%E8%AF%86%E6%9C%BA%E5%88%B6&#x2F;index.html">
+<meta property="og:site_name" content="Hongery">
+<meta property="og:description" content="一、Fabric中的共识实现目标 共识算法的实现目的  共识算法的分类  Hyperledger Fabric所使用的共识算法">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http:&#x2F;&#x2F;image.chaindesk.cn&#x2F;7.2_12.png&#x2F;mark">
+<meta property="og:image" content="http:&#x2F;&#x2F;image.chaindesk.cn&#x2F;7.2_13.png&#x2F;mark">
+<meta property="og:image" content="http:&#x2F;&#x2F;image.chaindesk.cn&#x2F;7.3_1.png&#x2F;mark">
+<meta property="og:image" content="http:&#x2F;&#x2F;image.chaindesk.cn&#x2F;7.3_2.png&#x2F;mark">
+<meta property="article:published_time" content="2020-03-26T12:36:33.000Z">
+<meta property="article:modified_time" content="2020-03-26T16:18:15.872Z">
+<meta property="article:author" content="Hongery">
+<meta property="article:tag" content="blockchain">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http:&#x2F;&#x2F;image.chaindesk.cn&#x2F;7.2_12.png&#x2F;mark">
+
+<link rel="canonical" href="http://yoursite.com/2020/03/26/%E8%81%94%E7%9B%9F%E9%93%BE/%E7%AC%AC7%E7%AB%A0Fabric%E5%85%B1%E8%AF%86%E6%9C%BA%E5%88%B6/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true
+  };
+</script>
+
+  <title>第7章Fabric共识机制 | Hongery</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Hongery</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">记录学习中的点点滴滴</p>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="none"
+           placeholder="搜索..." spellcheck="false"
+           type="text" id="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+  <a href="https://github.com/Hongery" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/03/26/%E8%81%94%E7%9B%9F%E9%93%BE/%E7%AC%AC7%E7%AB%A0Fabric%E5%85%B1%E8%AF%86%E6%9C%BA%E5%88%B6/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="Hongery">
+      <meta itemprop="description" content="直到这一刻微笑着说话为止，我至少留下了一公升眼泪">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hongery">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          第7章Fabric共识机制
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-03-26 20:36:33" itemprop="dateCreated datePublished" datetime="2020-03-26T20:36:33+08:00">2020-03-26</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-03-27 00:18:15" itemprop="dateModified" datetime="2020-03-27T00:18:15+08:00">2020-03-27</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Hyperledger-Fabric/" itemprop="url" rel="index">
+                    <span itemprop="name">Hyperledger Fabric</span>
+                  </a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span><br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-file-word-o"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>28k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-clock-o"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>26 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h3 id="一、Fabric中的共识实现"><a href="#一、Fabric中的共识实现" class="headerlink" title="一、Fabric中的共识实现"></a>一、Fabric中的共识实现</h3><h2 id="目标"><a href="#目标" class="headerlink" title="目标"></a>目标</h2><ol>
+<li><p>共识算法的实现目的</p>
+</li>
+<li><p>共识算法的分类</p>
+</li>
+<li><p>Hyperledger Fabric所使用的共识算法</p>
+<a id="more"></a>
+
+</li>
+</ol>
+<h3 id="7-1-1-概述"><a href="#7-1-1-概述" class="headerlink" title="7.1.1 概述"></a>7.1.1 概述</h3><p>在区块链网络中，不同的参与者发起的交易必须按照产生的顺序被依次写入到账本中。交易如何在分布式场景下， 所有节点对同一个提案或值达成一致性，是区块链技术中必须考虑并加以解决的一个问题。要实现这一目标，交易顺序必须被正确的建立，并且必须包含对交易被篡改或者恶意提交交易的处理方法。</p>
+<p>通常，共识算法就是保证分布式系统一致性实现的解决方式，共识算法是计算机科学中用于在分布式过程或系统之间实现对单个数据值的一致性的过程。共识算法旨在实现涉及在网络中多个不可靠节点的可靠性。解决该问题（称为共识问题）在分布式计算和多代理系统中非常重要。</p>
+<h3 id="7-1-2-共识算法类型"><a href="#7-1-2-共识算法类型" class="headerlink" title="7.1.2 共识算法类型"></a>7.1.2 共识算法类型</h3><h4 id="7-1-2-1-共识属性"><a href="#7-1-2-1-共识属性" class="headerlink" title="7.1.2.1 共识属性"></a>7.1.2.1 共识属性</h4><p>共识算法必须满足两个属性，以保证节点之间的一致性， 这两个属性分别是：安全性和活跃性。</p>
+<ul>
+<li><strong>安全性：</strong>表示每个节点保证相同的输入序列，并在每个节点上产生相同的输出结果。当节点收到相同的一系列交易时，每个节点上将发生相同的状态更改。该算法必须与单个节点系统的执行结果相同。</li>
+<li><strong>活跃性：</strong>在通信正常的情况下，每个非故障节点最终都能接收每个提交的交易。</li>
+</ul>
+<h4 id="7-1-2-2-共识算法类型"><a href="#7-1-2-2-共识算法类型" class="headerlink" title="7.1.2.2 共识算法类型"></a>7.1.2.2 共识算法类型</h4><p>共识算法可以以不同的方式实现，一般有如下两种类型：</p>
+<ol>
+<li><strong>基于彩票的算法（Lottery-based Algorithms），</strong>包括消耗时间证明（Proof of Elapsed Time，PoET）和工作量证明（Proof of Work，PoW）算法。基于彩票的算法的优势在于它们可以扩展到一个大的数字，由网络中任意一个节点生成一个区块，并将其传递给网络中的其它节点加以验证。另一方面，这些算法可能导致分叉，当两个“赢家”同时各广播一个新产生的区块时，会产生分支，每一个分支都必须被解析，这导致使用很长时间来确认终结。</li>
+<li><strong>基于投票的方法（Voting-based Methods），</strong>包括冗余的拜占庭容错（Redundant Byzantine Fault Tolerance，RBFT）和 Paxos（基于消息传递的一致性算法）。每一种方法都针对不同的网络需求容错模型。基于投票的算法的优势在于它们提供了低延迟的终结性。当大多数节点验证事务或块时，就存在共识和终结性发生。因为基于投票的算法通常需要节点来对网络上的每个节点传输消息，所以网络上存在的节点越多，达成共识的时间越长。这导致了可伸缩性之间的权衡和速度， 不能满足高并发、快速交易（低延迟）的需求场景。</li>
+</ol>
+<p>下表介绍了两种共识算法类型的比较：</p>
+<table>
+<thead>
+<tr>
+<th align="left"></th>
+<th align="center">基于彩票的算法</th>
+<th align="center">基于投票的方法</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">速度</td>
+<td align="center">较好</td>
+<td align="center">较好</td>
+</tr>
+<tr>
+<td align="left">可扩展性</td>
+<td align="center">较好</td>
+<td align="center">中等</td>
+</tr>
+<tr>
+<td align="left">确定性</td>
+<td align="center">中等</td>
+<td align="center">较好</td>
+</tr>
+</tbody></table>
+<p>因为区块链中的业务需求会有所不同，所以 Hyperledger 社区研究几种不同的一致性共识机制并进行实施以确保模块化实现。Hyperledger 团队开发人员为了提高资源使用及时间效率， 在 Hyperledger 项目开发前做出评估，将区块链业务指定在部分信任的网络环境中运行。所以，Hyperledger 网络环境中不支持匿名访问者的标准工作共识证明方法（Pow共识算法）。</p>
+<p>目前，Hyperledger 中各框架项目所使用的共识算法如下：</p>
+<ul>
+<li>Hyperledger Fabric 中使用了基于 Zookeeper（分布式服务框架）的 Apache Kafka（分布式消息系统）。</li>
+<li>Hyperledger Indy 中使用了基于投票的方法 RBFT（Redundant Byzantine Fault Tolerance，冗余拜占庭容错算法）。</li>
+<li>Hyperledger Iroha 中使用了一种基于投票的方法（Sumeragi）来达成共识故障容错。</li>
+<li>Hyperledger Sawtooth 中使用了基于彩票的 PoET 算法以拖延为代价实现共识。</li>
+</ul>
+<h3 id="7-1-3-Hyperledger-Fabric中的共识实现"><a href="#7-1-3-Hyperledger-Fabric中的共识实现" class="headerlink" title="7.1.3 Hyperledger Fabric中的共识实现"></a>7.1.3 Hyperledger Fabric中的共识实现</h3><p>不同的 Hyperledger 框架可以选择不同的方式实现共识。Hyperledger 区块链框架业务通过执行两个框架达成单独的共识过程：</p>
+<ul>
+<li>Ordering of transactions （交易排序）</li>
+<li>Validating Transactions（交易验证）</li>
+</ul>
+<p>为了确保任何 Hyperledger 框架可以应用于任何的 Hyperledger 共识模块，通过逻辑分离这两个共识实现过程。Hyperledger Fabric 网络中的共识被分解为三个阶段：背书阶段、排序阶段和验证阶段。</p>
+<ul>
+<li><p>背书阶段：签名必须由参与者的背书策略确定。</p>
+<p>客户端应用程序将交易请求打包成为交易提案（Proposal）后，根据背书策略（Endorse Policy）发达给指定的背书节点（Endorse Peer）。背书节点接收到交易提案后调用链码（Chaincode）执行，但此执行过程是模拟执行，并不会将数据记录到账本中。执行完成后调用交易背书系统链码（Endorsement System Chaincode，ESCC）对执行结果进行签名，然后响应给客户端应用程序。Ordering Service 可以以不同的方式实现：开发和测试阶段可以使用集中式排序服务（中心化），针对不同网络的分布式协议节点故障模型。为了保证交易的机密性，Ordering Service 不能看到交易中的具体内容（不参与对交易内容的任何处理），也就是说，交易内容可以使用哈希散列或加密方式去处理。</p>
+</li>
+<li><p>排序阶段：接受提交的被认可的交易并进行排序，确保交易顺序的一致性。</p>
+<p>排序阶段通过 Ordering 服务提供的接口接收到已经背书的交易，Ordering Service 根据共识算法配置策略（根据指定的配置信息中定义时间限制或指定允许的交易数量），确定交易的顺序和交易数量。然后将交易打包到区块中进行广播。大多数时候，由于为了提高系统效率的原因，Ordering 服务将多个交易分组到一个区块中，而不是将单个交易输出成为一个区块。</p>
+</li>
+<li><p>验证阶段：获取有序事务块并验证其结果的正确性，包括检查背书策略和重复提交攻击。</p>
+<p>Peer 节点接收到广播的区块后，进行保存之前的最终检查验证，验证通过后将该区块保存在区块链中。为了校验交易的正确性，共识的建立依赖于智能合约层（Hyperledger Fabric 中的 Chaincode），智能合约层定义了商业逻辑来如何验证交易的有效性。智能合约层根据特定的策略与约定来确认每一笔交易都是有效的。无效的交易会被拒绝，并在块中剔除。潜在的校验失败主要分为以下两种：</p>
+<ol>
+<li>语法错误：包含以下几种类型，比如无效输入、未验证的签名、重复的交易等，这类交易应该被丢弃。</li>
+<li>逻辑错误：此类错误更为复杂，应该需要定义策略决定是继续处理还是终止执行。如，导致重复交易或版本控制的交易。如果策略需要，我们可能需要日志记录这些交易以进行审计。</li>
+</ol>
+</li>
+</ul>
+<p>Hyperledger Fabric 应用程序可以根据不同的交易背书、排序和验证模型要求，实现支持对3个阶段的可拔插共识服务，特别是 Ordering 服务 API 允许插入基于 BFT 的协议算法。Orderer 节点通过gRPC服务提供两个 API 接口：广播（broadcase）和交付（deliver）。</p>
+<ul>
+<li><p><strong>broadcast（blob）：</strong>客户端调用此函数在通道中广播任意的消息blob（客户端向排序服务发送交易请求）。在BFT中，给服务发送一个请求时，又称为 request(blob)。</p>
+</li>
+<li><p><strong>deliver（seqno，prevhash，blob）：</strong>Ordering 服务调用此函数给 Peer 节点发送blob消息，包含非负整数的序列号 seqno 和最近一次消息的哈希 prevhash 。换句话说，它是共识服务的输出接口。deliver（）在发布/订阅系统中称为notify（），在BFT系统中称为commit（）。</p>
+<blockquote>
+<p>注意共识服务客户端（即 Peer 节点）只通过broadcast（）和deliver（）事件和服务进行交互。</p>
+</blockquote>
+</li>
+</ul>
+<p>在 Hyperledger Fabric 框架项目的正式版本中支持两种共识算法类型：</p>
+<ul>
+<li><strong>Solo：</strong>单节点共识，整个Fabric网络只有一个 Orderer 节点（Fabric网络默认）。主要用于测试模式。</li>
+<li><strong>Kafka：</strong>分布式消息队列，整个Fabric网络的共识由 Kafka 集群实现（实际上Kafka实现了对于Hyperledger Fabric网络中所有的交易请求进行排序服务）。具体实现方式请参见下一节内容。</li>
+</ul>
+<blockquote>
+<p>目前，Hyperledger 项目团队正在开发其它 Ordering 共识插件，包括BFT Smart，简化拜占庭容错算法（Simplified Byzantine Fault Tolerance，SBFT），蜜獾拜占庭容错算法（Honey Badger of BFT）等。</p>
+</blockquote>
+<h2 id="FAQ"><a href="#FAQ" class="headerlink" title="FAQ"></a>FAQ</h2><ol>
+<li><p>已经启动了 Orderer 服务，然后想使用其它一致性算法，如何实现？</p>
+<p>在 Hyperledger Fabric 中不支持此种操作方式。</p>
+</li>
+<li><p>现在可以在 Hyperledger Fabric 中使用拜占庭容错算法 吗？</p>
+<p>不可以，目前在 Fabric 发布的标准版本中只能使用 Solo 与 Kafka 实现共识，其它共识插件处于开发状态中，在哪个正式版本中发布官方并没有确定。</p>
+</li>
+</ol>
+<h3 id="基于Kafka排序服务的实现"><a href="#基于Kafka排序服务的实现" class="headerlink" title="基于Kafka排序服务的实现"></a>基于Kafka排序服务的实现</h3><h2 id="目标-1"><a href="#目标-1" class="headerlink" title="目标"></a>目标</h2><ol>
+<li>实现现基于 Kafka 集群的排序服务</li>
+</ol>
+<h2 id="任务实现"><a href="#任务实现" class="headerlink" title="任务实现"></a>任务实现</h2><blockquote>
+<p>在上一节中，我们知道了 Hyperledger Fabric 的共识实现，现在我们使用容器实现一个基于 Kafka 提供排序服务的集群环境。在该网络环境中，我们使用2个 Org 组织，每个 Org 组织下各有2个 peer 节点，4个 orderer节点，后端使用 Kafka 集群实现排序服务，由4个 kafka 节点，3个 zookeeper 节点组成。</p>
+</blockquote>
+<h3 id="7-2-1-指定-Kafka-实现排序服务"><a href="#7-2-1-指定-Kafka-实现排序服务" class="headerlink" title="7.2.1 指定 Kafka 实现排序服务"></a>7.2.1 指定 Kafka 实现排序服务</h3><h4 id="7-2-1-1-配置-crypto-config-yaml"><a href="#7-2-1-1-配置-crypto-config-yaml" class="headerlink" title="7.2.1.1 配置 crypto-config.yaml"></a>7.2.1.1 配置 crypto-config.yaml</h4><p>进入 <code>fabric-samples/first-network</code> 目录中</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> <span class="built_in">cd</span> hyfa/fabric-samples/first-network/</span></span><br></pre></td></tr></table></figure>
+
+<p>将 <code>crypto-config.yaml</code> 配置文件备份为 <code>crypto-config_backup.yaml</code> ，然后编辑 <code>crypto-config.yaml</code> 文件，在 <code>OrdererOrgs.Specs</code> 中添加三个 orderer 节点，共计四个 orderer 节点</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> sudo cp crypto-config.yaml crypto-config_backup.yaml</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> sudo vim crypto-config.yaml</span></span><br></pre></td></tr></table></figure>
+
+<p>编辑后 <code>OrdererOrgs</code> 的具体内容如下（PeerOrgs 中的内容不变）：</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># ---------------------------------------------------------------------------</span></span><br><span class="line"><span class="comment"># "OrdererOrgs" - Definition of organizations managing orderer nodes</span></span><br><span class="line"><span class="comment"># ---------------------------------------------------------------------------</span></span><br><span class="line"><span class="attr">OrdererOrgs:</span></span><br><span class="line">  <span class="comment"># ---------------------------------------------------------------------------</span></span><br><span class="line">  <span class="comment"># Orderer</span></span><br><span class="line">  <span class="comment"># ---------------------------------------------------------------------------</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">Name:</span> <span class="string">Orderer</span></span><br><span class="line">    <span class="attr">Domain:</span> <span class="string">example.com</span></span><br><span class="line">    <span class="comment"># ---------------------------------------------------------------------------</span></span><br><span class="line">    <span class="comment"># "Specs" - See PeerOrgs below for complete description</span></span><br><span class="line">    <span class="comment"># ---------------------------------------------------------------------------</span></span><br><span class="line">    <span class="attr">Specs:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="attr">Hostname:</span> <span class="string">orderer</span></span><br><span class="line">      <span class="bullet">-</span> <span class="attr">Hostname:</span> <span class="string">orderer1</span></span><br><span class="line">      <span class="bullet">-</span> <span class="attr">Hostname:</span> <span class="string">orderer2</span></span><br><span class="line">      <span class="bullet">-</span> <span class="attr">Hostname:</span> <span class="string">orderer3</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="7-2-1-2-配置-configtx-yaml"><a href="#7-2-1-2-配置-configtx-yaml" class="headerlink" title="7.2.1.2 配置 configtx.yaml"></a>7.2.1.2 配置 configtx.yaml</h4><p>将 <code>configtx.yaml</code> 配置文件备份为 <code>configtx_backup.yaml</code> ，然后编辑 <code>configtx.yaml</code> 文件，在 <code>Orderer.Addresses</code> 中声明四个 orderer 节点信息， 将 <code>Orderer.OrdererType</code> 的值由默认的 <code>solo</code> 修改为 <code>kafka</code>，在 <code>Orderer.Addresses</code> 下添加另外的三个 <code>orderer</code> 节点信息，在 <code>Orderer.Kafka.Brokers</code> 中添加 kafka 集群服务器的信息</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> sudo cp configtx.yaml configtx_backup.yaml</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> sudo vim configtx.yaml</span></span><br></pre></td></tr></table></figure>
+
+<p>编辑后 <code>Orderer</code> 下的具体内容如下（其它部分不变）：</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">################################################################################</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line"><span class="comment">#   SECTION: Orderer</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line"><span class="comment">#   - This section defines the values to encode into a config transaction or</span></span><br><span class="line"><span class="comment">#   genesis block for orderer related parameters</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line"><span class="comment">################################################################################</span></span><br><span class="line"><span class="attr">Orderer:</span> <span class="meta">&amp;OrdererDefaults</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># Orderer Type: The orderer implementation to start</span></span><br><span class="line">    <span class="comment"># Available types are "solo" and "kafka"</span></span><br><span class="line">    <span class="attr">OrdererType:</span> <span class="string">kafka</span></span><br><span class="line"></span><br><span class="line">    <span class="attr">Addresses:</span></span><br><span class="line">        <span class="bullet">-</span> <span class="string">orderer.example.com:7050</span></span><br><span class="line">        <span class="bullet">-</span> <span class="string">orderer1.example.com:7050</span></span><br><span class="line">        <span class="bullet">-</span> <span class="string">orderer2.example.com:7050</span></span><br><span class="line">        <span class="bullet">-</span> <span class="string">orderer3.example.com:7050</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># Batch Timeout: The amount of time to wait before creating a batch</span></span><br><span class="line">    <span class="attr">BatchTimeout:</span> <span class="string">2s</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># Batch Size: Controls the number of messages batched into a block</span></span><br><span class="line">    <span class="attr">BatchSize:</span></span><br><span class="line"></span><br><span class="line">        <span class="comment"># Max Message Count: The maximum number of messages to permit in a batch</span></span><br><span class="line">        <span class="attr">MaxMessageCount:</span> <span class="number">10</span></span><br><span class="line"></span><br><span class="line">        <span class="comment"># Absolute Max Bytes: The absolute maximum number of bytes allowed for</span></span><br><span class="line">        <span class="comment"># the serialized messages in a batch.</span></span><br><span class="line">        <span class="attr">AbsoluteMaxBytes:</span> <span class="number">99</span> <span class="string">MB</span></span><br><span class="line"></span><br><span class="line">        <span class="comment"># Preferred Max Bytes: The preferred maximum number of bytes allowed for</span></span><br><span class="line">        <span class="comment"># the serialized messages in a batch. A message larger than the preferred</span></span><br><span class="line">        <span class="comment"># max bytes will result in a batch larger than preferred max bytes.</span></span><br><span class="line">        <span class="attr">PreferredMaxBytes:</span> <span class="number">512</span> <span class="string">KB</span></span><br><span class="line"></span><br><span class="line">    <span class="attr">Kafka:</span></span><br><span class="line">        <span class="comment"># Brokers: A list of Kafka brokers to which the orderer connects</span></span><br><span class="line">        <span class="comment"># <span class="doctag">NOTE:</span> Use IP:port notation</span></span><br><span class="line">        <span class="attr">Brokers:</span></span><br><span class="line">            <span class="bullet">-</span> <span class="string">kafka0:9092</span></span><br><span class="line">            <span class="bullet">-</span> <span class="string">kafka1:9092</span></span><br><span class="line">            <span class="bullet">-</span> <span class="string">kafka2:9092</span></span><br><span class="line">            <span class="bullet">-</span> <span class="string">kafka3:9092</span></span><br><span class="line"></span><br><span class="line">    <span class="comment"># Organizations is the list of orgs which are defined as participants on</span></span><br><span class="line">    <span class="comment"># the orderer side of the network</span></span><br><span class="line">    <span class="attr">Organizations:</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="7-2-2-配置网络环境"><a href="#7-2-2-配置网络环境" class="headerlink" title="7.2.2 配置网络环境"></a>7.2.2 配置网络环境</h3><h4 id="7-2-2-1-配置-docker-compose-base-yaml"><a href="#7-2-2-1-配置-docker-compose-base-yaml" class="headerlink" title="7.2.2.1 配置 docker-compose-base.yaml"></a>7.2.2.1 配置 docker-compose-base.yaml</h4><p>将 <code>base/docker-compose-base.yaml</code> 配置文件备份为 <code>base/docker-compose-base_backup.yaml</code> ，然后编辑 <code>base/docker-compose-base.yaml</code></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> sudo cp base/docker-compose-base.yaml base/docker-compose-base_backup.yaml</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> sudo vim base/docker-compose-base.yaml</span></span><br></pre></td></tr></table></figure>
+
+<p>在文件中添加 zookeeper 节点信息、kafka 节点信息及修改 orderer 节点的信息，peer 节点信息不变，详细配置信息如下：</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">zookeeper:</span></span><br><span class="line">  <span class="attr">image:</span> <span class="string">hyperledger/fabric-zookeeper</span></span><br><span class="line">  <span class="attr">environment:</span> </span><br><span class="line">    <span class="bullet">-</span> <span class="string">ZOO_SERVERS=server.1=zookeeper1:2888:3888</span> <span class="string">server.2=zookeeper2:2888:3888</span> <span class="string">server.3=zookeeper3:2888:3888</span></span><br><span class="line">  <span class="attr">ports:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">'2181'</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">'2888'</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">'3888'</span></span><br><span class="line"></span><br><span class="line"><span class="attr">kafka:</span></span><br><span class="line">  <span class="attr">image:</span> <span class="string">hyperledger/fabric-kafka</span></span><br><span class="line">  <span class="attr">environment:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">KAFKA_LOG_RETENTION_MS=-1</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">KAFKA_MESSAGE_MAX_BYTES=103809024</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">KAFKA_REPLICA_FETCH_MAX_BYTES=103809024</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">KAFKA_UNCLEAN_LEADER_ELECTION_ENABLE=false</span>      </span><br><span class="line">    <span class="bullet">-</span> <span class="string">KAFKA_MIN_INSYNC_REPLICAS=2</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">KAFKA_DEFAULT_REPLICATION_FACTOR=3</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">KAFKA_ZOOKEEPER_CONNECT=zookeeper1:2181,zookeeper2:2181,zookeeper3:2181</span></span><br><span class="line">  <span class="attr">ports:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">'9092'</span>    </span><br><span class="line"></span><br><span class="line"><span class="attr">orderer.example.com:</span></span><br><span class="line">  <span class="attr">container_name:</span> <span class="string">orderer.example.com</span></span><br><span class="line">  <span class="attr">image:</span> <span class="string">hyperledger/fabric-orderer</span></span><br><span class="line">  <span class="attr">environment:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">ORDERER_GENERAL_LOGLEVEL=debug</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">ORDERER_GENERAL_LISTENADDRESS=0.0.0.0</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">ORDERER_GENERAL_GENESISMETHOD=file</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">ORDERER_GENERAL_GENESISFILE=/var/hyperledger/orderer/orderer.genesis.block</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">ORDERER_GENERAL_LOCALMSPID=OrdererMSP</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">ORDERER_GENERAL_LOCALMSPDIR=/var/hyperledger/orderer/msp</span></span><br><span class="line">    <span class="comment"># kafka      </span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">CONFIGTX_ORDERER_ORDERERTYPE=kafka</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">CONFIGTX_ORDERER_KAFKA_BROKERS=[kafka0:9092,kafka1:9092,kafka2:9092,kafka3:9092]</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">ORDERER_KAFKA_RETRY_SHORTINTERVAL=1s</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">ORDERER_KAFKA_RETRY_SHORTTOTAL=30s</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">ORDERER_KAFKA_VERBOSE=true</span>    </span><br><span class="line">    <span class="comment"># enabled TLS</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">ORDERER_GENERAL_TLS_ENABLED=true</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">ORDERER_GENERAL_TLS_PRIVATEKEY=/var/hyperledger/orderer/tls/server.key</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">ORDERER_GENERAL_TLS_CERTIFICATE=/var/hyperledger/orderer/tls/server.crt</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">ORDERER_GENERAL_TLS_ROOTCAS=[/var/hyperledger/orderer/tls/ca.crt]</span></span><br><span class="line">  <span class="attr">working_dir:</span> <span class="string">/opt/gopath/src/github.com/hyperledger/fabric</span></span><br><span class="line">  <span class="attr">command:</span> <span class="string">orderer</span></span><br><span class="line">  <span class="attr">volumes:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">../channel-artifacts/genesis.block:/var/hyperledger/orderer/orderer.genesis.block</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">../crypto-config/ordererOrganizations/example.com/orderers/orderer.example.com/msp:/var/hyperledger/orderer/msp</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">../crypto-config/ordererOrganizations/example.com/orderers/orderer.example.com/tls/:/var/hyperledger/orderer/tls</span></span><br><span class="line">  <span class="attr">ports:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">'7050'</span></span><br><span class="line"></span><br><span class="line"><span class="attr">orderer1.example.com:</span></span><br><span class="line">  <span class="attr">container_name:</span> <span class="string">orderer1.example.com</span></span><br><span class="line">  <span class="attr">image:</span> <span class="string">hyperledger/fabric-orderer</span></span><br><span class="line">  <span class="attr">environment:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">ORDERER_GENERAL_LOGLEVEL=debug</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">ORDERER_GENERAL_LISTENADDRESS=0.0.0.0</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">ORDERER_GENERAL_GENESISMETHOD=file</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">ORDERER_GENERAL_GENESISFILE=/var/hyperledger/orderer/orderer.genesis.block</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">ORDERER_GENERAL_LOCALMSPID=OrdererMSP</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">ORDERER_GENERAL_LOCALMSPDIR=/var/hyperledger/orderer/msp</span></span><br><span class="line">    <span class="comment"># kafka      </span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">CONFIGTX_ORDERER_ORDERERTYPE=kafka</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">CONFIGTX_ORDERER_KAFKA_BROKERS=[kafka0:9092,kafka1:9092,kafka2:9092,kafka3:9092]</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">ORDERER_KAFKA_RETRY_SHORTINTERVAL=1s</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">ORDERER_KAFKA_RETRY_SHORTTOTAL=30s</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">ORDERER_KAFKA_VERBOSE=true</span></span><br><span class="line">    <span class="comment"># enabled TLS</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">ORDERER_GENERAL_TLS_ENABLED=true</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">ORDERER_GENERAL_TLS_PRIVATEKEY=/var/hyperledger/orderer/tls/server.key</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">ORDERER_GENERAL_TLS_CERTIFICATE=/var/hyperledger/orderer/tls/server.crt</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">ORDERER_GENERAL_TLS_ROOTCAS=[/var/hyperledger/orderer/tls/ca.crt]</span></span><br><span class="line">  <span class="attr">working_dir:</span> <span class="string">/opt/gopath/src/github.com/hyperledger/fabric</span></span><br><span class="line">  <span class="attr">command:</span> <span class="string">orderer</span></span><br><span class="line">  <span class="attr">volumes:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">../channel-artifacts/genesis.block:/var/hyperledger/orderer/orderer.genesis.block</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">../crypto-config/ordererOrganizations/example.com/orderers/orderer1.example.com/msp:/var/hyperledger/orderer/msp</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">../crypto-config/ordererOrganizations/example.com/orderers/orderer1.example.com/tls/:/var/hyperledger/orderer/tls</span></span><br><span class="line">  <span class="attr">ports:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">'7050'</span></span><br><span class="line"></span><br><span class="line"><span class="attr">orderer2.example.com:</span></span><br><span class="line">  <span class="attr">container_name:</span> <span class="string">orderer2.example.com</span></span><br><span class="line">  <span class="attr">image:</span> <span class="string">hyperledger/fabric-orderer</span></span><br><span class="line">  <span class="attr">environment:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">ORDERER_GENERAL_LOGLEVEL=debug</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">ORDERER_GENERAL_LISTENADDRESS=0.0.0.0</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">ORDERER_GENERAL_GENESISMETHOD=file</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">ORDERER_GENERAL_GENESISFILE=/var/hyperledger/orderer/orderer.genesis.block</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">ORDERER_GENERAL_LOCALMSPID=OrdererMSP</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">ORDERER_GENERAL_LOCALMSPDIR=/var/hyperledger/orderer/msp</span></span><br><span class="line">    <span class="comment"># kafka      </span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">CONFIGTX_ORDERER_ORDERERTYPE=kafka</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">CONFIGTX_ORDERER_KAFKA_BROKERS=[kafka0:9092,kafka1:9092,kafka2:9092,kafka3:9092]</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">ORDERER_KAFKA_RETRY_SHORTINTERVAL=1s</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">ORDERER_KAFKA_RETRY_SHORTTOTAL=30s</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">ORDERER_KAFKA_VERBOSE=true</span></span><br><span class="line">    <span class="comment"># enabled TLS</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">ORDERER_GENERAL_TLS_ENABLED=true</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">ORDERER_GENERAL_TLS_PRIVATEKEY=/var/hyperledger/orderer/tls/server.key</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">ORDERER_GENERAL_TLS_CERTIFICATE=/var/hyperledger/orderer/tls/server.crt</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">ORDERER_GENERAL_TLS_ROOTCAS=[/var/hyperledger/orderer/tls/ca.crt]</span></span><br><span class="line">  <span class="attr">working_dir:</span> <span class="string">/opt/gopath/src/github.com/hyperledger/fabric</span></span><br><span class="line">  <span class="attr">command:</span> <span class="string">orderer</span></span><br><span class="line">  <span class="attr">volumes:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">../channel-artifacts/genesis.block:/var/hyperledger/orderer/orderer.genesis.block</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">../crypto-config/ordererOrganizations/example.com/orderers/orderer2.example.com/msp:/var/hyperledger/orderer/msp</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">../crypto-config/ordererOrganizations/example.com/orderers/orderer2.example.com/tls/:/var/hyperledger/orderer/tls</span></span><br><span class="line">  <span class="attr">ports:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">'7050'</span></span><br><span class="line"></span><br><span class="line"><span class="attr">orderer3.example.com:</span></span><br><span class="line">  <span class="attr">container_name:</span> <span class="string">orderer3.example.com</span></span><br><span class="line">  <span class="attr">image:</span> <span class="string">hyperledger/fabric-orderer</span></span><br><span class="line">  <span class="attr">environment:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">ORDERER_GENERAL_LOGLEVEL=debug</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">ORDERER_GENERAL_LISTENADDRESS=0.0.0.0</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">ORDERER_GENERAL_GENESISMETHOD=file</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">ORDERER_GENERAL_GENESISFILE=/var/hyperledger/orderer/orderer.genesis.block</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">ORDERER_GENERAL_LOCALMSPID=OrdererMSP</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">ORDERER_GENERAL_LOCALMSPDIR=/var/hyperledger/orderer/msp</span></span><br><span class="line">    <span class="comment"># kafka      </span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">CONFIGTX_ORDERER_ORDERERTYPE=kafka</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">CONFIGTX_ORDERER_KAFKA_BROKERS=[kafka0:9092,kafka1:9092,kafka2:9092,kafka3:9092]</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">ORDERER_KAFKA_RETRY_SHORTINTERVAL=1s</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">ORDERER_KAFKA_RETRY_SHORTTOTAL=30s</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">ORDERER_KAFKA_VERBOSE=true</span></span><br><span class="line">    <span class="comment"># enabled TLS</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">ORDERER_GENERAL_TLS_ENABLED=true</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">ORDERER_GENERAL_TLS_PRIVATEKEY=/var/hyperledger/orderer/tls/server.key</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">ORDERER_GENERAL_TLS_CERTIFICATE=/var/hyperledger/orderer/tls/server.crt</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">ORDERER_GENERAL_TLS_ROOTCAS=[/var/hyperledger/orderer/tls/ca.crt]</span></span><br><span class="line">  <span class="attr">working_dir:</span> <span class="string">/opt/gopath/src/github.com/hyperledger/fabric</span></span><br><span class="line">  <span class="attr">command:</span> <span class="string">orderer</span></span><br><span class="line">  <span class="attr">volumes:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">../channel-artifacts/genesis.block:/var/hyperledger/orderer/orderer.genesis.block</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">../crypto-config/ordererOrganizations/example.com/orderers/orderer3.example.com/msp:/var/hyperledger/orderer/msp</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">../crypto-config/ordererOrganizations/example.com/orderers/orderer3.example.com/tls/:/var/hyperledger/orderer/tls</span></span><br><span class="line">  <span class="attr">ports:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">'7050'</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="7-2-2-2-配置-docker-compose-cli-yaml"><a href="#7-2-2-2-配置-docker-compose-cli-yaml" class="headerlink" title="7.2.2.2 配置 docker-compose-cli.yaml"></a>7.2.2.2 配置 docker-compose-cli.yaml</h4><p>将 <code>docker-compose-cli.yaml</code> 配置文件备份为 <code>docker-compose-cli_backup.yaml</code>，然后编辑 <code>docker-compose-cli.yaml</code> 配置文件</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> sudo cp docker-compose-cli.yaml docker-compose-cli_backup.yaml</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> sudo vim docker-compose-cli.yaml</span></span><br></pre></td></tr></table></figure>
+
+<p>在文件中添加三个 zookeeper 节点、四个 kafka 节点及相应的 orderer 节点的信息，具体配置内容如下：</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br><span class="line">192</span><br><span class="line">193</span><br><span class="line">194</span><br><span class="line">195</span><br><span class="line">196</span><br><span class="line">197</span><br><span class="line">198</span><br><span class="line">199</span><br><span class="line">200</span><br><span class="line">201</span><br><span class="line">202</span><br><span class="line">203</span><br><span class="line">204</span><br><span class="line">205</span><br><span class="line">206</span><br><span class="line">207</span><br><span class="line">208</span><br><span class="line">209</span><br><span class="line">210</span><br><span class="line">211</span><br><span class="line">212</span><br><span class="line">213</span><br><span class="line">214</span><br><span class="line">215</span><br><span class="line">216</span><br><span class="line">217</span><br><span class="line">218</span><br><span class="line">219</span><br><span class="line">220</span><br><span class="line">221</span><br><span class="line">222</span><br><span class="line">223</span><br><span class="line">224</span><br><span class="line">225</span><br><span class="line">226</span><br><span class="line">227</span><br><span class="line">228</span><br><span class="line">229</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># Copyright IBM Corp. All Rights Reserved.</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line"><span class="comment"># SPDX-License-Identifier: Apache-2.0</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line"></span><br><span class="line"><span class="attr">version:</span> <span class="string">'2'</span></span><br><span class="line"></span><br><span class="line"><span class="attr">volumes:</span></span><br><span class="line">  <span class="attr">orderer.example.com:</span></span><br><span class="line">  <span class="attr">orderer1.example.com:</span></span><br><span class="line">  <span class="attr">orderer2.example.com:</span></span><br><span class="line">  <span class="attr">orderer3.example.com:</span></span><br><span class="line">  <span class="attr">peer0.org1.example.com:</span></span><br><span class="line">  <span class="attr">peer1.org1.example.com:</span></span><br><span class="line">  <span class="attr">peer0.org2.example.com:</span></span><br><span class="line">  <span class="attr">peer1.org2.example.com:</span></span><br><span class="line"></span><br><span class="line"><span class="attr">networks:</span></span><br><span class="line">  <span class="attr">byfn:</span></span><br><span class="line"></span><br><span class="line"><span class="attr">services:</span></span><br><span class="line"></span><br><span class="line">  <span class="attr">zookeeper1:</span></span><br><span class="line">    <span class="attr">container_name:</span> <span class="string">zookeeper1</span></span><br><span class="line">    <span class="attr">extends:</span></span><br><span class="line">      <span class="attr">file:</span>   <span class="string">base/docker-compose-base.yaml</span></span><br><span class="line">      <span class="attr">service:</span> <span class="string">zookeeper</span></span><br><span class="line">    <span class="attr">environment:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">ZOO_MY_ID=1</span></span><br><span class="line">    <span class="attr">networks:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">byfn</span></span><br><span class="line"></span><br><span class="line">  <span class="attr">zookeeper2:</span></span><br><span class="line">    <span class="attr">container_name:</span> <span class="string">zookeeper2</span></span><br><span class="line">    <span class="attr">extends:</span></span><br><span class="line">      <span class="attr">file:</span>   <span class="string">base/docker-compose-base.yaml</span></span><br><span class="line">      <span class="attr">service:</span> <span class="string">zookeeper</span></span><br><span class="line">    <span class="attr">environment:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">ZOO_MY_ID=2</span></span><br><span class="line">    <span class="attr">networks:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">byfn</span></span><br><span class="line"></span><br><span class="line">  <span class="attr">zookeeper3:</span></span><br><span class="line">    <span class="attr">container_name:</span> <span class="string">zookeeper3</span></span><br><span class="line">    <span class="attr">extends:</span></span><br><span class="line">      <span class="attr">file:</span>   <span class="string">base/docker-compose-base.yaml</span></span><br><span class="line">      <span class="attr">service:</span> <span class="string">zookeeper</span></span><br><span class="line">    <span class="attr">environment:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">ZOO_MY_ID=3</span></span><br><span class="line">    <span class="attr">networks:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">byfn</span></span><br><span class="line"></span><br><span class="line">  <span class="attr">kafka0:</span></span><br><span class="line">    <span class="attr">container_name:</span> <span class="string">kafka0</span></span><br><span class="line">    <span class="attr">extends:</span></span><br><span class="line">      <span class="attr">file:</span>   <span class="string">base/docker-compose-base.yaml</span></span><br><span class="line">      <span class="attr">service:</span> <span class="string">kafka</span></span><br><span class="line">    <span class="attr">environment:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">KAFKA_BROKER_ID=0</span>      </span><br><span class="line">    <span class="attr">depends_on:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">zookeeper1</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">zookeeper2</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">zookeeper3</span></span><br><span class="line">    <span class="attr">networks:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">byfn</span></span><br><span class="line"></span><br><span class="line">  <span class="attr">kafka1:</span></span><br><span class="line">    <span class="attr">container_name:</span> <span class="string">kafka1</span></span><br><span class="line">    <span class="attr">extends:</span></span><br><span class="line">      <span class="attr">file:</span>   <span class="string">base/docker-compose-base.yaml</span></span><br><span class="line">      <span class="attr">service:</span> <span class="string">kafka</span></span><br><span class="line">    <span class="attr">environment:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">KAFKA_BROKER_ID=1</span></span><br><span class="line">    <span class="attr">depends_on:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">zookeeper1</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">zookeeper2</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">zookeeper3</span></span><br><span class="line">    <span class="attr">networks:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">byfn</span></span><br><span class="line"></span><br><span class="line">  <span class="attr">kafka2:</span></span><br><span class="line">    <span class="attr">container_name:</span> <span class="string">kafka2</span></span><br><span class="line">    <span class="attr">extends:</span></span><br><span class="line">      <span class="attr">file:</span>   <span class="string">base/docker-compose-base.yaml</span></span><br><span class="line">      <span class="attr">service:</span> <span class="string">kafka</span></span><br><span class="line">    <span class="attr">environment:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">KAFKA_BROKER_ID=2</span></span><br><span class="line">    <span class="attr">depends_on:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">zookeeper1</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">zookeeper2</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">zookeeper3</span></span><br><span class="line">    <span class="attr">networks:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">byfn</span></span><br><span class="line"></span><br><span class="line">  <span class="attr">kafka3:</span></span><br><span class="line">    <span class="attr">container_name:</span> <span class="string">kafka3</span></span><br><span class="line">    <span class="attr">extends:</span></span><br><span class="line">      <span class="attr">file:</span>   <span class="string">base/docker-compose-base.yaml</span></span><br><span class="line">      <span class="attr">service:</span> <span class="string">kafka</span></span><br><span class="line">    <span class="attr">environment:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">KAFKA_BROKER_ID=3</span></span><br><span class="line">    <span class="attr">depends_on:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">zookeeper1</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">zookeeper2</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">zookeeper3</span></span><br><span class="line">    <span class="attr">networks:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">byfn</span></span><br><span class="line"></span><br><span class="line">  <span class="attr">orderer.example.com:</span></span><br><span class="line">    <span class="attr">extends:</span></span><br><span class="line">      <span class="attr">file:</span>   <span class="string">base/docker-compose-base.yaml</span></span><br><span class="line">      <span class="attr">service:</span> <span class="string">orderer.example.com</span></span><br><span class="line">    <span class="attr">container_name:</span> <span class="string">orderer.example.com</span></span><br><span class="line">    <span class="attr">depends_on:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">kafka0</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">kafka1</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">kafka2</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">kafka3</span></span><br><span class="line">    <span class="attr">networks:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">byfn</span></span><br><span class="line"></span><br><span class="line">  <span class="attr">orderer1.example.com:</span></span><br><span class="line">    <span class="attr">extends:</span></span><br><span class="line">      <span class="attr">file:</span>   <span class="string">base/docker-compose-base.yaml</span></span><br><span class="line">      <span class="attr">service:</span> <span class="string">orderer1.example.com</span></span><br><span class="line">    <span class="attr">container_name:</span> <span class="string">orderer1.example.com</span></span><br><span class="line">    <span class="attr">depends_on:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">kafka0</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">kafka1</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">kafka2</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">kafka3</span></span><br><span class="line">    <span class="attr">networks:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">byfn</span></span><br><span class="line"></span><br><span class="line">  <span class="attr">orderer2.example.com:</span></span><br><span class="line">    <span class="attr">extends:</span></span><br><span class="line">      <span class="attr">file:</span>   <span class="string">base/docker-compose-base.yaml</span></span><br><span class="line">      <span class="attr">service:</span> <span class="string">orderer2.example.com</span></span><br><span class="line">    <span class="attr">container_name:</span> <span class="string">orderer2.example.com</span></span><br><span class="line">    <span class="attr">depends_on:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">kafka0</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">kafka1</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">kafka2</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">kafka3</span></span><br><span class="line">    <span class="attr">networks:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">byfn</span></span><br><span class="line"></span><br><span class="line">  <span class="attr">orderer3.example.com:</span></span><br><span class="line">    <span class="attr">extends:</span></span><br><span class="line">      <span class="attr">file:</span>   <span class="string">base/docker-compose-base.yaml</span></span><br><span class="line">      <span class="attr">service:</span> <span class="string">orderer3.example.com</span></span><br><span class="line">    <span class="attr">container_name:</span> <span class="string">orderer3.example.com</span>   </span><br><span class="line">    <span class="attr">depends_on:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">kafka0</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">kafka1</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">kafka2</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">kafka3</span></span><br><span class="line">    <span class="attr">networks:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">byfn</span>      </span><br><span class="line"></span><br><span class="line">  <span class="attr">peer0.org1.example.com:</span></span><br><span class="line">    <span class="attr">container_name:</span> <span class="string">peer0.org1.example.com</span></span><br><span class="line">    <span class="attr">extends:</span></span><br><span class="line">      <span class="attr">file:</span>  <span class="string">base/docker-compose-base.yaml</span></span><br><span class="line">      <span class="attr">service:</span> <span class="string">peer0.org1.example.com</span></span><br><span class="line">    <span class="attr">networks:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">byfn</span></span><br><span class="line"></span><br><span class="line">  <span class="attr">peer1.org1.example.com:</span></span><br><span class="line">    <span class="attr">container_name:</span> <span class="string">peer1.org1.example.com</span></span><br><span class="line">    <span class="attr">extends:</span></span><br><span class="line">      <span class="attr">file:</span>  <span class="string">base/docker-compose-base.yaml</span></span><br><span class="line">      <span class="attr">service:</span> <span class="string">peer1.org1.example.com</span></span><br><span class="line">    <span class="attr">networks:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">byfn</span></span><br><span class="line"></span><br><span class="line">  <span class="attr">peer0.org2.example.com:</span></span><br><span class="line">    <span class="attr">container_name:</span> <span class="string">peer0.org2.example.com</span></span><br><span class="line">    <span class="attr">extends:</span></span><br><span class="line">      <span class="attr">file:</span>  <span class="string">base/docker-compose-base.yaml</span></span><br><span class="line">      <span class="attr">service:</span> <span class="string">peer0.org2.example.com</span></span><br><span class="line">    <span class="attr">networks:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">byfn</span></span><br><span class="line"></span><br><span class="line">  <span class="attr">peer1.org2.example.com:</span></span><br><span class="line">    <span class="attr">container_name:</span> <span class="string">peer1.org2.example.com</span></span><br><span class="line">    <span class="attr">extends:</span></span><br><span class="line">      <span class="attr">file:</span>  <span class="string">base/docker-compose-base.yaml</span></span><br><span class="line">      <span class="attr">service:</span> <span class="string">peer1.org2.example.com</span></span><br><span class="line">    <span class="attr">networks:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">byfn</span></span><br><span class="line"></span><br><span class="line">  <span class="attr">cli:</span></span><br><span class="line">    <span class="attr">container_name:</span> <span class="string">cli</span></span><br><span class="line">    <span class="attr">image:</span> <span class="string">hyperledger/fabric-tools:$IMAGE_TAG</span></span><br><span class="line">    <span class="attr">tty:</span> <span class="literal">true</span></span><br><span class="line">    <span class="attr">stdin_open:</span> <span class="literal">true</span></span><br><span class="line">    <span class="attr">environment:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">GOPATH=/opt/gopath</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock</span></span><br><span class="line">      <span class="comment">#- CORE_LOGGING_LEVEL=DEBUG</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">CORE_LOGGING_LEVEL=INFO</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">CORE_PEER_ID=cli</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">CORE_PEER_ADDRESS=peer0.org1.example.com:7051</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">CORE_PEER_LOCALMSPID=Org1MSP</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">CORE_PEER_TLS_ENABLED=true</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">CORE_PEER_TLS_CERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/server.crt</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">CORE_PEER_TLS_KEY_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/server.key</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">CORE_PEER_TLS_ROOTCERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp</span></span><br><span class="line">    <span class="attr">working_dir:</span> <span class="string">/opt/gopath/src/github.com/hyperledger/fabric/peer</span></span><br><span class="line">    <span class="attr">command:</span> <span class="string">/bin/bash</span></span><br><span class="line">    <span class="attr">volumes:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">/var/run/:/host/var/run/</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">./../chaincode/:/opt/gopath/src/github.com/chaincode</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">./crypto-config:/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">./scripts:/opt/gopath/src/github.com/hyperledger/fabric/peer/scripts/</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">./channel-artifacts:/opt/gopath/src/github.com/hyperledger/fabric/peer/channel-artifacts</span></span><br><span class="line">    <span class="attr">depends_on:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">orderer.example.com</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">orderer1.example.com</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">orderer2.example.com</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">orderer3.example.com</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">peer0.org1.example.com</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">peer1.org1.example.com</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">peer0.org2.example.com</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">peer1.org2.example.com</span></span><br><span class="line">    <span class="attr">networks:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">byfn</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="7-2-3-启动网络"><a href="#7-2-3-启动网络" class="headerlink" title="7.2.3 启动网络"></a>7.2.3 启动网络</h3><p><strong>关闭并清理网络环境</strong></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> sudo ./byfn.sh down</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>使用 <code>byfn.sh</code> 生成组织结构及身份证书及所需的各项配置文件</strong></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> sudo ./byfn.sh generate</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>启动网络</strong></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> sudo docker-compose -f docker-compose-cli.yaml up</span></span><br></pre></td></tr></table></figure>
+
+<p>查看活动容器：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> sudo docker ps</span></span><br></pre></td></tr></table></figure>
+
+<p>可发现发三个 zookeeper 节点、四个 kafka 节点、四个 orderer 节点、四个 peer 节点都已经处于活动状态，如下图所示：</p>
+<p><img src="http://image.chaindesk.cn/7.2_12.png/mark" alt="集群容器"></p>
+<p><strong>打开一个新的终端2窗口：</strong></p>
+<p>进入 <code>zookeeper1</code> 容器</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> sudo docker <span class="built_in">exec</span> -it zookeeper1 bash</span></span><br></pre></td></tr></table></figure>
+
+<p>使用 <code>ifconfig</code> 命令查看容器的 IP 地址之后退出</p>
+<p><img src="http://image.chaindesk.cn/7.2_13.png/mark" alt="集群容器"></p>
+<p>进入 kafka0 容器并进入 kafka HOME目录</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> sudo docker <span class="built_in">exec</span> -it kafka0 bash</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> <span class="built_in">cd</span> opt/kafka/</span></span><br></pre></td></tr></table></figure>
+
+<p>查看 kafka 自动创建的 topic</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> bin/kafka-topics.sh --list --zookeeper 172.18.0.5:2181</span></span><br><span class="line"></span><br><span class="line">testchainid</span><br></pre></td></tr></table></figure>
+
+<p><strong>创建通道</strong></p>
+<p>返回终端 <code>１</code> 窗口，进入 <code>cli</code> 容器</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> sudo docker <span class="built_in">exec</span> -it cli bash</span></span><br></pre></td></tr></table></figure>
+
+<p>设置环境变量</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> <span class="built_in">export</span> CHANNEL_NAME=mychannel</span></span><br></pre></td></tr></table></figure>
+
+<p>创建通道</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> peer channel create -o orderer.example.com:7050 -c <span class="variable">$CHANNEL_NAME</span> -f ./channel-artifacts/channel.tx --tls --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem</span></span><br></pre></td></tr></table></figure>
+
+<p>终端输出如下：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">[channelCmd] InitCmdFactory -&gt; INFO 001 Endorser and orderer connections initialized</span><br><span class="line">[cli/common] readBlock -&gt; INFO 002 Got status: &amp;&#123;SERVICE_UNAVAILABLE&#125;</span><br><span class="line">[channelCmd] InitCmdFactory -&gt; INFO 003 Endorser and orderer connections initialized</span><br><span class="line">[cli/common] readBlock -&gt; INFO 004 Got status: &amp;&#123;SERVICE_UNAVAILABLE&#125;</span><br><span class="line">[channelCmd] InitCmdFactory -&gt; INFO 005 Endorser and orderer connections initialized</span><br><span class="line">[cli/common] readBlock -&gt; INFO 006 Got status: &amp;&#123;SERVICE_UNAVAILABLE&#125;</span><br><span class="line">[channelCmd] InitCmdFactory -&gt; INFO 007 Endorser and orderer connections initialized</span><br><span class="line">[cli/common] readBlock -&gt; INFO 008 Got status: &amp;&#123;SERVICE_UNAVAILABLE&#125;</span><br><span class="line">[channelCmd] InitCmdFactory -&gt; INFO 009 Endorser and orderer connections initialized</span><br><span class="line">[cli/common] readBlock -&gt; INFO 00a Got status: &amp;&#123;SERVICE_UNAVAILABLE&#125;</span><br><span class="line">[channelCmd] InitCmdFactory -&gt; INFO 00b Endorser and orderer connections initialized</span><br><span class="line">[cli/common] readBlock -&gt; INFO 00c Received block: 0</span><br></pre></td></tr></table></figure>
+
+<p>创建通道之后在终端 <code>2</code> 窗口的 kafka 容器中再次查看 topic 信息， 发现 kafka 又自动创建了一个新的名为 <code>mychannel</code> 的 topic</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> bin/kafka-topics.sh --list --zookeeper 172.18.0.5:2181</span></span><br><span class="line"></span><br><span class="line">mychannel</span><br><span class="line">testchainid</span><br></pre></td></tr></table></figure>
+
+<p>返回终端 <code>１</code> 窗口的 <code>cli</code> 容器中，将当前代表的 <code>peer0.org1.example.com</code> 节点加入到应用通道中</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> peer channel join -b mychannel.block</span></span><br></pre></td></tr></table></figure>
+
+<p>终端输出如下：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[channelCmd] InitCmdFactory -&gt; INFO 001 Endorser and orderer connections initialized</span><br><span class="line">[channelCmd] executeJoin -&gt; INFO 002 Successfully submitted proposal to join channel</span><br></pre></td></tr></table></figure>
+
+<h3 id="7-2-4-测试"><a href="#7-2-4-测试" class="headerlink" title="7.2.4 测试"></a>7.2.4 测试</h3><p><strong>安装链码</strong></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> peer chaincode install -n mycc -v 1.0 -p github.com/chaincode/chaincode_example02/go/</span></span><br></pre></td></tr></table></figure>
+
+<p>安装成功显示内容如下：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[chaincodeCmd] checkChaincodeCmdParams -&gt; INFO 001 Using default escc</span><br><span class="line">[chaincodeCmd] checkChaincodeCmdParams -&gt; INFO 002 Using default vscc</span><br><span class="line">[chaincodeCmd] install -&gt; INFO 003 Installed remotely response:&lt;status:200 payload:"OK" &gt;</span><br></pre></td></tr></table></figure>
+
+<p><strong>实例化链码</strong></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> peer chaincode instantiate -o orderer.example.com:7050 --tls --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem -C <span class="variable">$CHANNEL_NAME</span> -n mycc -v 1.0 -c <span class="string">'&#123;"Args":["init","a", "100", "b","200"]&#125;'</span> -P <span class="string">"OR ('Org1MSP.peer','Org2MSP.peer')"</span></span></span><br></pre></td></tr></table></figure>
+
+<p>实例化成功显示如下：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[chaincodeCmd] checkChaincodeCmdParams -&gt; INFO 001 Using default escc</span><br><span class="line">[chaincodeCmd] checkChaincodeCmdParams -&gt; INFO 002 Using default vscc</span><br></pre></td></tr></table></figure>
+
+<p><strong>查询链码</strong></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> peer chaincode query -C <span class="variable">$CHANNEL_NAME</span> -n mycc -c <span class="string">'&#123;"Args":["query","a"]&#125;'</span></span></span><br></pre></td></tr></table></figure>
+
+<p>返回查询结果：<code>100</code></p>
+<p><strong>调用链码</strong></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> peer chaincode invoke -o orderer.example.com:7050  --tls --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem  -C <span class="variable">$CHANNEL_NAME</span> -n mycc -c <span class="string">'&#123;"Args":["invoke","a","b","10"]&#125;'</span></span></span><br></pre></td></tr></table></figure>
+
+<p>返回调用结果：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[chaincodeCmd] chaincodeInvokeOrQuery -&gt; INFO 001 Chaincode invoke successful. result: status:200</span><br></pre></td></tr></table></figure>
+
+<p><strong>查询转账之后的结果</strong></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> peer chaincode query -C <span class="variable">$CHANNEL_NAME</span> -n mycc -c <span class="string">'&#123;"Args":["query","a"]&#125;'</span></span></span><br></pre></td></tr></table></figure>
+
+<p>返回查询结果：<code>90</code></p>
+<p>orderer 节点以集群的方式运行，在集群环境下，客户端将交易发送到任何一个 orderer 排序节点都可以，如下所示，指定Orderer2节点。</p>
+<p><strong>调用链码</strong></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> peer chaincode invoke -o orderer2.example.com:7050  --tls --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/example.com/orderers/orderer2.example.com/msp/tlscacerts/tlsca.example.com-cert.pem  -C <span class="variable">$CHANNEL_NAME</span> -n mycc -c <span class="string">'&#123;"Args":["invoke","a","b","10"]&#125;'</span></span></span><br></pre></td></tr></table></figure>
+
+<p>返回调用结果：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[chaincodeCmd] chaincodeInvokeOrQuery -&gt; INFO 001 Chaincode invoke successful. result: status:200</span><br></pre></td></tr></table></figure>
+
+<p><strong>再次查询链码</strong></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> peer chaincode query -C <span class="variable">$CHANNEL_NAME</span> -n mycc -c <span class="string">'&#123;"Args":["query","a"]&#125;'</span></span></span><br></pre></td></tr></table></figure>
+
+<p>返回查询结果：<code>80</code></p>
+<h2 id="FAQ-1"><a href="#FAQ-1" class="headerlink" title="FAQ"></a>FAQ</h2><ol>
+<li><p>之前从未使用过 Kafka / Zookeeper 集群，我想使用基于 Kafka 的 Ordering 服务。我该怎么办？</p>
+<p>如果之前从未使用过 Kafka，那么应该先从官方网站学习一下 <a href="https://kafka.apache.org/quickstart" target="_blank" rel="noopener">Kafka快速入门指南</a></p>
+</li>
+<li><p>docker-compose-cli.yaml 配置文件有官方的配置示例吗？</p>
+<p>官方的配置示例请参阅 <a href="https://github.com/hyperledger/fabric/blob/master/examples/e2e_cli/docker-compose-e2e.yaml" target="_blank" rel="noopener">端到端CLI 示例</a></p>
+</li>
+<li><p>为什么使用基于 Kafka 的集群服务中必须使用 ZooKeeper？</p>
+<p>Zookeeper 是一个开源的为分布式应用提供一致性服务的软件，Kafka 在内部使用 Zookeeper 来进行 broker 之间的协调。更多的内容，请查看官方提供的相关说明文档。</p>
+</li>
+</ol>
+<h3 id="多链及多通道实现"><a href="#多链及多通道实现" class="headerlink" title="多链及多通道实现"></a>多链及多通道实现</h3><h2 id="目标-2"><a href="#目标-2" class="headerlink" title="目标"></a>目标</h2><ol>
+<li>Hyperledger Fabric 多链&amp;多通道</li>
+<li>多链&amp;&amp;多通道的实现</li>
+</ol>
+<h2 id="任务实现-1"><a href="#任务实现-1" class="headerlink" title="任务实现"></a>任务实现</h2><h3 id="7-3-1-多链及多通道"><a href="#7-3-1-多链及多通道" class="headerlink" title="7.3.1 多链及多通道"></a>7.3.1 多链及多通道</h3><p>在 Hyperledger Fabric 0.6 版本中，所有节点都属于同一个链中，由此产生了数据处理、存储及访问安全的问题。在后期的 Hyperledger Fabric 1.0 版本中，新增加了对多链实现。</p>
+<p><strong>链</strong>是由一个通道 + 一个共享账本 + N个 peer 节点组成；不同的链将参与者和数据（包含chaincode）进行隔离；在由多个 Peer 节点组成的网络中，不同的 Peer 节点加入到不同的应用通道中，便产生了多个不同的链。真正实现了对数据的隔离。</p>
+<p>加入到同一个应用通道中的 Peer 节点共同维护相同的区块数据，与加入其它应用通道的 Peer 节点相互隔离，也就意味着不能访问其它应用通道中 Peer 节点的数据，有效保护了隐私数据，并且提高了对数据的并行处理效率及对数据存储空间的利用。</p>
+<h4 id="7-3-1-1-多链环境"><a href="#7-3-1-1-多链环境" class="headerlink" title="7.3.1.1 多链环境"></a>7.3.1.1 多链环境</h4><p>现在假设我们有一个 Hyperledger Fabric 网络环境，该网络中包含由4个 Orderer 节点组成的一个 Ordering Service 集群，三个 Org 组织；其中 Org1 Peers中包含6个 Peer 节点；Org2 组织中包含4个 Peer 节点；Org3 组织中包含3个 Peer 节点。</p>
+<p><img src="http://image.chaindesk.cn/7.3_1.png/mark" alt="多链"></p>
+<p>如上面的多链示意图所示：</p>
+<p>Chain1：由 Org1、Org2 两个组织中的 1.1，1.2，2.1，2.2 四个 Peer 节点组成。</p>
+<p>Chain2：同 Org1、Org2 、Org3三个组织中的 1.1，1.3，2.1，2.3，3.1，3.2，3.3 七个 Peer 节点组成。</p>
+<p>Anchors：由 1.3，2.3，3.1 三个不同组织的 Peer 节点代表。</p>
+<p>Leaders：由 1.1，2.1，3.1 三个不同组织的 Peer 节点代表 。</p>
+<h4 id="7-3-1-2-多通道环境"><a href="#7-3-1-2-多通道环境" class="headerlink" title="7.3.1.2 多通道环境"></a>7.3.1.2 多通道环境</h4><p><img src="http://image.chaindesk.cn/7.3_2.png/mark" alt="多通道"></p>
+<p>如上图所示：网络中有三个通道，分别由红色、蓝色、黑色三种颜色代表；多个 Peer 节点加入不同的应用通道中形成多个账本。</p>
+<ul>
+<li>Peer 1，Peer 2 和 Peer N 加入到红色通道，并共同维护红色账本;</li>
+<li>Peer 1 和 Peer N加入到蓝色通道，并共同维护蓝色账本;</li>
+<li>Peer 2 和 Peer N加入到黑色通道上并共同维护黑色账本。</li>
+</ul>
+<h3 id="7-3-2-应用多通道"><a href="#7-3-2-应用多通道" class="headerlink" title="7.3.2 应用多通道"></a>7.3.2 应用多通道</h3><p>如果当前网络开发测试模式，请先关闭：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> <span class="built_in">cd</span> ~/hyfa/fabric-samples/chaincode-docker-devmode</span></span><br><span class="line"></span><br><span class="line"><span class="meta">$</span><span class="bash"> sudo docker-compose -f docker-compose-simple.yaml down</span></span><br></pre></td></tr></table></figure>
+
+<p>然后进入 <code>fabric-samples/first-network</code> 目录中：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> <span class="built_in">cd</span> ../first-network</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="7-3-2-1-创建一个应用通道的配置交易"><a href="#7-3-2-1-创建一个应用通道的配置交易" class="headerlink" title="7.3.2.1 创建一个应用通道的配置交易"></a>7.3.2.1 创建一个应用通道的配置交易</h4><p>由在要对一个网络进行分割，所以为了区分不同的“子网”，我们需要给不同的“子网”指定一个标识名称，所以请务必设置$CHANNEL_NAME环境变量为一个与之前通道名称完全不相同的值（代表新创建的另外一个应用通道名称）。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> <span class="built_in">export</span> CHANNEL_NAME=mychannel2</span></span><br></pre></td></tr></table></figure>
+
+<p>指定使用 <code>configtx.yaml</code> 配置文件中的 <code>TwoOrgsChannel</code> 模板, 来生成新建通道的配置交易文件,</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> sudo ../bin/configtxgen -profile TwoOrgsChannel -outputCreateChannelTx ./channel-artifacts/channel2.tx -channelID <span class="variable">$CHANNEL_NAME</span></span></span><br></pre></td></tr></table></figure>
+
+<p>输出如下</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">[common/tools/configtxgen] main -&gt; INFO 001 Loading configuration</span><br><span class="line">[common/tools/configtxgen] doOutputChannelCreateTx -&gt; INFO 002 Generating new channel configtx</span><br><span class="line">[common/tools/configtxgen/encoder] NewApplicationGroup -&gt; WARN 003 Default policy emission is deprecated, please include policy specificiations for the application group in configtx.yaml</span><br><span class="line">[msp] getMspConfig -&gt; INFO 004 Loading NodeOUs</span><br><span class="line">[common/tools/configtxgen/encoder] NewApplicationOrgGroup -&gt; WARN 005 Default policy emission is deprecated, please include policy specificiations for the application org group Org1MSP in configtx.yaml</span><br><span class="line">[msp] getMspConfig -&gt; INFO 006 Loading NodeOUs</span><br><span class="line">[common/tools/configtxgen/encoder] NewApplicationOrgGroup -&gt; WARN 007 Default policy emission is deprecated, please include policy specificiations for the application org group Org2MSP in configtx.yaml</span><br><span class="line">[common/tools/configtxgen] doOutputChannelCreateTx -&gt; INFO 008 Writing new channel tx</span><br></pre></td></tr></table></figure>
+
+<h4 id="7-3-2-2-生成锚节点配置更新文件"><a href="#7-3-2-2-生成锚节点配置更新文件" class="headerlink" title="7.3.2.2 生成锚节点配置更新文件"></a>7.3.2.2 生成锚节点配置更新文件</h4><p>锚节点配置更新文件用来对组织的锚节点进行配置</p>
+<p>同样基于 <code>configtx.yaml</code> 配置文件生成新建通道文件, 每个组织都需要分别生成且注意指定对应的组织名称</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> sudo ../bin/configtxgen -profile TwoOrgsChannel -outputAnchorPeersUpdate ./channel-artifacts/Org1MSPanchors2.tx -channelID <span class="variable">$CHANNEL_NAME</span> -asOrg Org1MSP</span></span><br><span class="line"></span><br><span class="line"><span class="meta">$</span><span class="bash"> sudo ../bin/configtxgen -profile TwoOrgsChannel -outputAnchorPeersUpdate ./channel-artifacts/Org2MSPanchors2.tx -channelID <span class="variable">$CHANNEL_NAME</span> -asOrg Org2MSP</span></span><br></pre></td></tr></table></figure>
+
+<p>执行完毕后查看 <code>channel-artifacts</code> 目录内容：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">total 48</span><br><span class="line">drwxr-xr-x 2 root root  4096 8月  28 16:29 ./</span><br><span class="line">drwxr-xr-x 7 root root  4096 8月  28 10:41 ../</span><br><span class="line">-rw-r--r-- 1 root root   348 8月  28 16:27 channel2.tx</span><br><span class="line">-rw-r--r-- 1 root root   346 8月  28 10:41 channel.tx</span><br><span class="line">-rw-r--r-- 1 root root 12639 8月  28 10:41 genesis.block</span><br><span class="line">-rw-r--r-- 1 root root     0 8月   7 10:12 .gitkeep</span><br><span class="line">-rw-r--r-- 1 root root   286 8月  28 16:28 Org1MSPanchors2.tx</span><br><span class="line">-rw-r--r-- 1 root root   284 8月  28 10:41 Org1MSPanchors.tx</span><br><span class="line">-rw-r--r-- 1 root root   286 8月  28 16:29 Org2MSPanchors2.tx</span><br><span class="line">-rw-r--r-- 1 root root   284 8月  28 10:41 Org2MSPanchors.tx</span><br></pre></td></tr></table></figure>
+
+<p>如上输出内容所示，在 <code>channel-artifacts</code> 目录中新增了 <code>channel2.tx、Org1MSPanchors2.tx、Org2MSPanchors2.tx</code> 三个配置文件。</p>
+<h4 id="7-3-2-3-启动网络"><a href="#7-3-2-3-启动网络" class="headerlink" title="7.3.2.3 启动网络"></a>7.3.2.3 启动网络</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> sudo docker-compose -f docker-compose-cli.yaml up -d</span></span><br></pre></td></tr></table></figure>
+
+<p>命令执行后输出如下：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">Creating network "net_byfn" with the default driver</span><br><span class="line">Creating orderer.example.com</span><br><span class="line">Creating peer1.org2.example.com</span><br><span class="line">Creating peer0.org2.example.com</span><br><span class="line">Creating peer1.org1.example.com</span><br><span class="line">Creating peer0.org1.example.com</span><br><span class="line">Creating cli</span><br></pre></td></tr></table></figure>
+
+<h4 id="7-3-2-4-创建通道"><a href="#7-3-2-4-创建通道" class="headerlink" title="7.3.2.4 创建通道"></a>7.3.2.4 创建通道</h4><p><strong>进入Docker容器</strong></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> sudo docker <span class="built_in">exec</span> -it cli bash</span></span><br></pre></td></tr></table></figure>
+
+<p>检查环境变量是否正确设置</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> <span class="built_in">echo</span> <span class="variable">$CHANNEL_NAME</span></span></span><br></pre></td></tr></table></figure>
+
+<p><strong>设置环境变量</strong></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> <span class="built_in">export</span> CHANNEL_NAME=mychannel2</span></span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>注意：此处设置的应用通道名称环境变量必须与创建应用通道时指定的环境变量名称一致。</p>
+</blockquote>
+<p><strong>创建通道</strong></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> peer channel create -o orderer.example.com:7050 -c <span class="variable">$CHANNEL_NAME</span> -f ./channel-artifacts/channel2.tx --tls --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem</span></span><br></pre></td></tr></table></figure>
+
+<p>命令执行后输出如下：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[channelCmd] InitCmdFactory -&gt; INFO 001 Endorser and orderer connections initialized</span><br><span class="line">[cli/common] readBlock -&gt; INFO 002 Received block: 0</span><br></pre></td></tr></table></figure>
+
+<h4 id="7-3-2-5-加入通道"><a href="#7-3-2-5-加入通道" class="headerlink" title="7.3.2.5 加入通道"></a>7.3.2.5 加入通道</h4><p>应用通道所包含组织的成员节点可以加入通道中</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> peer channel join -b mychannel2.block -o orderer:7050</span></span><br></pre></td></tr></table></figure>
+
+<p>命令执行后输出如下：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[channelCmd] InitCmdFactory -&gt; INFO 001 Endorser and orderer connections initialized</span><br><span class="line">[channelCmd] executeJoin -&gt; INFO 002 Successfully submitted proposal to join channel</span><br></pre></td></tr></table></figure>
+
+<h4 id="7-3-2-6-更新锚点"><a href="#7-3-2-6-更新锚点" class="headerlink" title="7.3.2.6 更新锚点"></a>7.3.2.6 更新锚点</h4><p>使用Org1的管理员身份更新锚节点配置</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> peer channel update -o orderer.example.com:7050 -c <span class="variable">$CHANNEL_NAME</span> -f ./channel-artifacts/Org1MSPanchors2.tx --tls --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem</span></span><br></pre></td></tr></table></figure>
+
+<p>使用Org2的管理员身份更新锚节点配置</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org2.example.com/users/Admin@org2.example.com/msp </span></span><br><span class="line"><span class="meta">#</span><span class="bash"> CORE_PEER_ADDRESS=peer0.org2.example.com:7051 </span></span><br><span class="line"><span class="meta">#</span><span class="bash"> CORE_PEER_LOCALMSPID=<span class="string">"Org2MSP"</span> </span></span><br><span class="line"><span class="meta">#</span><span class="bash"> CORE_PEER_TLS_ROOTCERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org2.example.com/peers/peer0.org2.example.com/tls/ca.crt </span></span><br><span class="line"><span class="meta">#</span><span class="bash"> peer channel update -o orderer.example.com:7050 -c <span class="variable">$CHANNEL_NAME</span> -f ./channel-artifacts/Org2MSPanchors2.tx --tls --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="7-3-2-7-列出所加入的通道"><a href="#7-3-2-7-列出所加入的通道" class="headerlink" title="7.3.2.7 列出所加入的通道"></a>7.3.2.7 列出所加入的通道</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> peer channel list</span></span><br></pre></td></tr></table></figure>
+
+<p>list命令会列出指定的Peer节点已经加入的所有应用通道的列表.</p>
+<p>输出当前节点已加入的应用通道信息如下：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">[channelCmd] InitCmdFactory -&gt; INFO 001 Endorser and orderer connections initialized</span><br><span class="line">Channels peers has joined: </span><br><span class="line">mychannel</span><br><span class="line">mychannel2</span><br></pre></td></tr></table></figure>
+
+<p>从如上终端输出中可以看到，当前 peer 节点加入了两个不同的应用通道，分别为 <code>mychannel、mychannel2</code>。从而实现当前 peer 节点会维护两个账本。</p>
+<h2 id="FAQ-2"><a href="#FAQ-2" class="headerlink" title="FAQ"></a>FAQ</h2><ol>
+<li><p>是一个通道对应一个账本吗？</p>
+<p>对，一个通道中所包含的所有 Peer 节点共同维护同一个账本。</p>
+</li>
+<li><p>多个不同的链码会对应一个账本吗？</p>
+<p>简单的说，一个链码也同样对应一个账本。</p>
+</li>
+<li><p>多通道一般应用在什么场景之下？</p>
+<p>考虑多个不同行业、不同组织、数据隐私的不同访问策略等等的情况下应用多通道及多链。</p>
+</li>
+<li><p>一个 Peer 节点对应一个账本吗？</p>
+<p>不一定，这需要考虑此 Peer 节点加入了几个应用通道，部署了几个链码等等这些情况。</p>
+</li>
+</ol>
+<p>本文地址: <a href="https://www.chaindesk.cn/witbook/11/147" target="_blank" rel="noopener">https://www.chaindesk.cn/witbook/11/147</a></p>
+
+    </div>
+
+    
+    
+    
+    <div>
+      
+        <div>
+    
+        <div style="text-align:center;color: #ccc;font-size:14px;">-------------本文结束<i class="fa fa-paw"></i>感谢您的阅读-------------</div>
+    
+</div>
+
+      
+    </div>
+        <div class="reward-container">
+  <div>坚持原创技术分享，您的支持将鼓励我继续创作！</div>
+  <button disable="enable" onclick="var qr = document.getElementById(&quot;qr&quot;); qr.style.display = (qr.style.display === 'none') ? 'block' : 'none';">
+    打赏
+  </button>
+  <div id="qr" style="display: none;">
+      
+      <div style="display: inline-block;">
+        <img src="/images/wechatpay.jpg" alt="Hongery 微信支付">
+        <p>微信支付</p>
+      </div>
+      
+      <div style="display: inline-block;">
+        <img src="/images/alipay.jpg" alt="Hongery 支付宝">
+        <p>支付宝</p>
+      </div>
+
+  </div>
+</div>
+
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>Hongery
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="http://yoursite.com/2020/03/26/%E8%81%94%E7%9B%9F%E9%93%BE/%E7%AC%AC7%E7%AB%A0Fabric%E5%85%B1%E8%AF%86%E6%9C%BA%E5%88%B6/" title="第7章Fabric共识机制">http://yoursite.com/2020/03/26/联盟链/第7章Fabric共识机制/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/blockchain/" rel="tag"># blockchain</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/03/25/%E8%81%94%E7%9B%9F%E9%93%BE/%E7%AC%AC6%E7%AB%A0MSP%E6%88%90%E5%91%98%E7%AE%A1%E7%90%86%E5%92%8CCA%E6%9C%8D%E5%8A%A1%E5%AE%9E%E7%8E%B0/" rel="prev" title="第6章MSP成员管理和CA服务实现">
+      <i class="fa fa-chevron-left"></i> 第6章MSP成员管理和CA服务实现
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let activeClass = CONFIG.comments.activeClass;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#一、Fabric中的共识实现"><span class="nav-text">一、Fabric中的共识实现</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#目标"><span class="nav-text">目标</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#7-1-1-概述"><span class="nav-text">7.1.1 概述</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#7-1-2-共识算法类型"><span class="nav-text">7.1.2 共识算法类型</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#7-1-2-1-共识属性"><span class="nav-text">7.1.2.1 共识属性</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#7-1-2-2-共识算法类型"><span class="nav-text">7.1.2.2 共识算法类型</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#7-1-3-Hyperledger-Fabric中的共识实现"><span class="nav-text">7.1.3 Hyperledger Fabric中的共识实现</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#FAQ"><span class="nav-text">FAQ</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#基于Kafka排序服务的实现"><span class="nav-text">基于Kafka排序服务的实现</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#目标-1"><span class="nav-text">目标</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#任务实现"><span class="nav-text">任务实现</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#7-2-1-指定-Kafka-实现排序服务"><span class="nav-text">7.2.1 指定 Kafka 实现排序服务</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#7-2-1-1-配置-crypto-config-yaml"><span class="nav-text">7.2.1.1 配置 crypto-config.yaml</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#7-2-1-2-配置-configtx-yaml"><span class="nav-text">7.2.1.2 配置 configtx.yaml</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#7-2-2-配置网络环境"><span class="nav-text">7.2.2 配置网络环境</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#7-2-2-1-配置-docker-compose-base-yaml"><span class="nav-text">7.2.2.1 配置 docker-compose-base.yaml</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#7-2-2-2-配置-docker-compose-cli-yaml"><span class="nav-text">7.2.2.2 配置 docker-compose-cli.yaml</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#7-2-3-启动网络"><span class="nav-text">7.2.3 启动网络</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#7-2-4-测试"><span class="nav-text">7.2.4 测试</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#FAQ-1"><span class="nav-text">FAQ</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#多链及多通道实现"><span class="nav-text">多链及多通道实现</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#目标-2"><span class="nav-text">目标</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#任务实现-1"><span class="nav-text">任务实现</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#7-3-1-多链及多通道"><span class="nav-text">7.3.1 多链及多通道</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#7-3-1-1-多链环境"><span class="nav-text">7.3.1.1 多链环境</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#7-3-1-2-多通道环境"><span class="nav-text">7.3.1.2 多通道环境</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#7-3-2-应用多通道"><span class="nav-text">7.3.2 应用多通道</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#7-3-2-1-创建一个应用通道的配置交易"><span class="nav-text">7.3.2.1 创建一个应用通道的配置交易</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#7-3-2-2-生成锚节点配置更新文件"><span class="nav-text">7.3.2.2 生成锚节点配置更新文件</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#7-3-2-3-启动网络"><span class="nav-text">7.3.2.3 启动网络</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#7-3-2-4-创建通道"><span class="nav-text">7.3.2.4 创建通道</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#7-3-2-5-加入通道"><span class="nav-text">7.3.2.5 加入通道</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#7-3-2-6-更新锚点"><span class="nav-text">7.3.2.6 更新锚点</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#7-3-2-7-列出所加入的通道"><span class="nav-text">7.3.2.7 列出所加入的通道</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#FAQ-2"><span class="nav-text">FAQ</span></a></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Hongery"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">Hongery</p>
+  <div class="site-description" itemprop="description">直到这一刻微笑着说话为止，我至少留下了一公升眼泪</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">74</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/Hongery" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;Hongery" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://blog.csdn.net/weixin_40098405" title="CSDN → https:&#x2F;&#x2F;blog.csdn.net&#x2F;weixin_40098405" rel="noopener" target="_blank"><i class="fa fa-fw fa-crosshairs"></i>CSDN</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:1281185088@qq.com" title="E-Mail1 → mailto:1281185088@qq.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail1</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:hongery@yeah.net" title="E-Mail2 → mailto:hongery@yeah.net" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail2</a>
+      </span>
+  </div>
+  <div class="cc-license motion-element" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">hongery</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+      <span class="post-meta-item-text">站点总字数：</span>
+    <span title="站点总字数">NaNm</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span class="post-meta-item-text">站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">NaN:aN字</span>
+</div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>
+<!-- 页面点击小红心 -->
+<script type="text/javascript" src="/js/clicklove.js"></script>

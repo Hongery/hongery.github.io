@@ -1,0 +1,884 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.1.1">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/avatar.jpg">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/avatar.jpg">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    hostname: new URL('http://yoursite.com').hostname,
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.6.0',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},
+    copycode: {"enable":true,"show_result":true,"style":"mac"},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":true},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    comments: {"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: 'search.xml',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}
+  };
+</script>
+
+  <meta name="description" content="生成组织结构与身份证书一、生成组织结构与身份证书目标 明确生成组织结构及身份证书所需的配置文件及其内容含义 如何使用命令生成对应的组织结构信身份证书  任务实现 自动化脚本 byfn.sh 可以自动帮我们创建网络环境运行时所需的所有内容，但在一些特定情况之下，我们根据不同的需求需要自定义一些设置。 现在，我们来实现最重要的环节，哪些配置文件的相关设置会影响创建 Hyperledger Fabric">
+<meta property="og:type" content="article">
+<meta property="og:title" content="第3章fabric网络搭建">
+<meta property="og:url" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2020&#x2F;03&#x2F;21&#x2F;%E8%81%94%E7%9B%9F%E9%93%BE&#x2F;%E7%AC%AC3%E7%AB%A0Fabric%E7%BD%91%E7%BB%9C%E7%9A%84%E6%90%AD%E5%BB%BA&#x2F;index.html">
+<meta property="og:site_name" content="Hongery">
+<meta property="og:description" content="生成组织结构与身份证书一、生成组织结构与身份证书目标 明确生成组织结构及身份证书所需的配置文件及其内容含义 如何使用命令生成对应的组织结构信身份证书  任务实现 自动化脚本 byfn.sh 可以自动帮我们创建网络环境运行时所需的所有内容，但在一些特定情况之下，我们根据不同的需求需要自定义一些设置。 现在，我们来实现最重要的环节，哪些配置文件的相关设置会影响创建 Hyperledger Fabric">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http:&#x2F;&#x2F;image.chaindesk.cn&#x2F;3.3.1.png&#x2F;mark">
+<meta property="article:published_time" content="2020-03-21T12:19:33.000Z">
+<meta property="article:modified_time" content="2020-03-26T16:09:26.212Z">
+<meta property="article:author" content="Hongery">
+<meta property="article:tag" content="blockchain">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http:&#x2F;&#x2F;image.chaindesk.cn&#x2F;3.3.1.png&#x2F;mark">
+
+<link rel="canonical" href="http://yoursite.com/2020/03/21/%E8%81%94%E7%9B%9F%E9%93%BE/%E7%AC%AC3%E7%AB%A0Fabric%E7%BD%91%E7%BB%9C%E7%9A%84%E6%90%AD%E5%BB%BA/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true
+  };
+</script>
+
+  <title>第3章fabric网络搭建 | Hongery</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Hongery</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">记录学习中的点点滴滴</p>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="none"
+           placeholder="搜索..." spellcheck="false"
+           type="text" id="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+  <a href="https://github.com/Hongery" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/03/21/%E8%81%94%E7%9B%9F%E9%93%BE/%E7%AC%AC3%E7%AB%A0Fabric%E7%BD%91%E7%BB%9C%E7%9A%84%E6%90%AD%E5%BB%BA/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="Hongery">
+      <meta itemprop="description" content="直到这一刻微笑着说话为止，我至少留下了一公升眼泪">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hongery">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          第3章fabric网络搭建
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-03-21 20:19:33" itemprop="dateCreated datePublished" datetime="2020-03-21T20:19:33+08:00">2020-03-21</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-03-27 00:09:26" itemprop="dateModified" datetime="2020-03-27T00:09:26+08:00">2020-03-27</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Hyperledger-Fabric/" itemprop="url" rel="index">
+                    <span itemprop="name">Hyperledger Fabric</span>
+                  </a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span><br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-file-word-o"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>34k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-clock-o"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>31 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h3 id="生成组织结构与身份证书"><a href="#生成组织结构与身份证书" class="headerlink" title="生成组织结构与身份证书"></a>生成组织结构与身份证书</h3><h3 id="一、生成组织结构与身份证书"><a href="#一、生成组织结构与身份证书" class="headerlink" title="一、生成组织结构与身份证书"></a>一、生成组织结构与身份证书</h3><h4 id="目标"><a href="#目标" class="headerlink" title="目标"></a>目标</h4><ol>
+<li>明确生成组织结构及身份证书所需的配置文件及其内容含义</li>
+<li>如何使用命令生成对应的组织结构信身份证书</li>
+</ol>
+<h4 id="任务实现"><a href="#任务实现" class="headerlink" title="任务实现"></a>任务实现</h4><blockquote>
+<p>自动化脚本 byfn.sh 可以自动帮我们创建网络环境运行时所需的所有内容，但在一些特定情况之下，我们根据不同的需求需要自定义一些设置。</p>
+<p>现在，我们来实现最重要的环节，哪些配置文件的相关设置会影响创建 Hyperledger Fabric 网络环境运行时所需要的相应内容。</p>
+</blockquote>
+<a id="more"></a>
+
+<h3 id="1-与组织结构及身份证书关联的配置文件"><a href="#1-与组织结构及身份证书关联的配置文件" class="headerlink" title="1 与组织结构及身份证书关联的配置文件"></a>1 与组织结构及身份证书关联的配置文件</h3><p>如果要生成 Hyperledger Fabric 网络环境中所需的组织结构及身份证书信息，组织中的成员提供节点服务，相应的证书代表身份，可以在实体间进行通信以及交易时进行签名与验证。生成过程依赖<code>crypto-config.yaml</code> 配置文件，该配置文件路径 ：<code>fabric-samples/first-network/crypto-config.yaml</code></p>
+<p>crypto-config.yaml 配置文件包含如下内容：</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># hanxiaodong</span></span><br><span class="line"><span class="comment"># QQ群（专业Fabric交流群）：862733552</span></span><br><span class="line"><span class="attr">OrdererOrgs:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">Name:</span> <span class="string">Orderer</span>    <span class="comment"># Orderer的名称</span></span><br><span class="line">    <span class="attr">Domain:</span> <span class="string">example.com</span>    <span class="comment"># 域名</span></span><br><span class="line">    <span class="attr">Specs:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="attr">Hostname:</span> <span class="string">orderer</span>    <span class="comment"># hostname + Domain的值组成Orderer节点的完整域名</span></span><br><span class="line"></span><br><span class="line"><span class="attr">PeerOrgs:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">Name:</span> <span class="string">Org1</span></span><br><span class="line">    <span class="attr">Domain:</span> <span class="string">org1.example.com</span></span><br><span class="line">    <span class="attr">EnableNodeOUs:</span> <span class="literal">true</span>        <span class="comment"># 在msp下生成config.yaml文件</span></span><br><span class="line">    <span class="attr">Template:</span></span><br><span class="line">      <span class="attr">Count:</span> <span class="number">2</span>		<span class="comment">#节点数量</span></span><br><span class="line">    <span class="attr">Users:</span></span><br><span class="line">      <span class="attr">Count:</span> <span class="number">1</span>		<span class="comment">#用户数量</span></span><br><span class="line"></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">Name:</span> <span class="string">Org2</span></span><br><span class="line">    <span class="attr">Domain:</span> <span class="string">org2.example.com</span></span><br><span class="line">    <span class="attr">EnableNodeOUs:</span> <span class="literal">true</span></span><br><span class="line">    <span class="attr">Template:</span></span><br><span class="line">      <span class="attr">Count:</span> <span class="number">2</span></span><br><span class="line">    <span class="attr">Users:</span></span><br><span class="line">      <span class="attr">Count:</span> <span class="number">1</span></span><br></pre></td></tr></table></figure>
+
+<p>该配置文件指定了 OrdererOrgs 及 PeerOrgs 两个组织信息。在 PeerOrgs 配置信息中指定了 Org1 与 Org2 两个组织。每个组织使用 <strong>Template</strong> 属性下的 Count 指定了<strong>两个节点</strong>， <strong>Users</strong> 属性下的 Count 指定了<strong>一个用户。</strong></p>
+<p>组织信息中还包含组织名称、域名、节点数量、及新增的用户数量等相关信息。</p>
+<p>Peer 节点的域名组成为 peer + 起始数字0 + Domain，如 Org1 中的两个 peer 节点的完整域名为：</p>
+<p><code>peer0.org1.example.com，peer1.org1.example.com</code>。</p>
+<h3 id="2-如何生成组织结构及身份证书"><a href="#2-如何生成组织结构及身份证书" class="headerlink" title="2 如何生成组织结构及身份证书"></a>2 如何生成组织结构及身份证书</h3><p>下面我们来实现组织结构及身份证书的生成。在 Hyperledger Fabric 中提供了一个工具 <strong>cryptogen</strong> ，该工具根据指定的配置文件实现标准化自动生成。执行过程如下：</p>
+<p>进入 <code>fabric-samples/first-network</code> 目录：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> <span class="built_in">cd</span> hyfa/fabric-samples/first-network/</span></span><br></pre></td></tr></table></figure>
+
+<p>使用 cryptogen 工具为Hyperledger Fabric网络生成指定拓扑结构的<strong>组织关系和身份证书</strong></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> sudo ../bin/cryptogen generate --config=./crypto-config.yaml</span></span><br></pre></td></tr></table></figure>
+
+<p>执行成功会有如下输出：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">org1.example.com</span><br><span class="line">org2.example.com</span><br></pre></td></tr></table></figure>
+
+<p>证书和密钥（即MSP材料）将被输出到当前一个名为 <code>crypto-config</code> 的目录中，该目录下有两个子目录：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">$hg</span>@ubuntu:~/hyfa/fabric-samples/first-network/crypto-config$ ls</span><br><span class="line">$ ordererOrganizations  peerOrganizations</span><br></pre></td></tr></table></figure>
+
+<p><strong>ordererOrganizations</strong> 子目录下包括构成 Orderer 组织(1个 Orderer 节点)的身份信息</p>
+<p><strong>peerOrganizations</strong> 子目录下为所有的 Peer 节点组织(2个组织，4个节点)的相关身份信息. 其中最关键的是 MSP 目录, 代表了实体的身份信息</p>
+<p><strong>Cryptogen 工具按照配置文件中指定的结构生成了对应的组织和密钥、及相关的证书文件</strong></p>
+<p>生成的 crypto-config 的完整结构如下：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br><span class="line">192</span><br><span class="line">193</span><br><span class="line">194</span><br><span class="line">195</span><br><span class="line">196</span><br><span class="line">197</span><br><span class="line">198</span><br><span class="line">199</span><br><span class="line">200</span><br><span class="line">201</span><br><span class="line">202</span><br><span class="line">203</span><br><span class="line">204</span><br><span class="line">205</span><br><span class="line">206</span><br><span class="line">207</span><br><span class="line">208</span><br><span class="line">209</span><br><span class="line">210</span><br><span class="line">211</span><br><span class="line">212</span><br><span class="line">213</span><br><span class="line">214</span><br><span class="line">215</span><br><span class="line">216</span><br><span class="line">217</span><br></pre></td><td class="code"><pre><span class="line">crypto-config</span><br><span class="line">├── ordererOrganizations    #orderer组织</span><br><span class="line">│   └── example.com</span><br><span class="line">│       ├── ca</span><br><span class="line">│       │   ├── c674f2c6028c39dd8d8fddb5e0ed4b94c0e4a620691ec70bd8e3cf3c1a3c904d_sk</span><br><span class="line">│       │   └── ca.example.com-cert.pem</span><br><span class="line">│       ├── msp</span><br><span class="line">│       │   ├── admincerts  #管理员的身份证书文件</span><br><span class="line">│       │   │   └── Admin@example.com-cert.pem</span><br><span class="line">│       │   ├── cacerts  #信任的根证书文件</span><br><span class="line">│       │   │   └── ca.example.com-cert.pem</span><br><span class="line">│       │   └── tlscacerts #TLS 连接用的证书</span><br><span class="line">│       │       └── tlsca.example.com-cert.pem</span><br><span class="line">│       ├── orderers</span><br><span class="line">│       │   └── orderer.example.com</span><br><span class="line">│       │       ├── msp</span><br><span class="line">│       │       │   ├── admincerts  #管理员的身份证书文件</span><br><span class="line">│       │       │   │   └── Admin@example.com-cert.pem</span><br><span class="line">│       │       │   ├── cacerts		#信任的根证书文件</span><br><span class="line">│       │       │   │   └── ca.example.com-cert.pem</span><br><span class="line">│       │       │   ├── keystore  #节点的签名私钥文件</span><br><span class="line">│       │       │   │   └── 4279c65c46e367e2dc0f83127a2fe5bf398ddf84010e18b070de3adfdc638158_sk</span><br><span class="line">│       │       │   ├── signcerts  #节点的签名身份证书文件</span><br><span class="line">│       │       │   │   └── orderer.example.com-cert.pem</span><br><span class="line">│       │       │   └── tlscacerts  #TLS 连接用的证书</span><br><span class="line">│       │       │       └── tlsca.example.com-cert.pem</span><br><span class="line">│       │       └── tls</span><br><span class="line">│       │           ├── ca.crt</span><br><span class="line">│       │           ├── server.crt</span><br><span class="line">│       │           └── server.key</span><br><span class="line">│       ├── tlsca</span><br><span class="line">│       │   ├── ab8411233f3d73dea3f15f9618a1c5e06919135ccc78b292208434717c13d2d0_sk</span><br><span class="line">│       │   └── tlsca.example.com-cert.pem</span><br><span class="line">│       └── users   #users</span><br><span class="line">│           └── Admin@example.com  #管理者</span><br><span class="line">│               ├── msp</span><br><span class="line">│               │   ├── admincerts</span><br><span class="line">│               │   │   └── Admin@example.com-cert.pem</span><br><span class="line">│               │   ├── cacerts</span><br><span class="line">│               │   │   └── ca.example.com-cert.pem</span><br><span class="line">│               │   ├── keystore</span><br><span class="line">│               │   │   └── 5de8388b453294c5fa6c55eb38f253b81d0832e196543e41d153db0e6cd59d5d_sk</span><br><span class="line">│               │   ├── signcerts</span><br><span class="line">│               │   │   └── Admin@example.com-cert.pem</span><br><span class="line">│               │   └── tlscacerts</span><br><span class="line">│               │       └── tlsca.example.com-cert.pem</span><br><span class="line">│               └── tls</span><br><span class="line">│                   ├── ca.crt</span><br><span class="line">│                   ├── client.crt</span><br><span class="line">│                   └── client.key</span><br><span class="line">└── peerOrganizations     #peer组织</span><br><span class="line">    ├── org1.example.com   #org1</span><br><span class="line">    │   ├── ca</span><br><span class="line">    │   │   ├── b8ec81e19fcd99d304e24b25981236671fe55cb230938be9a08ccc82b08eba43_sk</span><br><span class="line">    │   │   └── ca.org1.example.com-cert.pem</span><br><span class="line">    │   ├── msp</span><br><span class="line">    │   │   ├── admincerts</span><br><span class="line">    │   │   │   └── Admin@org1.example.com-cert.pem</span><br><span class="line">    │   │   ├── cacerts</span><br><span class="line">    │   │   │   └── ca.org1.example.com-cert.pem</span><br><span class="line">    │   │   ├── config.yaml</span><br><span class="line">    │   │   └── tlscacerts</span><br><span class="line">    │   │       └── tlsca.org1.example.com-cert.pem</span><br><span class="line">    │   ├── peers 		#peers</span><br><span class="line">    │   │   ├── peer0.org1.example.com  #peer0</span><br><span class="line">    │   │   │   ├── msp</span><br><span class="line">    │   │   │   │   ├── admincerts</span><br><span class="line">    │   │   │   │   │   └── Admin@org1.example.com-cert.pem</span><br><span class="line">    │   │   │   │   ├── cacerts</span><br><span class="line">    │   │   │   │   │   └── ca.org1.example.com-cert.pem</span><br><span class="line">    │   │   │   │   ├── config.yaml</span><br><span class="line">    │   │   │   │   ├── keystore</span><br><span class="line">    │   │   │   │   │   └── ba8156132aac14d0904e5d14fa5f13e1497509223d4fa100064f91f4f2a3d15f_sk</span><br><span class="line">    │   │   │   │   ├── signcerts</span><br><span class="line">    │   │   │   │   │   └── peer0.org1.example.com-cert.pem</span><br><span class="line">    │   │   │   │   └── tlscacerts</span><br><span class="line">    │   │   │   │       └── tlsca.org1.example.com-cert.pem</span><br><span class="line">    │   │   │   └── tls</span><br><span class="line">    │   │   │       ├── ca.crt</span><br><span class="line">    │   │   │       ├── server.crt</span><br><span class="line">    │   │   │       └── server.key</span><br><span class="line">    │   │   └── peer1.org1.example.com   #peer1</span><br><span class="line">    │   │       ├── msp</span><br><span class="line">    │   │       │   ├── admincerts</span><br><span class="line">    │   │       │   │   └── Admin@org1.example.com-cert.pem</span><br><span class="line">    │   │       │   ├── cacerts</span><br><span class="line">    │   │       │   │   └── ca.org1.example.com-cert.pem</span><br><span class="line">    │   │       │   ├── config.yaml</span><br><span class="line">    │   │       │   ├── keystore</span><br><span class="line">    │   │       │   │   └── a37b7a22d765b2e9cc7804bc883235cc1981b24182bb4d3403fc82698159233f_sk</span><br><span class="line">    │   │       │   ├── signcerts</span><br><span class="line">    │   │       │   │   └── peer1.org1.example.com-cert.pem</span><br><span class="line">    │   │       │   └── tlscacerts</span><br><span class="line">    │   │       │       └── tlsca.org1.example.com-cert.pem</span><br><span class="line">    │   │       └── tls</span><br><span class="line">    │   │           ├── ca.crt</span><br><span class="line">    │   │           ├── server.crt</span><br><span class="line">    │   │           └── server.key</span><br><span class="line">    │   ├── tlsca</span><br><span class="line">    │   │   ├── 9d76be67281dbe32018ee5e6c1595a4a0da1645c81f4ed7680481c521a31cdbc_sk</span><br><span class="line">    │   │   └── tlsca.org1.example.com-cert.pem</span><br><span class="line">    │   └── users		#users</span><br><span class="line">    │       ├── Admin@org1.example.com  #admin</span><br><span class="line">    │       │   ├── msp</span><br><span class="line">    │       │   │   ├── admincerts</span><br><span class="line">    │       │   │   │   └── Admin@org1.example.com-cert.pem</span><br><span class="line">    │       │   │   ├── cacerts</span><br><span class="line">    │       │   │   │   └── ca.org1.example.com-cert.pem</span><br><span class="line">    │       │   │   ├── keystore</span><br><span class="line">    │       │   │   │   └── 493e7191fa4b9f3fce46e2fb9bbf6f0ec077ed217c7a94a5ee72a93a22f8a2bd_sk</span><br><span class="line">    │       │   │   ├── signcerts</span><br><span class="line">    │       │   │   │   └── Admin@org1.example.com-cert.pem</span><br><span class="line">    │       │   │   └── tlscacerts</span><br><span class="line">    │       │   │       └── tlsca.org1.example.com-cert.pem</span><br><span class="line">    │       │   └── tls</span><br><span class="line">    │       │       ├── ca.crt</span><br><span class="line">    │       │       ├── client.crt</span><br><span class="line">    │       │       └── client.key</span><br><span class="line">    │       └── User1@org1.example.com  #user1</span><br><span class="line">    │           ├── msp</span><br><span class="line">    │           │   ├── admincerts</span><br><span class="line">    │           │   │   └── User1@org1.example.com-cert.pem</span><br><span class="line">    │           │   ├── cacerts</span><br><span class="line">    │           │   │   └── ca.org1.example.com-cert.pem</span><br><span class="line">    │           │   ├── keystore</span><br><span class="line">    │           │   │   └── 63d2bb7a402b6bc694ff242471d86a6512bb69726d8c3dc6c3d91952901abe85_sk</span><br><span class="line">    │           │   ├── signcerts</span><br><span class="line">    │           │   │   └── User1@org1.example.com-cert.pem</span><br><span class="line">    │           │   └── tlscacerts</span><br><span class="line">    │           │       └── tlsca.org1.example.com-cert.pem</span><br><span class="line">    │           └── tls</span><br><span class="line">    │               ├── ca.crt</span><br><span class="line">    │               ├── client.crt</span><br><span class="line">    │               └── client.key</span><br><span class="line">    └── org2.example.com  #org2</span><br><span class="line">        ├── ca</span><br><span class="line">        │   ├── a86cfdc1ad188e7abc301cd21d7820fe1fa6a3cf81cdc25942405d632c1a4717_sk</span><br><span class="line">        │   └── ca.org2.example.com-cert.pem</span><br><span class="line">        ├── msp</span><br><span class="line">        │   ├── admincerts</span><br><span class="line">        │   │   └── Admin@org2.example.com-cert.pem</span><br><span class="line">        │   ├── cacerts</span><br><span class="line">        │   │   └── ca.org2.example.com-cert.pem</span><br><span class="line">        │   ├── config.yaml</span><br><span class="line">        │   └── tlscacerts</span><br><span class="line">        │       └── tlsca.org2.example.com-cert.pem</span><br><span class="line">        ├── peers  #peers</span><br><span class="line">        │   ├── peer0.org2.example.com #peer0</span><br><span class="line">        │   │   ├── msp</span><br><span class="line">        │   │   │   ├── admincerts</span><br><span class="line">        │   │   │   │   └── Admin@org2.example.com-cert.pem</span><br><span class="line">        │   │   │   ├── cacerts</span><br><span class="line">        │   │   │   │   └── ca.org2.example.com-cert.pem</span><br><span class="line">        │   │   │   ├── config.yaml</span><br><span class="line">        │   │   │   ├── keystore</span><br><span class="line">        │   │   │   │   └── 6321e899b8467adca9a795cb1006789e2fecd168c162157aec895a54e86c7ff7_sk</span><br><span class="line">        │   │   │   ├── signcerts</span><br><span class="line">        │   │   │   │   └── peer0.org2.example.com-cert.pem</span><br><span class="line">        │   │   │   └── tlscacerts</span><br><span class="line">        │   │   │       └── tlsca.org2.example.com-cert.pem</span><br><span class="line">        │   │   └── tls</span><br><span class="line">        │   │       ├── ca.crt</span><br><span class="line">        │   │       ├── server.crt</span><br><span class="line">        │   │       └── server.key</span><br><span class="line">        │   └── peer1.org2.example.com    #peer2</span><br><span class="line">        │       ├── msp</span><br><span class="line">        │       │   ├── admincerts</span><br><span class="line">        │       │   │   └── Admin@org2.example.com-cert.pem</span><br><span class="line">        │       │   ├── cacerts</span><br><span class="line">        │       │   │   └── ca.org2.example.com-cert.pem</span><br><span class="line">        │       │   ├── config.yaml</span><br><span class="line">        │       │   ├── keystore</span><br><span class="line">        │       │   │   └── e90b33aae87ca50849e91b243188c41f7b6de8a082602ea67b94deabff710a83_sk</span><br><span class="line">        │       │   ├── signcerts</span><br><span class="line">        │       │   │   └── peer1.org2.example.com-cert.pem</span><br><span class="line">        │       │   └── tlscacerts</span><br><span class="line">        │       │       └── tlsca.org2.example.com-cert.pem</span><br><span class="line">        │       └── tls</span><br><span class="line">        │           ├── ca.crt</span><br><span class="line">        │           ├── server.crt</span><br><span class="line">        │           └── server.key</span><br><span class="line">        ├── tlsca</span><br><span class="line">        │   ├── 5b19cc3c436ba95d25047525aa73b58f151a267cec6b365ce11c659740296134_sk</span><br><span class="line">        │   └── tlsca.org2.example.com-cert.pem</span><br><span class="line">        └── users #users</span><br><span class="line">            ├── Admin@org2.example.com  #管理者</span><br><span class="line">            │   ├── msp</span><br><span class="line">            │   │   ├── admincerts</span><br><span class="line">            │   │   │   └── Admin@org2.example.com-cert.pem</span><br><span class="line">            │   │   ├── cacerts</span><br><span class="line">            │   │   │   └── ca.org2.example.com-cert.pem</span><br><span class="line">            │   │   ├── keystore</span><br><span class="line">            │   │   │   └── 73aed893a0a298db80bdd8bf85fe54483cdfe70529e00fc641e09ac1ce97dbd5_sk</span><br><span class="line">            │   │   ├── signcerts</span><br><span class="line">            │   │   │   └── Admin@org2.example.com-cert.pem</span><br><span class="line">            │   │   └── tlscacerts</span><br><span class="line">            │   │       └── tlsca.org2.example.com-cert.pem</span><br><span class="line">            │   └── tls</span><br><span class="line">            │       ├── ca.crt</span><br><span class="line">            │       ├── client.crt</span><br><span class="line">            │       └── client.key</span><br><span class="line">            └── User1@org2.example.com  #user1</span><br><span class="line">                ├── msp</span><br><span class="line">                │   ├── admincerts</span><br><span class="line">                │   │   └── User1@org2.example.com-cert.pem</span><br><span class="line">                │   ├── cacerts</span><br><span class="line">                │   │   └── ca.org2.example.com-cert.pem</span><br><span class="line">                │   ├── keystore</span><br><span class="line">                │   │   └── 74280f530cdea1e89bfd28ff9c576942eeceb4e4a64b9b58a0d6ea821cd2c8ea_sk</span><br><span class="line">                │   ├── signcerts</span><br><span class="line">                │   │   └── User1@org2.example.com-cert.pem</span><br><span class="line">                │   └── tlscacerts</span><br><span class="line">                │       └── tlsca.org2.example.com-cert.pem</span><br><span class="line">                └── tls</span><br><span class="line">                    ├── ca.crt</span><br><span class="line">                    ├── client.crt</span><br><span class="line">                    └── client.key</span><br></pre></td></tr></table></figure>
+
+<p>在生成的目录结构中最关键的是各个资源下的 msp 目录内容，存储了生成的代表 MSP 实体身份的各种证书文件，一般包括：</p>
+<ul>
+<li>admincerts ：管理员的身份证书文件</li>
+<li>cacerts ：信任的根证书文件</li>
+<li>keystore ：节点的签名私钥文件</li>
+<li>signcerts ：节点的签名身份证书文件</li>
+<li>tlscacerts:：TLS 连接用的证书</li>
+<li>intermediatecerts （可选）：信任的中间证书</li>
+<li>crls （可选）：证书撤销列表</li>
+<li>config.yaml （可选）：记录OrganizationalUnitldentifiers 信息，包括根证书位置和ID信息</li>
+</ul>
+<p>这些身份文件随后可以分发到对应的Orderer 节点和Peer 节点上，并放到对应的MSP路径下，用于签名验证使用。</p>
+<h4 id="FAQ"><a href="#FAQ" class="headerlink" title="FAQ"></a>FAQ</h4><ol>
+<li><p>组织结构中可以添加新的组织吗？</p>
+<p>生成组织结构前，可以通过 crypto-config.yaml 配置文件指定具体的组织信息，如果是多个组织，只需要在该配置文件中 PeerOrgs 节点最后添加新的组织信息即可。</p>
+</li>
+<li><p>Org 组织中可以指定多个 Peer 节点吗？</p>
+<p>可以指定多个节点，只需要修改 Template 下的 Count 值即可（该值代表组织下有几个节点）。</p>
+</li>
+<li><p>组织结构生成之后可以随时添加或修改吗？</p>
+<p>目前，Hyperledger Fabric 无法对已生成的组织结构进行修改；所以需要提前做好规划。在未来会支持对组织结构的节点进行动态修改。</p>
+</li>
+</ol>
+<h3 id="二、不可或缺的配置文件"><a href="#二、不可或缺的配置文件" class="headerlink" title="二、不可或缺的配置文件"></a>二、不可或缺的配置文件</h3><h4 id="目标-1"><a href="#目标-1" class="headerlink" title="目标"></a>目标</h4><ol>
+<li><p>理解 configtx.yaml 配置文件中的各项含义</p>
+</li>
+<li><p>掌握创建 Orderer 服务启动初始区块的命令及参数</p>
+</li>
+<li><p>掌握创建应用通道交易配置文件的命令及参数</p>
+<h4 id="任务实现-1"><a href="#任务实现-1" class="headerlink" title="任务实现"></a>任务实现</h4><h3 id="1-configtx-yaml配置文件指定哪些核心内容"><a href="#1-configtx-yaml配置文件指定哪些核心内容" class="headerlink" title="1 configtx.yaml配置文件指定哪些核心内容"></a>1 configtx.yaml配置文件指定哪些核心内容</h3><p>创建服务启动初始区块及应用通道交易配置文件需要指定 Orderer 服务的相关配置以及当前的联盟信息， 这些信息定义在一个名为 <strong>configtx.yaml</strong> 文件中。</p>
+<p>configtx.yaml 配置文件内容如下：</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">$hg@ubuntu:~/hyfa/fabric-samples/first-network$</span> <span class="string">cat</span> <span class="string">configtx.yaml</span> </span><br><span class="line"><span class="meta">---</span></span><br><span class="line"></span><br><span class="line"><span class="attr">Organizations:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="meta">&amp;OrdererOrg</span></span><br><span class="line">        <span class="attr">Name:</span> <span class="string">OrdererOrg</span></span><br><span class="line">        <span class="attr">ID:</span> <span class="string">OrdererMSP</span></span><br><span class="line">        <span class="attr">MSPDir:</span> <span class="string">crypto-config/ordererOrganizations/example.com/msp</span> </span><br><span class="line"></span><br><span class="line">    <span class="bullet">-</span> <span class="meta">&amp;Org1</span></span><br><span class="line">        <span class="attr">Name:</span> <span class="string">Org1MSP</span></span><br><span class="line">        <span class="attr">ID:</span> <span class="string">Org1MSP</span></span><br><span class="line">        <span class="attr">MSPDir:</span> <span class="string">crypto-config/peerOrganizations/org1.example.com/msp</span>  </span><br><span class="line"></span><br><span class="line">        <span class="attr">AnchorPeers:</span></span><br><span class="line">            <span class="bullet">-</span> <span class="attr">Host:</span> <span class="string">peer0.org1.example.com</span></span><br><span class="line">              <span class="attr">Port:</span> <span class="number">7051</span></span><br><span class="line"></span><br><span class="line">    <span class="bullet">-</span> <span class="meta">&amp;Org2</span></span><br><span class="line">        <span class="attr">Name:</span> <span class="string">Org2MSP</span></span><br><span class="line">        <span class="attr">ID:</span> <span class="string">Org2MSP</span></span><br><span class="line">        <span class="attr">MSPDir:</span> <span class="string">crypto-config/peerOrganizations/org2.example.com/msp</span></span><br><span class="line"></span><br><span class="line">        <span class="attr">AnchorPeers:</span></span><br><span class="line">            <span class="bullet">-</span> <span class="attr">Host:</span> <span class="string">peer0.org2.example.com</span></span><br><span class="line">              <span class="attr">Port:</span> <span class="number">7051</span></span><br><span class="line"></span><br><span class="line"><span class="attr">Capabilities:</span></span><br><span class="line">    <span class="attr">Global:</span> <span class="meta">&amp;ChannelCapabilities</span></span><br><span class="line">        <span class="attr">V1_1:</span> <span class="literal">true</span></span><br><span class="line"></span><br><span class="line">    <span class="attr">Orderer:</span> <span class="meta">&amp;OrdererCapabilities</span></span><br><span class="line">        <span class="attr">V1_1:</span> <span class="literal">true</span></span><br><span class="line"></span><br><span class="line">    <span class="attr">Application:</span> <span class="meta">&amp;ApplicationCapabilities</span></span><br><span class="line">        <span class="attr">V1_2:</span> <span class="literal">true</span></span><br><span class="line"></span><br><span class="line"><span class="attr">Application:</span> <span class="meta">&amp;ApplicationDefaults</span></span><br><span class="line">    <span class="attr">Organizations:</span></span><br><span class="line"></span><br><span class="line"><span class="attr">Orderer:</span> <span class="meta">&amp;OrdererDefaults</span></span><br><span class="line">    <span class="attr">OrdererType:</span> <span class="string">solo</span> 	<span class="comment">#共识排序服务的实现方式，有两种选择（solo 及 Kafka）</span></span><br><span class="line">    <span class="attr">Addresses:</span>			<span class="comment">#指定了 Orderer 节点的服务地址与端口号</span></span><br><span class="line">        <span class="bullet">-</span> <span class="string">orderer.example.com:7050</span></span><br><span class="line"></span><br><span class="line">    <span class="attr">BatchTimeout:</span> <span class="string">2s</span>  </span><br><span class="line">    <span class="attr">BatchSize:</span>			<span class="comment">#指定了批处理大小，如最大交易数量，最大字节数及建议字节数</span></span><br><span class="line">        <span class="attr">MaxMessageCount:</span> <span class="number">10</span>			<span class="comment">#最大交易数量</span></span><br><span class="line">        <span class="attr">AbsoluteMaxBytes:</span> <span class="number">99</span> <span class="string">MB</span>		<span class="comment">#最大字节数</span></span><br><span class="line">        <span class="attr">PreferredMaxBytes:</span> <span class="number">512</span> <span class="string">KB</span> 	<span class="comment">#建议字节数</span></span><br><span class="line"></span><br><span class="line">    <span class="attr">Kafka:</span></span><br><span class="line">        <span class="attr">Brokers:</span></span><br><span class="line">            <span class="bullet">-</span> <span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span><span class="string">:9092</span></span><br><span class="line"></span><br><span class="line">    <span class="attr">Organizations:</span></span><br><span class="line"></span><br><span class="line"><span class="attr">Profiles:</span></span><br><span class="line">    <span class="attr">TwoOrgsOrdererGenesis:</span>	 <span class="comment">#2 orderer模板用来生成Orderer服务的初始区块文件</span></span><br><span class="line">        <span class="attr">Capabilities:</span>	<span class="comment">#指定通道的权限信息</span></span><br><span class="line">            <span class="string">&lt;&lt;:</span> <span class="meta">*ChannelCapabilities</span></span><br><span class="line">        <span class="attr">Orderer:</span>		<span class="comment">#指定了Orderer服务的信息（OrdererOrg）及权限信息</span></span><br><span class="line">            <span class="string">&lt;&lt;:</span> <span class="meta">*OrdererDefaults</span></span><br><span class="line">            <span class="attr">Organizations:</span></span><br><span class="line">                <span class="bullet">-</span> <span class="meta">*OrdererOrg</span></span><br><span class="line">            <span class="attr">Capabilities:</span></span><br><span class="line">                <span class="string">&lt;&lt;:</span> <span class="meta">*OrdererCapabilities</span></span><br><span class="line">        <span class="attr">Consortiums:</span>	<span class="comment">#定义了联盟组成成员（Org1&amp;Org2）</span></span><br><span class="line">            <span class="attr">SampleConsortium:</span></span><br><span class="line">                <span class="attr">Organizations:</span></span><br><span class="line">                    <span class="bullet">-</span> <span class="meta">*Org1</span></span><br><span class="line">                    <span class="bullet">-</span> <span class="meta">*Org2</span></span><br><span class="line">    <span class="attr">TwoOrgsChannel:</span>		 <span class="comment">#2channel</span></span><br><span class="line">        <span class="attr">Consortium:</span> <span class="string">SampleConsortium</span>	 <span class="comment">#指定了联盟信息</span></span><br><span class="line">        <span class="attr">Application:</span>					 <span class="comment">#指定了组织及权限信息。</span></span><br><span class="line">            <span class="string">&lt;&lt;:</span> <span class="string">*ApplicationDefaults</span>	</span><br><span class="line">            <span class="attr">Organizations:</span></span><br><span class="line">                <span class="bullet">-</span> <span class="meta">*Org1</span></span><br><span class="line">                <span class="bullet">-</span> <span class="meta">*Org2</span></span><br><span class="line">            <span class="attr">Capabilities:</span>	</span><br><span class="line">                <span class="string">&lt;&lt;:</span> <span class="meta">*ApplicationCapabilities</span></span><br></pre></td></tr></table></figure>
+
+<p>该配置文件中由 <strong>Organizations</strong> 定义了三个成员 Orderer Org、Org1、Org2，并且设置每个成员的MSP 目录的位置，从而允许在 orderer genesis 块中存储每个 Org 的根证书。<strong>通过这些信息实现与Orderer 服务通信的任何网络实体都可以验证其数字签名。</strong>而且为每个 PeerOrg 指定了相应的锚节点（Org1 组织中<code>peer0.org1.example.com</code>与 Org2 组织中<code>peer0.org2.example.com</code>）。</p>
+</li>
+</ol>
+<p>   <strong>Orderer</strong>部分指定了Orderer节点的信息：</p>
+<ol>
+<li><strong>OrdererType</strong> 指定了共识排序服务的实现方式，有两种选择（solo 及 Kafka）。</li>
+<li><strong>Addresses</strong> 指定了 Orderer 节点的服务地址与端口号。</li>
+<li><strong>BatchSize</strong> 指定了批处理大小，如最大交易数量，最大字节数及建议字节数。</li>
+</ol>
+<p>   <strong>Profiles</strong> 部分指定了两个模板：TwoOrgsOrdererGenesis 与 TwoOrgsChannel 。</p>
+<ol>
+<li><p><strong>TwoOrgsOrdererGenesis</strong> 模板用来生成Orderer服务的初始区块文件，该模板由三部分组成：<br>1.1 Capabilities 指定通道的权限信息。</p>
+<p>1.2 Orderer 指定了Orderer服务的信息（OrdererOrg）及权限信息。</p>
+<p>1.3 Consortiums 定义了联盟组成成员（Org1&amp;Org2）。</p>
+</li>
+<li><p><strong>TwoOrgsChannel</strong> 模板用来生成应用通道交易配置文件。由两部分组成：</p>
+<p>2.1 Consortium 指定了联盟信息。</p>
+<p>2.2 Application 指定了组织及权限信息。</p>
+<h3 id="2-Orderer服务启动初始区块的创建"><a href="#2-Orderer服务启动初始区块的创建" class="headerlink" title="2 Orderer服务启动初始区块的创建"></a>2 Orderer服务启动初始区块的创建</h3><p>熟悉了配置文件中的相关信息后，就可以创建 Orderer 服务启动初始区块；确认当前在 <strong>fabric-samples/first-network</strong> 目录下。</p>
+<p>指定使用 <code>configtx.yaml</code> 文件中定义的 <code>TwoOrgsOrdererGenesis</code> 模板,，生成 Orderer 服务系统通道的初始区块文件。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> sudo ../bin/configtxgen -profile TwoOrgsOrdererGenesis -outputBlock ./channel-artifacts/genesis.block</span></span><br></pre></td></tr></table></figure>
+
+<p>命令执行后输出如下:</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">10:49:21.181 CST [common/tools/configtxgen] main -&gt; INFO 001 Loading configuration</span><br><span class="line">10:49:21.207 CST [msp] getMspConfig -&gt; INFO 002 Loading NodeOUs</span><br><span class="line">10:49:21.208 CST [msp] getMspConfig -&gt; INFO 003 Loading NodeOUs</span><br><span class="line">10:49:21.210 CST [common/tools/configtxgen] doOutputBlock -&gt; INFO 004 Generating genesis block</span><br><span class="line">10:49:21.211 CST [common/tools/configtxgen] doOutputBlock -&gt; INFO 005 Writing genesis block</span><br><span class="line">---我的自己的启动输出</span><br><span class="line"></span><br><span class="line">2020-03-22 20:05:17.434 CST [common/tools/configtxgen] main -&gt; WARN 001 Omitting the channel ID for configtxgen is deprecated.  Explicitly passing the channel ID will be required in the future, defaulting to 'testchainid'.</span><br><span class="line">//configtxgen的通道ID已弃用。 将来需要明确传递频道ID，默认为'testchainid'</span><br><span class="line">2020-03-22 20:05:17.434 CST [common/tools/configtxgen] main -&gt; INFO 002 Loading configuration</span><br><span class="line">2020-03-22 20:05:17.496 CST [common/tools/configtxgen/encoder] NewChannelGroup -&gt; WARN 003 Default policy emission is deprecated, please include policy specificiations for the channel group in configtx.yaml</span><br><span class="line"><span class="meta">//NewChannelGroup-&gt;</span><span class="bash"> WARN 003不建议使用默认策略发射，请在configtx.yaml中包括通道组的策略规范</span></span><br><span class="line">2020-03-22 20:05:17.498 CST [common/tools/configtxgen/encoder] NewOrdererGroup -&gt; WARN 004 Default policy emission is deprecated, please include policy specificiations for the orderer group in configtx.yaml</span><br><span class="line">2020-03-22 20:05:17.514 CST [common/tools/configtxgen/encoder] NewOrdererOrgGroup -&gt; WARN 005 Default policy emission is deprecated, please include policy specificiations for the orderer org group OrdererOrg in configtx.yaml</span><br><span class="line">2020-03-22 20:05:17.527 CST [msp] getMspConfig -&gt; INFO 006 Loading NodeOUs</span><br><span class="line">2020-03-22 20:05:17.528 CST [common/tools/configtxgen/encoder] NewOrdererOrgGroup -&gt; WARN 007 Default policy emission is deprecated, please include policy specificiations for the orderer org group Org1MSP in configtx.yaml</span><br><span class="line">2020-03-22 20:05:17.534 CST [msp] getMspConfig -&gt; INFO 008 Loading NodeOUs</span><br><span class="line">2020-03-22 20:05:17.535 CST [common/tools/configtxgen/encoder] NewOrdererOrgGroup -&gt; WARN 009 Default policy emission is deprecated, please include policy specificiations for the orderer org group Org2MSP in configtx.yaml</span><br><span class="line">2020-03-22 20:05:17.535 CST [common/tools/configtxgen] doOutputBlock -&gt; INFO 00a Generating genesis block</span><br><span class="line">2020-03-22 20:05:17.539 CST [common/tools/configtxgen] doOutputBlock -&gt; INFO 00b Writing genesis block</span><br><span class="line"></span><br><span class="line">10:49:21.181 CST [common/tools/configtxgen] main -&gt; INFO 002 Loading configuration</span><br><span class="line">10:49:21.207 CST [msp] getMspConfig -&gt; INFO 006 Loading NodeOUs</span><br><span class="line">10:49:21.208 CST [msp] getMspConfig -&gt; INFO 008 Loading NodeOUs</span><br><span class="line">10:49:21.210 CST [common/tools/configtxgen] doOutputBlock -&gt; INFO 00a Generating genesis block</span><br><span class="line">10:49:21.211 CST [common/tools/configtxgen] doOutputBlock -&gt; INFO 00b Writing genesis block</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>为了方便管理，我们将所有创建的文件都指定保存在默认的 channel-artifacts 目录下。</p>
+</blockquote>
+<h3 id="3-创建必须的应用通道交易配置文件"><a href="#3-创建必须的应用通道交易配置文件" class="headerlink" title="3 创建必须的应用通道交易配置文件"></a>3 创建必须的应用通道交易配置文件</h3></li>
+</ol>
+<p>   <strong>指定通道名称的环境变量：</strong></p>
+   <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> <span class="built_in">export</span> CHANNEL_NAME=mychannel</span></span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>因为我们后面的命令需要多次使用同一个通道名称，所以先指定一个通道名称将其设为环境变量，后期需要使用该通道名称时时只需要使用对应的环境变量名称即可。</p>
+</blockquote>
+<p>   <strong>生成应用通道交易配置文件：</strong></p>
+<p>   指定使用 <code>configtx.yaml</code> 配置文件中的 <code>TwoOrgsChannel</code> 模板, 来生成新建通道的配置交易文件, <code>TwoOrgsChannel</code> 模板指定了 Org1 和 Org2 都属于后面新建的应用通道</p>
+   <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> sudo ../bin/configtxgen -profile TwoOrgsChannel -outputCreateChannelTx ./channel-artifacts/channel.tx -channelID <span class="variable">$CHANNEL_NAME</span></span></span><br></pre></td></tr></table></figure>
+
+<p>   执行完成后输出如下内容：</p>
+   <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">11:13:24.984 CST [common/tools/configtxgen] main -&gt; INFO 001 Loading configuration</span><br><span class="line">11:13:24.992 CST [common/tools/configtxgen] doOutputChannelCreateTx -&gt; INFO 002 Generating new channel configtx</span><br><span class="line">11:13:24.993 CST [msp] getMspConfig -&gt; INFO 003 Loading NodeOUs</span><br><span class="line">11:13:24.994 CST [msp] getMspConfig -&gt; INFO 004 Loading NodeOUs</span><br><span class="line">11:13:25.016 CST [common/tools/configtxgen] doOutputChannelCreateTx -&gt; INFO 005 Writing new channel tx</span><br><span class="line"></span><br><span class="line">-------</span><br><span class="line">2020-03-22 21:19:46.389 CST [common/tools/configtxgen] main -&gt; INFO 001 Loading configuration</span><br><span class="line">2020-03-22 21:19:46.436 CST [common/tools/configtxgen] doOutputChannelCreateTx -&gt; INFO 002 Generating new channel configtx</span><br><span class="line">2020-03-22 21:19:46.436 CST [common/tools/configtxgen/encoder] NewApplicationGroup -&gt; WARN 003 Default policy emission is deprecated, please include policy specificiations for the application group in configtx.yaml</span><br><span class="line">2020-03-22 21:19:46.438 CST [msp] getMspConfig -&gt; INFO 004 Loading NodeOUs</span><br><span class="line">2020-03-22 21:19:46.441 CST [common/tools/configtxgen/encoder] NewApplicationOrgGroup -&gt; WARN 005 Default policy emission is deprecated, please include policy specificiations for the application org group Org1MSP in configtx.yaml</span><br><span class="line">2020-03-22 21:19:46.442 CST [msp] getMspConfig -&gt; INFO 006 Loading NodeOUs</span><br><span class="line">2020-03-22 21:19:46.443 CST [common/tools/configtxgen/encoder] NewApplicationOrgGroup -&gt; WARN 007 Default policy emission is deprecated, please include policy specificiations for the application org group Org2MSP in configtx.yaml</span><br><span class="line">2020-03-22 21:19:46.456 CST [common/tools/configtxgen] doOutputChannelCreateTx -&gt; INFO 008 Writing new channel tx</span><br><span class="line">-----整理</span><br><span class="line">2020-03-22 21:19:46.389 CST [common/tools/configtxgen] main -&gt; INFO 001 Loading configuration</span><br><span class="line">2020-03-22 21:19:46.436 CST [common/tools/configtxgen] doOutputChannelCreateTx -&gt; INFO 002 Generating new channel configtx</span><br><span class="line">2020-03-22 21:19:46.438 CST [msp] getMspConfig -&gt; INFO 004 Loading NodeOUs</span><br><span class="line">2020-03-22 21:19:46.442 CST [msp] getMspConfig -&gt; INFO 006 Loading NodeOUs</span><br><span class="line">2020-03-22 21:19:46.456 CST [common/tools/configtxgen] doOutputChannelCreateTx -&gt; INFO 008 Writing new channel tx</span><br></pre></td></tr></table></figure>
+
+<h3 id="4-生成锚节点更新配置文件"><a href="#4-生成锚节点更新配置文件" class="headerlink" title="4 生成锚节点更新配置文件"></a>4 生成锚节点更新配置文件</h3><p>   同样基于 <code>configtx.yaml</code> 配置文件中的 TwoOrgsChannel 模板，<strong>为每个组织分别生成锚节点更新配置，且注意指定对应的组织名称。</strong></p>
+   <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> sudo ../bin/configtxgen -profile TwoOrgsChannel -outputAnchorPeersUpdate ./channel-artifacts/Org1MSPanchors.tx -channelID <span class="variable">$CHANNEL_NAME</span> -asOrg Org1MSP</span></span><br><span class="line"></span><br><span class="line"><span class="meta">$</span><span class="bash"> sudo ../bin/configtxgen -profile TwoOrgsChannel -outputAnchorPeersUpdate ./channel-artifacts/Org2MSPanchors.tx -channelID <span class="variable">$CHANNEL_NAME</span> -asOrg Org2MSP</span></span><br></pre></td></tr></table></figure>
+
+   <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">2020-03-22 21:26:29.818 CST [common/tools/configtxgen] main -&gt; INFO 001 Loading configuration</span><br><span class="line">2020-03-22 21:26:29.881 CST [common/tools/configtxgen] doOutputAnchorPeersUpdate -&gt; INFO 002 Generating anchor peer update</span><br><span class="line">2020-03-22 21:26:29.883 CST [common/tools/configtxgen] doOutputAnchorPeersUpdate -&gt; INFO 003 Writing anchor peer update</span><br><span class="line">-----------------------------</span><br><span class="line"></span><br><span class="line">TwoOrgsChannel -outputAnchorPeersUpdate ./channel-artifacts/Org2MSPanchors.tx -channelID <span class="variable">$CHANNEL_NAME</span> -asOrg Org2MSP</span><br><span class="line">2020-03-22 21:28:56.762 CST [common/tools/configtxgen] main -&gt; INFO 001 Loading configuration</span><br><span class="line">2020-03-22 21:28:56.808 CST [common/tools/configtxgen] doOutputAnchorPeersUpdate -&gt; INFO 002 Generating anchor peer update</span><br><span class="line">2020-03-22 21:28:56.810 CST [common/tools/configtxgen] doOutputAnchorPeersUpdate -&gt; INFO 003 Writing anchor peer update</span><br></pre></td></tr></table></figure>
+
+<p>   上述所有命令执行完成后，channel-artifacts目录下会有4个被创建的文件，如下所示：</p>
+   <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">channel-artifacts/</span><br><span class="line">├── channel.tx</span><br><span class="line">├── genesis.block</span><br><span class="line">├── Org1MSPanchors.tx</span><br><span class="line">└── Org2MSPanchors.tx</span><br></pre></td></tr></table></figure>
+
+<h4 id="FAQ-1"><a href="#FAQ-1" class="headerlink" title="FAQ"></a>FAQ</h4><ol>
+<li><p>我可以查看生成的文件中的详细内容吗？</p>
+<p>可以查看。我们可以在命令提示符下输入 ../bin/configtxgen -help 命令（当前在 fabric-samples/first-network 目录下）查看相应的参数，会发现有 inspectBlock、inspectChannelCreateTx 两个参数。通过这两个参数即可查看相应的配置文件内容。</p>
+</li>
+</ol>
+<h3 id="三、启动我们的分布式网络"><a href="#三、启动我们的分布式网络" class="headerlink" title="三、启动我们的分布式网络"></a>三、启动我们的分布式网络</h3><h4 id="目标-2"><a href="#目标-2" class="headerlink" title="目标"></a>目标</h4><ol>
+<li>深入理解 Hyperledger Fabric 网络启动过程</li>
+<li>掌握网络启动命令及其所需参数</li>
+</ol>
+<h4 id="任务实现-2"><a href="#任务实现-2" class="headerlink" title="任务实现"></a>任务实现</h4><blockquote>
+<p>网络启动之前所需的所有内容我们已经准备就绪，下面我们深入分析网络中各节点运行时所需要指定的必备信息</p>
+</blockquote>
+<h3 id="1-网络服务如何配置"><a href="#1-网络服务如何配置" class="headerlink" title="1 网络服务如何配置"></a>1 网络服务如何配置</h3><p>启动网络，就是启动提供网络服务的各个节点。那么这些节点如何启动，需要哪些信息，由于要启动多个网络节点，Hyperledger Fabric 采用了容器技术，所以需要一个简化的方式来集中化管理这这些节点容器，我们使用 docker-compose 这个工具个来实现一步到位的节点容器管理，实现方式只需要编写相应的配置文件即可。</p>
+<p>Hyperledger Fabric 同样给我们提供了一个 docker-compose 工具的示例配置文件，该配置文件在 fabric-samples/first-network 目录下，文件名称为： docker-compose-cli.yaml， 我们打开这个配置文件可以看到如下内容：</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">version:</span> <span class="string">'2'</span></span><br><span class="line"></span><br><span class="line"><span class="attr">volumes:</span></span><br><span class="line">  <span class="attr">orderer.example.com:</span></span><br><span class="line">  <span class="attr">peer0.org1.example.com:</span></span><br><span class="line">  <span class="attr">peer1.org1.example.com:</span></span><br><span class="line">  <span class="attr">peer0.org2.example.com:</span></span><br><span class="line">  <span class="attr">peer1.org2.example.com:</span></span><br><span class="line"></span><br><span class="line"><span class="attr">networks:</span></span><br><span class="line">  <span class="attr">byfn:</span></span><br><span class="line"></span><br><span class="line"><span class="attr">services:</span></span><br><span class="line"></span><br><span class="line">  <span class="attr">orderer.example.com:</span></span><br><span class="line">    <span class="attr">extends:</span></span><br><span class="line">      <span class="attr">file:</span>   <span class="string">base/docker-compose-base.yaml</span></span><br><span class="line">      <span class="attr">service:</span> <span class="string">orderer.example.com</span></span><br><span class="line">    <span class="attr">container_name:</span> <span class="string">orderer.example.com</span></span><br><span class="line">    <span class="attr">networks:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">byfn</span></span><br><span class="line"></span><br><span class="line">  <span class="attr">peer0.org1.example.com:</span></span><br><span class="line">    <span class="attr">container_name:</span> <span class="string">peer0.org1.example.com</span></span><br><span class="line">    <span class="attr">extends:</span></span><br><span class="line">      <span class="attr">file:</span>  <span class="string">base/docker-compose-base.yaml</span></span><br><span class="line">      <span class="attr">service:</span> <span class="string">peer0.org1.example.com</span></span><br><span class="line">    <span class="attr">networks:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">byfn</span></span><br><span class="line"></span><br><span class="line">  <span class="attr">peer1.org1.example.com:</span></span><br><span class="line">    <span class="attr">container_name:</span> <span class="string">peer1.org1.example.com</span></span><br><span class="line">    <span class="attr">extends:</span></span><br><span class="line">      <span class="attr">file:</span>  <span class="string">base/docker-compose-base.yaml</span></span><br><span class="line">      <span class="attr">service:</span> <span class="string">peer1.org1.example.com</span></span><br><span class="line">    <span class="attr">networks:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">byfn</span></span><br><span class="line"></span><br><span class="line">  <span class="attr">peer0.org2.example.com:</span></span><br><span class="line">    <span class="attr">container_name:</span> <span class="string">peer0.org2.example.com</span></span><br><span class="line">    <span class="attr">extends:</span></span><br><span class="line">      <span class="attr">file:</span>  <span class="string">base/docker-compose-base.yaml</span></span><br><span class="line">      <span class="attr">service:</span> <span class="string">peer0.org2.example.com</span></span><br><span class="line">    <span class="attr">networks:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">byfn</span></span><br><span class="line"></span><br><span class="line">  <span class="attr">peer1.org2.example.com:</span></span><br><span class="line">    <span class="attr">container_name:</span> <span class="string">peer1.org2.example.com</span></span><br><span class="line">    <span class="attr">extends:</span></span><br><span class="line">      <span class="attr">file:</span>  <span class="string">base/docker-compose-base.yaml</span></span><br><span class="line">      <span class="attr">service:</span> <span class="string">peer1.org2.example.com</span></span><br><span class="line">    <span class="attr">networks:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">byfn</span></span><br><span class="line"></span><br><span class="line">  <span class="attr">cli:</span></span><br><span class="line">    <span class="attr">container_name:</span> <span class="string">cli</span></span><br><span class="line">    <span class="attr">image:</span> <span class="string">hyperledger/fabric-tools:$IMAGE_TAG</span></span><br><span class="line">    <span class="attr">tty:</span> <span class="literal">true</span></span><br><span class="line">    <span class="attr">stdin_open:</span> <span class="literal">true</span></span><br><span class="line">    <span class="attr">environment:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">GOPATH=/opt/gopath</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock</span></span><br><span class="line">      <span class="comment">#- CORE_LOGGING_LEVEL=DEBUG</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">CORE_LOGGING_LEVEL=INFO</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">CORE_PEER_ID=cli</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">CORE_PEER_ADDRESS=peer0.org1.example.com:7051</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">CORE_PEER_LOCALMSPID=Org1MSP</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">CORE_PEER_TLS_ENABLED=true</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">CORE_PEER_TLS_CERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/server.crt</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">CORE_PEER_TLS_KEY_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/server.key</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">CORE_PEER_TLS_ROOTCERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls/ca.crt</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org1.example.com/users/Admin@org1.example.com/msp</span></span><br><span class="line">    <span class="attr">working_dir:</span> <span class="string">/opt/gopath/src/github.com/hyperledger/fabric/peer</span></span><br><span class="line">    <span class="attr">command:</span> <span class="string">/bin/bash</span></span><br><span class="line">    <span class="attr">volumes:</span>	<span class="comment">#将系统中的链码、组织结构及证书、生成的配置文件映射到容器中指定的目录下</span></span><br><span class="line">        <span class="bullet">-</span> <span class="string">/var/run/:/host/var/run/</span></span><br><span class="line">        <span class="bullet">-</span> <span class="string">./../chaincode/:/opt/gopath/src/github.com/chaincode</span></span><br><span class="line">        <span class="bullet">-</span> <span class="string">./crypto-config:/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/</span></span><br><span class="line">        <span class="bullet">-</span> <span class="string">./scripts:/opt/gopath/src/github.com/hyperledger/fabric/peer/scripts/</span></span><br><span class="line">        <span class="bullet">-</span> <span class="string">./channel-artifacts:/opt/gopath/src/github.com/hyperledger/fabric/peer/channel-artifacts</span></span><br><span class="line">    <span class="attr">depends_on:</span>  <span class="comment">#制定所依赖的相关容器</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">orderer.example.com</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">peer0.org1.example.com</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">peer1.org1.example.com</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">peer0.org2.example.com</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">peer1.org2.example.com</span></span><br><span class="line">    <span class="attr">networks:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">byfn</span></span><br></pre></td></tr></table></figure>
+
+<p>该配置文件中指定了网络中各个节点容器（共计六个容器，一个 Orderer，属于两个 Orgs 组织的四个 Peer，还有一个 CLI）的信息；我们仔细观察会发现 orderer 与各 peer 容器都设置了container_name 与 networks 信息；其它信息都由 extends 指向了 base/docker-compose-base.yaml 文件。</p>
+<p>CLI 容器指定了所代表的 peer 节点（CORE_PEER_ADDRESS=peer0.org1.example.com:7051），通过 <strong>volumes</strong> 指定了<strong>将系统中的链码、组织结构及证书、生成的配置文件映射到容器中指定的目录下</strong>。且通过 <strong>depends_on</strong> 指定了<strong>所依赖的相关容器。</strong></p>
+<h3 id="2-关联的docker-compose-base-yaml"><a href="#2-关联的docker-compose-base-yaml" class="headerlink" title="2 关联的docker-compose-base.yaml"></a>2 关联的docker-compose-base.yaml</h3><p>配置文件</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">version:</span> <span class="string">'2'</span></span><br><span class="line"></span><br><span class="line"><span class="attr">services:</span></span><br><span class="line">	<span class="comment">#orderer</span></span><br><span class="line">  <span class="attr">orderer.example.com:</span></span><br><span class="line">    <span class="attr">container_name:</span> <span class="string">orderer.example.com</span></span><br><span class="line">    <span class="attr">image:</span> <span class="string">hyperledger/fabric-orderer:$IMAGE_TAG</span></span><br><span class="line">     <span class="comment">#environment  指定日志级别、监听地址、生成初始区块的提供方式、初始区块配置文件路径、本地 MSPID 及对应的目录、开启 TLS 验证及对应的证书、私钥信息等诸多重要信息。</span></span><br><span class="line">    <span class="attr">environment:</span> </span><br><span class="line">      <span class="bullet">-</span> <span class="string">ORDERER_GENERAL_LOGLEVEL=INFO</span>  <span class="comment">#日志级别</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">ORDERER_GENERAL_LISTENADDRESS=0.0.0.0</span> <span class="comment">#监听地址</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">ORDERER_GENERAL_GENESISMETHOD=file</span>	<span class="comment">#生成初始区块的提供方式</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">ORDERER_GENERAL_GENESISFILE=/var/hyperledger/orderer/orderer.genesis.block</span> <span class="comment">#初始区块配置文件路径</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">ORDERER_GENERAL_LOCALMSPID=OrdererMSP</span>	<span class="comment">#本地 MSPID 及对应的目录</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">ORDERER_GENERAL_LOCALMSPDIR=/var/hyperledger/orderer/msp</span></span><br><span class="line">      <span class="comment"># enabled TLS</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">ORDERER_GENERAL_TLS_ENABLED=true</span> <span class="comment">#开启 TLS 验证及对应的证书，私钥信息等诸多重要信息。</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">ORDERER_GENERAL_TLS_PRIVATEKEY=/var/hyperledger/orderer/tls/server.key</span> </span><br><span class="line">      <span class="bullet">-</span> <span class="string">ORDERER_GENERAL_TLS_CERTIFICATE=/var/hyperledger/orderer/tls/server.crt</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">ORDERER_GENERAL_TLS_ROOTCAS=[/var/hyperledger/orderer/tls/ca.crt]</span></span><br><span class="line">    <span class="attr">working_dir:</span> <span class="string">/opt/gopath/src/github.com/hyperledger/fabric</span> <span class="comment">#进入容器后的默认工作目录</span></span><br><span class="line">    <span class="attr">command:</span> <span class="string">orderer</span></span><br><span class="line">    <span class="attr">volumes:</span>  <span class="comment">#指定系统中的初始区块配置文件、MSP、TLS目录映射到容器中的指定路径下</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">../channel-artifacts/genesis.block:/var/hyperledger/orderer/orderer.genesis.block</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">../crypto-config/ordererOrganizations/example.com/orderers/orderer.example.com/msp:/var/hyperledger/orderer/msp</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">../crypto-config/ordererOrganizations/example.com/orderers/orderer.example.com/tls/:/var/hyperledger/orderer/tls</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">orderer.example.com:/var/hyperledger/production/orderer</span></span><br><span class="line">    <span class="attr">ports:</span> <span class="comment">#指定当前节点的监听端口</span></span><br><span class="line">      <span class="bullet">-</span> <span class="number">7050</span><span class="string">:7050</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#peers</span></span><br><span class="line">  <span class="attr">peer0.org1.example.com:</span></span><br><span class="line">    <span class="attr">container_name:</span> <span class="string">peer0.org1.example.com</span></span><br><span class="line">    <span class="attr">extends:</span>  <span class="comment">#基本信息来源于哪个文件。</span></span><br><span class="line">      <span class="attr">file:</span> <span class="string">peer-base.yaml</span></span><br><span class="line">      <span class="attr">service:</span> <span class="string">peer-base</span></span><br><span class="line">    <span class="attr">environment:</span>  <span class="comment">#指定了容器的的 ID、监听地址及端口号、本地 MSPID</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">CORE_PEER_ID=peer0.org1.example.com</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">CORE_PEER_ADDRESS=peer0.org1.example.com:7051</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">CORE_PEER_GOSSIP_BOOTSTRAP=peer1.org1.example.com:7051</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.org1.example.com:7051</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">CORE_PEER_LOCALMSPID=Org1MSP</span></span><br><span class="line">    <span class="attr">volumes:</span> <span class="comment">#将系统的 msp 及 tls 目录映射到容器中的指定路径下</span></span><br><span class="line">        <span class="bullet">-</span> <span class="string">/var/run/:/host/var/run/</span></span><br><span class="line">        <span class="bullet">-</span> <span class="string">../crypto-config/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/msp:/etc/hyperledger/fabric/msp</span></span><br><span class="line">        <span class="bullet">-</span> <span class="string">../crypto-config/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/tls:/etc/hyperledger/fabric/tls</span></span><br><span class="line">        <span class="bullet">-</span> <span class="string">peer0.org1.example.com:/var/hyperledger/production</span></span><br><span class="line">    <span class="attr">ports:</span> <span class="comment">#指定当前节点的监听端口。</span></span><br><span class="line">      <span class="bullet">-</span> <span class="number">7051</span><span class="string">:7051</span></span><br><span class="line">      <span class="bullet">-</span> <span class="number">7053</span><span class="string">:7053</span></span><br><span class="line"></span><br><span class="line">  <span class="attr">peer1.org1.example.com:</span></span><br><span class="line">    <span class="attr">container_name:</span> <span class="string">peer1.org1.example.com</span></span><br><span class="line">    <span class="attr">extends:</span></span><br><span class="line">      <span class="attr">file:</span> <span class="string">peer-base.yaml</span></span><br><span class="line">      <span class="attr">service:</span> <span class="string">peer-base</span></span><br><span class="line">    <span class="attr">environment:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">CORE_PEER_ID=peer1.org1.example.com</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">CORE_PEER_ADDRESS=peer1.org1.example.com:7051</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer1.org1.example.com:7051</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">CORE_PEER_GOSSIP_BOOTSTRAP=peer0.org1.example.com:7051</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">CORE_PEER_LOCALMSPID=Org1MSP</span></span><br><span class="line">    <span class="attr">volumes:</span></span><br><span class="line">        <span class="bullet">-</span> <span class="string">/var/run/:/host/var/run/</span></span><br><span class="line">        <span class="bullet">-</span> <span class="string">../crypto-config/peerOrganizations/org1.example.com/peers/peer1.org1.example.com/msp:/etc/hyperledger/fabric/msp</span></span><br><span class="line">        <span class="bullet">-</span> <span class="string">../crypto-config/peerOrganizations/org1.example.com/peers/peer1.org1.example.com/tls:/etc/hyperledger/fabric/tls</span></span><br><span class="line">        <span class="bullet">-</span> <span class="string">peer1.org1.example.com:/var/hyperledger/production</span></span><br><span class="line"></span><br><span class="line">    <span class="attr">ports:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="number">8051</span><span class="string">:7051</span></span><br><span class="line">      <span class="bullet">-</span> <span class="number">8053</span><span class="string">:7053</span></span><br><span class="line"></span><br><span class="line">  <span class="attr">peer0.org2.example.com:</span></span><br><span class="line">    <span class="attr">container_name:</span> <span class="string">peer0.org2.example.com</span></span><br><span class="line">    <span class="attr">extends:</span></span><br><span class="line">      <span class="attr">file:</span> <span class="string">peer-base.yaml</span></span><br><span class="line">      <span class="attr">service:</span> <span class="string">peer-base</span></span><br><span class="line">    <span class="attr">environment:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">CORE_PEER_ID=peer0.org2.example.com</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">CORE_PEER_ADDRESS=peer0.org2.example.com:7051</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer0.org2.example.com:7051</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">CORE_PEER_GOSSIP_BOOTSTRAP=peer1.org2.example.com:7051</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">CORE_PEER_LOCALMSPID=Org2MSP</span></span><br><span class="line">    <span class="attr">volumes:</span></span><br><span class="line">        <span class="bullet">-</span> <span class="string">/var/run/:/host/var/run/</span></span><br><span class="line">        <span class="bullet">-</span> <span class="string">../crypto-config/peerOrganizations/org2.example.com/peers/peer0.org2.example.com/msp:/etc/hyperledger/fabric/msp</span></span><br><span class="line">        <span class="bullet">-</span> <span class="string">../crypto-config/peerOrganizations/org2.example.com/peers/peer0.org2.example.com/tls:/etc/hyperledger/fabric/tls</span></span><br><span class="line">        <span class="bullet">-</span> <span class="string">peer0.org2.example.com:/var/hyperledger/production</span></span><br><span class="line">    <span class="attr">ports:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="number">9051</span><span class="string">:7051</span></span><br><span class="line">      <span class="bullet">-</span> <span class="number">9053</span><span class="string">:7053</span></span><br><span class="line"></span><br><span class="line">  <span class="attr">peer1.org2.example.com:</span></span><br><span class="line">    <span class="attr">container_name:</span> <span class="string">peer1.org2.example.com</span></span><br><span class="line">    <span class="attr">extends:</span></span><br><span class="line">      <span class="attr">file:</span> <span class="string">peer-base.yaml</span></span><br><span class="line">      <span class="attr">service:</span> <span class="string">peer-base</span></span><br><span class="line">    <span class="attr">environment:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">CORE_PEER_ID=peer1.org2.example.com</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">CORE_PEER_ADDRESS=peer1.org2.example.com:7051</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">CORE_PEER_GOSSIP_EXTERNALENDPOINT=peer1.org2.example.com:7051</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">CORE_PEER_GOSSIP_BOOTSTRAP=peer0.org2.example.com:7051</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">CORE_PEER_LOCALMSPID=Org2MSP</span></span><br><span class="line">    <span class="attr">volumes:</span></span><br><span class="line">        <span class="bullet">-</span> <span class="string">/var/run/:/host/var/run/</span></span><br><span class="line">        <span class="bullet">-</span> <span class="string">../crypto-config/peerOrganizations/org2.example.com/peers/peer1.org2.example.com/msp:/etc/hyperledger/fabric/msp</span></span><br><span class="line">        <span class="bullet">-</span> <span class="string">../crypto-config/peerOrganizations/org2.example.com/peers/peer1.org2.example.com/tls:/etc/hyperledger/fabric/tls</span></span><br><span class="line">        <span class="bullet">-</span> <span class="string">peer1.org2.example.com:/var/hyperledger/production</span></span><br><span class="line">    <span class="attr">ports:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="number">10051</span><span class="string">:7051</span></span><br><span class="line">      <span class="bullet">-</span> <span class="number">10053</span><span class="string">:7053</span></span><br></pre></td></tr></table></figure>
+
+<p>该配置文件中指定了 Orderer 与 Peers 节点的相关信息。</p>
+<p>Orderer 设置如下信息：</p>
+<ul>
+<li><strong>environment：</strong>指定日志级别、监听地址、生成初始区块的提供方式、初始区块配置文件路径、本地 MSPID 及对应的目录、开启 TLS 验证及对应的证书、私钥信息等诸多重要信息。</li>
+<li><strong>working_dir：</strong>进入容器后的默认工作目录</li>
+<li><strong>volumes：</strong>指定系统中的初始区块配置文件、MSP、TLS目录映射到容器中的指定路径下。</li>
+<li><strong>ports：</strong> 指定当前节点的监听端口。</li>
+</ul>
+<p>各 Peers 设置了如下信息：</p>
+<ul>
+<li><p><strong>extends：</strong>基本信息来源于哪个文件。</p>
+</li>
+<li><p><strong>environment：</strong>指定了容器的的 ID、监听地址及端口号、本地 MSPID。</p>
+</li>
+<li><p><strong>volumes：</strong>将系统的 msp 及 tls 目录映射到容器中的指定路径下。</p>
+</li>
+<li><p><strong>ports：</strong> 指定当前节点的监听端口。</p>
+</li>
+</ul>
+<h3 id="3-又被关联的peer-base-yaml"><a href="#3-又被关联的peer-base-yaml" class="headerlink" title="3 又被关联的peer-base.yaml"></a>3 又被关联的peer-base.yaml</h3><p>配置文件内容如下:</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">version:</span> <span class="string">'2'</span></span><br><span class="line"></span><br><span class="line"><span class="attr">services:</span></span><br><span class="line">  <span class="attr">peer-base:</span></span><br><span class="line">    <span class="attr">image:</span> <span class="string">hyperledger/fabric-peer:$IMAGE_TAG</span></span><br><span class="line">    <span class="comment">#指定日志级别、监听地址、生成初始区块的提供方式、初始区块配置文件路径、本地 MSPID 及对应的目录、开启 TLS 验证及对应的证书、私钥信息等诸多重要信息。</span></span><br><span class="line">    <span class="attr">environment:</span> </span><br><span class="line">      <span class="bullet">-</span> <span class="string">CORE_VM_ENDPOINT=unix:///host/var/run/docker.sock</span></span><br><span class="line">      <span class="comment"># the following setting starts chaincode containers on the same</span></span><br><span class="line">      <span class="comment"># bridge network as the peers</span></span><br><span class="line">      <span class="comment"># https://docs.docker.com/compose/networking/</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">CORE_VM_DOCKER_HOSTCONFIG_NETWORKMODE=$&#123;COMPOSE_PROJECT_NAME&#125;_byfn</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">CORE_LOGGING_LEVEL=INFO</span> 		<span class="comment">#日志级别</span></span><br><span class="line">      <span class="comment">#- CORE_LOGGING_LEVEL=DEBUG</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">CORE_PEER_TLS_ENABLED=true</span>		<span class="comment">#是否开启 TLS 验证</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">CORE_PEER_GOSSIP_USELEADERELECTION=true</span>		<span class="comment">#是否采用 Leader 选举</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">CORE_PEER_GOSSIP_ORGLEADER=false</span>			<span class="comment">#是否将当前节点设为 Leader</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">CORE_PEER_PROFILE_ENABLED=true</span>				<span class="comment">#</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">CORE_PEER_TLS_CERT_FILE=/etc/hyperledger/fabric/tls/server.crt</span> <span class="comment">#TLS 证书</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">CORE_PEER_TLS_KEY_FILE=/etc/hyperledger/fabric/tls/server.key</span>	<span class="comment">#私钥</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">CORE_PEER_TLS_ROOTCERT_FILE=/etc/hyperledger/fabric/tls/ca.crt</span>	<span class="comment">#根证书的路径</span></span><br><span class="line">    <span class="attr">working_dir:</span> <span class="string">/opt/gopath/src/github.com/hyperledger/fabric/peer</span> <span class="comment">#进入容器后的默认工作目录</span></span><br><span class="line">    <span class="attr">command:</span> <span class="string">peer</span> <span class="string">node</span> <span class="string">start</span> <span class="comment">#容器启动命令</span></span><br></pre></td></tr></table></figure>
+
+<p>该配置文件设置了所有 peer 容器的基本的共同信息，日志级别，是否开启 TLS 验证，是否采用 Leader 选举， 是否将当前节点设为 Leader， TLS 证书、私钥、根证书的路径、容器的默认工作路径、容器启动命令。</p>
+<h3 id="4-启动网络"><a href="#4-启动网络" class="headerlink" title="4 启动网络"></a>4 启动网络</h3><p>万事具备，只欠东风，下面我们通过一条命令来方便的启动 Hyperledger Fabric 网络中所有节点。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> sudo docker-compose -f docker-compose-cli.yaml up -d</span></span><br></pre></td></tr></table></figure>
+
+<p>命令执行后终端输出如下：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">Creating network "net_byfn" with the default driver</span><br><span class="line">Creating volume "net_peer0.org2.example.com" with default driver</span><br><span class="line">Creating volume "net_peer1.org2.example.com" with default driver</span><br><span class="line">Creating volume "net_peer1.org1.example.com" with default driver</span><br><span class="line">Creating volume "net_peer0.org1.example.com" with default driver</span><br><span class="line">Creating volume "net_orderer.example.com" with default driver</span><br><span class="line">Creating orderer.example.com</span><br><span class="line">Creating peer1.org2.example.com</span><br><span class="line">Creating peer0.org2.example.com</span><br><span class="line">Creating peer1.org1.example.com</span><br><span class="line">Creating peer0.org1.example.com</span><br><span class="line">Creating cli</span><br></pre></td></tr></table></figure>
+
+<p>docker-compose 命令可以加许多的子命令，从而实现不同的操作， <code>up</code> 子命令是根据指定的配置文件启动相应的容器（网络环境）。还有一个 <code>down</code> 子命令则是<strong>关闭已启动的容器</strong>（网络环境）。如：</p>
+<ul>
+<li><p>使用指定的 docker-compose-cli.yaml 配置文件关闭网络：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> sudo docker-compose -f docker-compose-cli.yaml down</span></span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<p><strong>参数说明：</strong></p>
+<ul>
+<li><p><strong>-f：</strong> 指定启动容器时用所使用的 docker-compose 配置文件。</p>
+</li>
+<li><p><strong>-d：</strong> 指定是否显示网络启动过程中的实时日志信息，如果需要查看详细网络启动日志，则可以不提供此参数。</p>
+</li>
+</ul>
+<p>网络启动顺序：首先启动 Orderer 服务节点，然后启动 Peer 节点，终端输出日志内容如下:</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">......</span><br><span class="line">orderer.example.com       | 02:48:25.080 UTC [orderer/common/server] initializeServerConfig -&gt; INFO 002 Starting orderer with TLS enabled</span><br><span class="line">orderer.example.com       | 02:48:25.101 UTC [fsblkstorage] newBlockfileMgr -&gt; INFO 003 Getting block information from block storage</span><br><span class="line">orderer.example.com       | 02:48:25.138 UTC [orderer/commmon/multichannel] NewRegistrar -&gt; INFO 004 Starting system channel 'testchainid' with genesis block hash 67662e918ab76b4a8863cc625d67fcc31e9cb3a7c3c4f9f707af1c05ba5be686 and orderer type solo</span><br><span class="line">orderer.example.com       | 02:48:25.138 UTC [orderer/common/server] Start -&gt; INFO 005 Starting orderer:</span><br><span class="line">......</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>Peer 节点启动后，默认情况下没有加入网络中的任何应用通道，也不会与 Orderer 服务建立连接。需要通过客户端对其进行操作，让它加入网络和指定的应用通道中。</p>
+</blockquote>
+<p>启动会我们使用如下命令查看网络信息：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> sudo docker ps</span></span><br></pre></td></tr></table></figure>
+
+<p>命令执行后会发现有六个容器处于活动状态（分别为：cli、peer1.org1.example.com、peer0.org1.example.com、peer1.org2.example.com、orderer.example.com、peer0.org2.example.com），说明网络启动成功。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">CONTAINER ID        IMAGE                               COMMAND             CREATED             STATUS              PORTS                                              NAMES</span><br><span class="line">ccf586b68b5b        hyperledger/fabric-tools:latest     <span class="string">"/bin/bash"</span>         2 minutes ago       Up 2 minutes                                                           *cli*</span><br><span class="line">4eda41547208        hyperledger/fabric-peer:latest      <span class="string">"peer node start"</span>   3 minutes ago       Up 2 minutes        0.0.0.0:8051-&gt;7051/tcp, 0.0.0.0:8053-&gt;7053/tcp     *peer1.org1.example.com*</span><br><span class="line">5694763481bd        hyperledger/fabric-orderer:latest   <span class="string">"orderer"</span>           3 minutes ago       Up 3 minutes        0.0.0.0:7050-&gt;7050/tcp                             *orderer.example.com*</span><br><span class="line">96f33d31949e        hyperledger/fabric-peer:latest      <span class="string">"peer node start"</span>   3 minutes ago       Up 3 minutes        0.0.0.0:9051-&gt;7051/tcp, 0.0.0.0:9053-&gt;7053/tcp     *peer0.org2.example.com*</span><br><span class="line">ed93213ba1f1        hyperledger/fabric-peer:latest      <span class="string">"peer node start"</span>   3 minutes ago       Up 2 minutes        0.0.0.0:10051-&gt;7051/tcp, 0.0.0.0:10053-&gt;7053/tcp   *peer1.org2.example.com*</span><br><span class="line">b55ed1fc8c0f        hyperledger/fabric-peer:latest      <span class="string">"peer node start"</span>   3 minutes ago       Up 2 minutes        0.0.0.0:7051-&gt;7051/tcp, 0.0.0.0:7053-&gt;7053/tcp     *peer0.org1.example.com*</span><br></pre></td></tr></table></figure>
+
+
+
+<h4 id="FAQ-2"><a href="#FAQ-2" class="headerlink" title="FAQ"></a>FAQ</h4><ol>
+<li><p>启动网络报错误怎么办？</p>
+<p>如果在启动网络时没有使用 -d 参数，那么在启动后会输出如下图所示的错误信息：</p>
+<p><img src="http://image.chaindesk.cn/3.3.1.png/mark" alt="启动网络的错误信息"></p>
+<p>此错误信息对于我们后期操作没有影响，可以无需理会。</p>
+<p>如果在查看详细日志时发现有错误，那么就需要根据对应的错误提示信息进行处理。注：红色的内容并不代表错误，一般是为了方便区分各节点而使用不同的颜色。</p>
+</li>
+</ol>
+<h3 id="四、以最快的方式完成应用通道的创建"><a href="#四、以最快的方式完成应用通道的创建" class="headerlink" title="四、以最快的方式完成应用通道的创建"></a>四、以最快的方式完成应用通道的创建</h3><h4 id="目标-3"><a href="#目标-3" class="headerlink" title="目标"></a>目标</h4><ol>
+<li>掌握应用通道创建的命令及其必须指定的参数所表示的含义</li>
+<li>实现将节点加入到指定的应用通道中</li>
+</ol>
+<h4 id="任务实现-3"><a href="#任务实现-3" class="headerlink" title="任务实现"></a>任务实现</h4><blockquote>
+<p>网络已经启动成功，准备等待处理交易信息，但为了保证交易安全，实现不相干的实体成员不能访问其无权限访问的数据，所以我们需要做出进一步的设置–&gt;创建应用通道来实现交易及数据的隔离。</p>
+</blockquote>
+<h3 id="1-如何创建应用通道"><a href="#1-如何创建应用通道" class="headerlink" title="1 如何创建应用通道"></a>1 如何创建应用通道</h3><p>在创建及使用应用通道之前，我们先理解一下 <code>channel（通道）</code> 的概念及其作用：</p>
+<ul>
+<li><strong>概念：</strong>将一个大的网络分割成为不同的私有”子网”，关于多个通道的概念及实现请参见第7章第三节内容。</li>
+<li><strong>作用：</strong>通道提供一种通讯机制，能够将 Peer 和 Orderer 连接在一起，形成一个具有保密性的通讯链路（虚拟）， 实现数据隔离。</li>
+</ul>
+<blockquote>
+<p>要加入通道的每个节点都必须拥有自己的通过成员服务提供商（MSP）获得的身份标识，MSP 内容请参见第六章。</p>
+</blockquote>
+<p>下面我们来看怎么创建应用通道。</p>
+<p><strong>进入 Docker cli 容器</strong></p>
+<p>执行如下命令进入到 CLI 容器中(后继操作都在容器中执行)</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> sudo docker <span class="built_in">exec</span> -it cli bash</span></span><br></pre></td></tr></table></figure>
+
+<p>如果成功, 命令提示符会变为如下内容（代表成功进入 CLI 容器）:</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">root@b240e1643244:/opt/gopath/src/github.com/hyperledger/fabric/peer#`</span><br><span class="line"></span><br><span class="line">其中 @ 符号后面的内容根据不同的设备会显示不同的内容。</span><br></pre></td></tr></table></figure>
+
+<p><strong>创建应用通道</strong></p>
+<p>检查环境变量是否正确设置</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> <span class="built_in">echo</span> <span class="variable">$CHANNEL_NAME</span></span></span><br></pre></td></tr></table></figure>
+
+<p>设置环境变量</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> <span class="built_in">export</span> CHANNEL_NAME=mychannel</span></span><br></pre></td></tr></table></figure>
+
+<p>创建通道</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> peer channel create -o orderer.example.com:7050 -c <span class="variable">$CHANNEL_NAME</span> -f ./channel-artifacts/channel.tx --tls --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem</span></span><br></pre></td></tr></table></figure>
+<p><strong>参数说明:</strong></p>
+<ul>
+<li><strong>-o：</strong> 指定 orderer 节点的地址</li>
+<li><strong>-c：</strong> 指定要创建的应用通道的名称(必须与在创建应用通道交易配置文件时的通道名称一致)</li>
+<li><strong>-f：</strong> 指定创建应用通道时所使用的应用通道交易配置文件</li>
+<li><strong>–tls：</strong> 开启 TLS 验证</li>
+<li><strong>–cafile：</strong> 指定 TLS_CA 证书的所在路径</li>
+</ul>
+<blockquote>
+<p>该命令执行后，会自动在本地生成一个与应用通道名称同名的初始区块 <strong>mychannel.block</strong>, 网络节点只有拥有该文件才可以加入创建的应用通道中</p>
+</blockquote>
+<p>命令执行后输出如下：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">[channelCmd] InitCmdFactory -&gt; INFO 001 Endorser and orderer connections initialized</span><br><span class="line">[cli/common] readBlock -&gt; INFO 002 Got status: &amp;&#123;NOT_FOUND&#125;</span><br><span class="line">[channelCmd] InitCmdFactory -&gt; INFO 003 Endorser and orderer connections initialized</span><br><span class="line">[cli/common] readBlock -&gt; INFO 004 Received block: 0</span><br><span class="line">-----my---</span><br><span class="line">2020-03-23 06:42:16.273 UTC [channelCmd] InitCmdFactory -&gt; INFO 001 Endorser and orderer connections initialized</span><br><span class="line">2020-03-23 06:42:16.426 UTC [cli/common] readBlock -&gt; INFO 002 Got status: &amp;&#123;NOT_FOUND&#125;</span><br><span class="line">2020-03-23 06:42:16.463 UTC [channelCmd] InitCmdFactory -&gt; INFO 003 Endorser and orderer connections initialized</span><br><span class="line">2020-03-23 06:42:16.681 UTC [cli/common] readBlock -&gt; INFO 004 Received block: 0</span><br></pre></td></tr></table></figure>
+
+<p>使用 <code>ll</code> 命令查看:</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> ll</span></span><br><span class="line">total 36</span><br><span class="line">drwxr-xr-x 5 root root  4096 Apr 29 03:34 ./</span><br><span class="line">drwxr-xr-x 3 root root  4096 Apr 29 02:48 ../</span><br><span class="line">drwxr-xr-x 2 root root  4096 Apr 29 02:47 channel-artifacts/</span><br><span class="line">drwxr-xr-x 4 root root  4096 Apr 29 02:35 crypto/</span><br><span class="line">-rw-r--r-- 1 root root 15660 Apr 29 03:34 mychannel.block</span><br><span class="line">drwxr-xr-x 2 root root  4096 Apr 29 02:13 scripts/</span><br></pre></td></tr></table></figure>
+
+<h3 id="2-节点怎么加入应用通道"><a href="#2-节点怎么加入应用通道" class="headerlink" title="2 节点怎么加入应用通道"></a>2 节点怎么加入应用通道</h3><p>应用通道所包含组织的成员节点可以加入通道中</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> peer channel join -b mychannel.block</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>join命令：</strong> 将本 Peer 节点加入到应用通道中</p>
+<p><strong>参数说明：</strong></p>
+<ul>
+<li><strong>-b:</strong> 指定当前节点要加入/联接至哪个应用通道</li>
+</ul>
+<p>命令执行后输出内容如下：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">2020-03-23 06:45:44.847 UTC [channelCmd] InitCmdFactory -&gt; INFO 001 Endorser and orderer connections initialized</span><br><span class="line">2020-03-23 06:45:45.018 UTC [channelCmd] executeJoin -&gt; INFO 002 Successfully submitted proposal to join channel</span><br></pre></td></tr></table></figure>
+
+<h3 id="3-更新锚节点"><a href="#3-更新锚节点" class="headerlink" title="3 更新锚节点"></a>3 更新锚节点</h3><p>使用 Org1 的管理员身份更新锚节点配置</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> peer channel update -o orderer.example.com:7050 -c <span class="variable">$CHANNEL_NAME</span> -f ./channel-artifacts/Org1MSPanchors.tx --tls --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem</span></span><br></pre></td></tr></table></figure>
+
+<p>输出结果</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">2020-03-23 06:53:04.382 UTC [channelCmd] InitCmdFactory -&gt; INFO 001 Endorser and orderer connections initialized</span><br><span class="line">2020-03-23 06:53:04.484 UTC [channelCmd] update -&gt; INFO 002 Successfully submitted channel update</span><br></pre></td></tr></table></figure>
+
+<p>使用 Org2 的管理员身份更新锚节点配置</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> CORE_PEER_LOCALMSPID=<span class="string">"Org2MSP"</span></span></span><br><span class="line"><span class="meta">#</span><span class="bash"> CORE_PEER_ADDRESS=peer0.org2.example.com:7051 </span></span><br><span class="line"><span class="meta">#</span><span class="bash"> CORE_PEER_MSPCONFIGPATH=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org2.example.com/users/Admin@org2.example.com/msp</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> CORE_PEER_TLS_ROOTCERT_FILE=/opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/peerOrganizations/org2.example.com/peers/peer0.org2.example.com/tls/ca.crt </span></span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> peer channel update -o orderer.example.com:7050 -c <span class="variable">$CHANNEL_NAME</span> -f ./channel-artifacts/Org2MSPanchors.tx --tls --cafile /opt/gopath/src/github.com/hyperledger/fabric/peer/crypto/ordererOrganizations/example.com/orderers/orderer.example.com/msp/tlscacerts/tlsca.example.com-cert.pem</span></span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">2020-03-23 06:54:54.942 UTC [channelCmd] InitCmdFactory -&gt; INFO 001 Endorser and orderer connections initialized</span><br><span class="line">2020-03-23 06:54:55.012 UTC [channelCmd] update -&gt; INFO 002 Successfully submitted channel update</span><br></pre></td></tr></table></figure>
+
+<p>手动配置网络并启动完成，之后我们可以进入 Chaincode 环节。</p>
+<p>如果您能顺利完成走到这一步，那么您可以小小的庆祝一下了。</p>
+</blockquote>
+<h4 id="FAQ-3"><a href="#FAQ-3" class="headerlink" title="FAQ"></a>FAQ</h4><ol>
+<li><p>创建应用通道失败怎么办？</p>
+<p>在执行创建应用通道命令后可能会遇到如下几种错误：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">1. Error on outputChannelCreateTx: config update generation failure: could not parse application to application group: </span><br><span class="line">setting up the MSP manager failed: the supplied identity is not valid: x509:</span><br><span class="line">certificate signed by unknown authority (possibly because of "x509: ECDSA verification failure" </span><br><span class="line">while trying to verify candidate authority certificate "ca.org1.example.com")</span><br><span class="line">如果遇到此错误，说明生成的证书有问题（要么没有生成，要么生成的证书不符合x509标准），请重新生成。</span><br><span class="line"></span><br><span class="line">2. Error:got unexpected status: FORBIDDEN -- Failed to reach implicit threshold of 1 sub-policies, required 1 remaining: permission denied</span><br><span class="line">从错误中可以看到是因为权限而造成，请检查生成的文件对应的所属访问权限。</span><br><span class="line"></span><br><span class="line">3. hdr.format undefined (type *tar.header has no field or method format) ......</span><br><span class="line">如果遇到此错误，则检查go语言的版本是否符合官方指定的 Hyperledger Fabric 版本要求。</span><br><span class="line"></span><br><span class="line">4. Error: got unexpected status: BAD_REQUEST -- error authorizing update: error validating ReadSet: readset expected key [Group]  /Channel/Application at version 0, but got version 1</span><br><span class="line">出现如上错误，说明指定的通道名称已经在当前处于运行状态的 Fabric 网络中存在。</span><br></pre></td></tr></table></figure>
+</li>
+<li><h4 id="节点为什么要创建并加入应用通道中？"><a href="#节点为什么要创建并加入应用通道中？" class="headerlink" title="节点为什么要创建并加入应用通道中？"></a>节点为什么要创建并加入应用通道中？</h4><p>创建应用通道交易配置文件，可以指定创建的应用通道中可以有哪些组织加入及指定相应的权限；网络上的每个交易都需要在一个指定的通道中执行，在通道中交易必须通过通道的认证和授权。要加入一个通道的每个节点都必须有自己的通过成员服务提供商（MSP）获得的身份标识，用于鉴定每个节点在通道中的是什么节点和服务。</p>
+</li>
+</ol>
+
+    </div>
+
+    
+    
+    
+    <div>
+      
+        <div>
+    
+        <div style="text-align:center;color: #ccc;font-size:14px;">-------------本文结束<i class="fa fa-paw"></i>感谢您的阅读-------------</div>
+    
+</div>
+
+      
+    </div>
+        <div class="reward-container">
+  <div>坚持原创技术分享，您的支持将鼓励我继续创作！</div>
+  <button disable="enable" onclick="var qr = document.getElementById(&quot;qr&quot;); qr.style.display = (qr.style.display === 'none') ? 'block' : 'none';">
+    打赏
+  </button>
+  <div id="qr" style="display: none;">
+      
+      <div style="display: inline-block;">
+        <img src="/images/wechatpay.jpg" alt="Hongery 微信支付">
+        <p>微信支付</p>
+      </div>
+      
+      <div style="display: inline-block;">
+        <img src="/images/alipay.jpg" alt="Hongery 支付宝">
+        <p>支付宝</p>
+      </div>
+
+  </div>
+</div>
+
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>Hongery
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="http://yoursite.com/2020/03/21/%E8%81%94%E7%9B%9F%E9%93%BE/%E7%AC%AC3%E7%AB%A0Fabric%E7%BD%91%E7%BB%9C%E7%9A%84%E6%90%AD%E5%BB%BA/" title="第3章fabric网络搭建">http://yoursite.com/2020/03/21/联盟链/第3章Fabric网络的搭建/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/blockchain/" rel="tag"># blockchain</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/03/21/Untitled/" rel="prev" title="Untitled">
+      <i class="fa fa-chevron-left"></i> Untitled
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2020/03/21/%E8%81%94%E7%9B%9F%E9%93%BE/%E7%AC%AC2%E7%AB%A0Fabric%E6%9E%B6%E6%9E%84%E8%AE%BE%E8%AE%A1/" rel="next" title="第2章fabric架构设计">
+      第2章fabric架构设计 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let activeClass = CONFIG.comments.activeClass;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#生成组织结构与身份证书"><span class="nav-text">生成组织结构与身份证书</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#一、生成组织结构与身份证书"><span class="nav-text">一、生成组织结构与身份证书</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#目标"><span class="nav-text">目标</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#任务实现"><span class="nav-text">任务实现</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-与组织结构及身份证书关联的配置文件"><span class="nav-text">1 与组织结构及身份证书关联的配置文件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-如何生成组织结构及身份证书"><span class="nav-text">2 如何生成组织结构及身份证书</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#FAQ"><span class="nav-text">FAQ</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#二、不可或缺的配置文件"><span class="nav-text">二、不可或缺的配置文件</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#目标-1"><span class="nav-text">目标</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#任务实现-1"><span class="nav-text">任务实现</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-configtx-yaml配置文件指定哪些核心内容"><span class="nav-text">1 configtx.yaml配置文件指定哪些核心内容</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-Orderer服务启动初始区块的创建"><span class="nav-text">2 Orderer服务启动初始区块的创建</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-创建必须的应用通道交易配置文件"><span class="nav-text">3 创建必须的应用通道交易配置文件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-生成锚节点更新配置文件"><span class="nav-text">4 生成锚节点更新配置文件</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#FAQ-1"><span class="nav-text">FAQ</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#三、启动我们的分布式网络"><span class="nav-text">三、启动我们的分布式网络</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#目标-2"><span class="nav-text">目标</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#任务实现-2"><span class="nav-text">任务实现</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-网络服务如何配置"><span class="nav-text">1 网络服务如何配置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-关联的docker-compose-base-yaml"><span class="nav-text">2 关联的docker-compose-base.yaml</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-又被关联的peer-base-yaml"><span class="nav-text">3 又被关联的peer-base.yaml</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-启动网络"><span class="nav-text">4 启动网络</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#FAQ-2"><span class="nav-text">FAQ</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#四、以最快的方式完成应用通道的创建"><span class="nav-text">四、以最快的方式完成应用通道的创建</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#目标-3"><span class="nav-text">目标</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#任务实现-3"><span class="nav-text">任务实现</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-如何创建应用通道"><span class="nav-text">1 如何创建应用通道</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-节点怎么加入应用通道"><span class="nav-text">2 节点怎么加入应用通道</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-更新锚节点"><span class="nav-text">3 更新锚节点</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#FAQ-3"><span class="nav-text">FAQ</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#节点为什么要创建并加入应用通道中？"><span class="nav-text">节点为什么要创建并加入应用通道中？</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Hongery"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">Hongery</p>
+  <div class="site-description" itemprop="description">直到这一刻微笑着说话为止，我至少留下了一公升眼泪</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">74</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/Hongery" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;Hongery" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://blog.csdn.net/weixin_40098405" title="CSDN → https:&#x2F;&#x2F;blog.csdn.net&#x2F;weixin_40098405" rel="noopener" target="_blank"><i class="fa fa-fw fa-crosshairs"></i>CSDN</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:1281185088@qq.com" title="E-Mail1 → mailto:1281185088@qq.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail1</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:hongery@yeah.net" title="E-Mail2 → mailto:hongery@yeah.net" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail2</a>
+      </span>
+  </div>
+  <div class="cc-license motion-element" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">hongery</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+      <span class="post-meta-item-text">站点总字数：</span>
+    <span title="站点总字数">NaNm</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span class="post-meta-item-text">站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">NaN:aN字</span>
+</div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>
+<!-- 页面点击小红心 -->
+<script type="text/javascript" src="/js/clicklove.js"></script>
