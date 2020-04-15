@@ -1,0 +1,742 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.1.1">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/avatar.jpg">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/avatar.jpg">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    hostname: new URL('http://yoursite.com').hostname,
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.6.0',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},
+    copycode: {"enable":true,"show_result":true,"style":"mac"},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":true},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    comments: {"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: 'search.xml',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}
+  };
+</script>
+
+  <meta name="description" content="TCP&#x2F;IPTCP&#x2F;IP 是因特网的通信协议。 TCP&#x2F;IP 通信协议是对计算机必须遵守的规则的描述，只有遵守这些规则，计算机之间才能进行通信。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="TCP&#x2F;IP">
+<meta property="og:url" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2020&#x2F;04&#x2F;05&#x2F;%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C&#x2F;TCPIP&#x2F;index.html">
+<meta property="og:site_name" content="Hongery">
+<meta property="og:description" content="TCP&#x2F;IPTCP&#x2F;IP 是因特网的通信协议。 TCP&#x2F;IP 通信协议是对计算机必须遵守的规则的描述，只有遵守这些规则，计算机之间才能进行通信。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2020-04-05T07:59:45.000Z">
+<meta property="article:modified_time" content="2020-04-06T11:49:34.753Z">
+<meta property="article:author" content="Hongery">
+<meta property="article:tag" content="理论知识">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://yoursite.com/2020/04/05/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/TCPIP/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true
+  };
+</script>
+
+  <title>TCP/IP | Hongery</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Hongery</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">记录学习中的点点滴滴</p>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="none"
+           placeholder="搜索..." spellcheck="false"
+           type="text" id="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+  <a href="https://github.com/Hongery" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/04/05/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/TCPIP/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="Hongery">
+      <meta itemprop="description" content="直到这一刻微笑着说话为止，我至少留下了一公升眼泪">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hongery">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          TCP/IP
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-04-05 15:59:45" itemprop="dateCreated datePublished" datetime="2020-04-05T15:59:45+08:00">2020-04-05</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-04-06 19:49:34" itemprop="dateModified" datetime="2020-04-06T19:49:34+08:00">2020-04-06</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/" itemprop="url" rel="index">
+                    <span itemprop="name">计算机网络</span>
+                  </a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span><br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-file-word-o"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>4.5k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-clock-o"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>4 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="TCP-IP"><a href="#TCP-IP" class="headerlink" title="TCP/IP"></a>TCP/IP</h1><p>TCP/IP 是因特网的通信协议。</p>
+<p>TCP/IP 通信协议是对计算机必须遵守的规则的描述，只有遵守这些规则，计算机之间才能进行通信。</p>
+<a id="more"></a>
+
+<h3 id="TCP-IP应用"><a href="#TCP-IP应用" class="headerlink" title="TCP/IP应用"></a>TCP/IP应用</h3><ul>
+<li><h5 id="您的浏览器与服务器都在使用-TCP-IP-协议"><a href="#您的浏览器与服务器都在使用-TCP-IP-协议" class="headerlink" title="您的浏览器与服务器都在使用 TCP/IP 协议"></a>您的浏览器与服务器都在使用 TCP/IP 协议</h5><p>浏览器与服务器使用 TCP/IP 协议来链接因特网。</p>
+<p>浏览器使用 TCP/IP 协议进入服务器，服务器使用 TCP/IP 协议来发送 HTML 到浏览器。</p>
+</li>
+<li><h5 id="您的-E-Mail-使用-TCP-IP-协议"><a href="#您的-E-Mail-使用-TCP-IP-协议" class="headerlink" title="您的 E-Mail 使用 TCP/IP 协议"></a>您的 E-Mail 使用 TCP/IP 协议</h5><p>您的电子邮件也通过 TCP/IP 协议来发送和接收邮件。</p>
+</li>
+<li><h5 id="因特网地址是-TCP-IP-协议"><a href="#因特网地址是-TCP-IP-协议" class="headerlink" title="因特网地址是 TCP/IP 协议"></a>因特网地址是 TCP/IP 协议</h5><p>因特网地址比如 “42.120.45.233” 就是一个 TCP/IP 协议。</p>
+</li>
+</ul>
+<h1 id="什么是-TCP-IP？"><a href="#什么是-TCP-IP？" class="headerlink" title="什么是 TCP/IP？"></a>什么是 TCP/IP？</h1><p>TCP/IP 是供已连接因特网的计算机进行通信的通信协议。</p>
+<p>TCP/IP 指传输控制协议/网际协议（<strong>Transmission  Control  Protocol</strong> /<strong>Internet Protocol</strong>）。</p>
+<p>TCP/IP 定义了电子设备（比如计算机）如何连入因特网，以及数据如何在它们之间传输的标准。</p>
+<hr>
+<h2 id="在-TCP-IP-内部"><a href="#在-TCP-IP-内部" class="headerlink" title="在 TCP/IP 内部"></a>在 TCP/IP 内部</h2><p>在 TCP/IP 中包含一系列用于处理数据通信的协议：</p>
+<ul>
+<li>TCP (传输控制协议) - 应用程序之间通信</li>
+<li>UDP (用户数据报协议) - 应用程序之间的简单通信</li>
+<li>IP (网际协议) - 计算机之间的通信</li>
+<li>ICMP (因特网消息控制协议) - 针对错误和状态</li>
+<li>DHCP (动态主机配置协议) - 针对动态寻址</li>
+</ul>
+<hr>
+<h2 id="TCP-使用固定的连接"><a href="#TCP-使用固定的连接" class="headerlink" title="TCP 使用固定的连接"></a>TCP 使用固定的连接</h2><p>TCP 用于应用程序之间的通信。</p>
+<p>当应用程序希望通过 TCP 与另一个应用程序通信时，它会发送一个通信请求。这个请求必须被送到一个确切的地址。在双方”握手”之后，TCP 将在两个应用程序之间建立一个全双工 (full-duplex) 的通信。</p>
+<p>这个全双工的通信将占用两个计算机之间的通信线路，直到它被一方或双方关闭为止。</p>
+<p>UDP 和 TCP 很相似，但是更简单，同时可靠性低于 TCP。</p>
+<hr>
+<h2 id="IP-是无连接的"><a href="#IP-是无连接的" class="headerlink" title="IP 是无连接的"></a>IP 是无连接的</h2><p>IP 用于计算机之间的通信。</p>
+<p>IP 是无连接的通信协议。它不会占用两个正在通信的计算机之间的通信线路。这样，IP 就降低了对网络线路的需求。每条线可以同时满足许多不同的计算机之间的通信需要。</p>
+<p>通过 IP，消息（或者其他数据）被分割为小的独立的包，并通过因特网在计算机之间传送。</p>
+<p>IP 负责将每个包路由至它的目的地。</p>
+<hr>
+<h2 id="IP-路由器"><a href="#IP-路由器" class="headerlink" title="IP 路由器"></a>IP 路由器</h2><p>当一个 IP 包从一台计算机被发送，它会到达一个 IP 路由器。</p>
+<p>IP 路由器负责将这个包路由至它的目的地，直接地或者通过其他的路由器。</p>
+<p>在一个相同的通信中，一个包所经由的路径可能会和其他的包不同。而路由器负责根据通信量、网络中的错误或者其他参数来进行正确地寻址。</p>
+<hr>
+<h2 id="TCP-IP-1"><a href="#TCP-IP-1" class="headerlink" title="TCP/IP"></a>TCP/IP</h2><p>TCP/IP 意味着 TCP 和 IP 在一起协同工作。</p>
+<p>TCP 负责应用软件（比如您的浏览器）和网络软件之间的通信。</p>
+<p>IP 负责计算机之间的通信。</p>
+<p>TCP 负责将数据分割并装入 IP 包，然后在它们到达的时候重新组合它们。</p>
+<p>IP 负责将包发送至接受者。</p>
+<h1 id="TCP-IP-寻址"><a href="#TCP-IP-寻址" class="headerlink" title="TCP/IP 寻址"></a>TCP/IP 寻址</h1><p>TCP/IP 使用 32 个比特或者 4 组 0 到 255 之间的数字来为计算机编址。</p>
+<hr>
+<h2 id="IP地址"><a href="#IP地址" class="headerlink" title="IP地址"></a>IP地址</h2><p>每个计算机必须有一个 IP 地址才能够连入因特网。</p>
+<p>每个 IP 包必须有一个地址才能够发送到另一台计算机。</p>
+<p>在本教程下一节，您会学习到更多关于 IP 地址和 IP 名称的知识。</p>
+<hr>
+<h2 id="IP-地址包含-4-组数字："><a href="#IP-地址包含-4-组数字：" class="headerlink" title="IP 地址包含 4 组数字："></a>IP 地址包含 4 组数字：</h2><p>TCP/IP 使用 4 组数字来为计算机编址。每个计算机必须有一个唯一的 4 组数字的地址。</p>
+<p>每组数字必须在 0 到 255 之间，并由点号隔开，比如：192.168.1.60。</p>
+<hr>
+<h2 id="32-比特-4-字节"><a href="#32-比特-4-字节" class="headerlink" title="32 比特 = 4 字节"></a>32 比特 = 4 字节</h2><p>TCP/IP 使用 32 个比特来编址。一个计算机字节是 8 比特。所以 TCP/IP 使用了 4 个字节。</p>
+<p>一个计算机字节可以包含 256 个不同的值：</p>
+<p>00000000、00000001、00000010、00000011、00000100、00000101、00000110、00000111、00001000 ……. 直到 11111111。</p>
+<p>现在，您应该知道了为什么 TCP/IP 地址是介于 0 到 255 之间的 4 组数字。</p>
+<hr>
+<h2 id="IP-V6"><a href="#IP-V6" class="headerlink" title="IP V6"></a>IP V6</h2><p>IPv6 是 “Internet Protocol Version 6” 的缩写，也被称作下一代互联网协议，它是由 IETF 小组（Internet 工程任务组Internet Engineering Task Force）设计的用来替代现行的 IPv4（现行的）协议的一种新的 IP 协议。</p>
+<p>我们知道，Internet 的主机都有一个唯一的 IP 地址，IP 地址用一个 32 位二进制的数表示一个主机号码，但 32 位地址资源有限，已经不能满足用户的需求了，因此 Internet 研究组织发布新的主机标识方法，即 IPv6。</p>
+<p>在 RFC1884 中（RFC 是 Request for Comments document 的缩写。RFC 实际上就是 Internet 有关服务的一些标准），规定的标准语法建议把 IPv6 地址的 128 位（16 个字节）写成 8 个 16 位的无符号整数，每个整数用 4 个十六进制位表示，这些数之间用冒号（:）分开，例如：</p>
+<figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">686</span>E：<span class="number">8</span>C64：FFFF：FFFF：<span class="number">0</span>：<span class="number">1180</span>：<span class="number">96</span>A：FFFF</span><br></pre></td></tr></table></figure>
+
+<p>冒号十六进制记法允许零压缩，即一串连续的0可以用一对冒号取代，例如：</p>
+<figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">FF05：<span class="number">0</span>：<span class="number">0</span>：<span class="number">0</span>：<span class="number">0</span>：<span class="number">0</span>：<span class="number">0</span>：B3可以定成：FF05：：B3</span><br></pre></td></tr></table></figure>
+
+<p>为了保证零压缩有一个清晰的解释，建议中规定，在任一地址中，只能使用一次零压缩。该技术对已建议的分配策略特别有用，因为会有许多地址包含连续的零串。</p>
+<p>冒号十六进制记法结合有点十进制记法的后缀。这种结合在IPv4向IPv6换阶段特别有用。例如，下面的串是一个合法的冒号十六进制记法：</p>
+<figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">0</span>：<span class="number">0</span>：<span class="number">0</span>：<span class="number">0</span>：<span class="number">0</span>：<span class="number">0</span>：<span class="number">128.10</span><span class="number">.1</span><span class="number">.1</span></span><br></pre></td></tr></table></figure>
+
+<p>这种记法中，虽然冒号所分隔的每一个值是一个16位的量，但每个分点十进制部分的值则指明一个字节的值。再使用零压缩即可得出：</p>
+<figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">：：<span class="number">128.10</span><span class="number">.1</span><span class="number">.1</span></span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="域名"><a href="#域名" class="headerlink" title="域名"></a>域名</h2><p>12 个阿拉伯数字很难记忆。使用一个名称更容易。</p>
+<p>用于 TCP/IP 地址的名字被称为域名。runoob.com 就是一个域名。</p>
+<p>当你键入一个像 <a href="http://www.runoob.com" target="_blank" rel="noopener">http://www.runoob.com</a> 这样的域名，域名会被一种 DNS 程序翻译为数字。</p>
+<p>在全世界，数量庞大的 DNS 服务器被连入因特网。DNS 服务器负责将域名翻译为 TCP/IP 地址，同时负责使用新的域名信息更新彼此的系统。</p>
+<p>当一个新的域名连同其 TCP/IP 地址一起注册后，全世界的 DNS 服务器都会对此信息进行更新。</p>
+<h1 id="TCP-IP-协议"><a href="#TCP-IP-协议" class="headerlink" title="TCP/IP 协议"></a>TCP/IP 协议</h1><hr>
+<p>TCP/IP 是不同的通信协议的大集合。</p>
+<hr>
+<h2 id="协议族"><a href="#协议族" class="headerlink" title="协议族"></a>协议族</h2><p>TCP/IP 是基于 TCP 和 IP 这两个最初的协议之上的不同的通信协议的大集合。</p>
+<hr>
+<h2 id="TCP-传输控制协议"><a href="#TCP-传输控制协议" class="headerlink" title="TCP - 传输控制协议"></a>TCP - 传输控制协议</h2><p>TCP 用于从应用程序到网络的数据传输控制。</p>
+<p>TCP 负责在数据传送之前将它们分割为 IP 包，然后在它们到达的时候将它们重组。</p>
+<hr>
+<h2 id="IP-网际协议（Internet-Protocol）"><a href="#IP-网际协议（Internet-Protocol）" class="headerlink" title="IP - 网际协议（Internet Protocol）"></a>IP - 网际协议（Internet Protocol）</h2><p>IP 负责计算机之间的通信。</p>
+<p>IP 负责在因特网上发送和接收数据包。</p>
+<hr>
+<h2 id="HTTP-超文本传输协议-Hyper-Text-Transfer-Protocol"><a href="#HTTP-超文本传输协议-Hyper-Text-Transfer-Protocol" class="headerlink" title="HTTP - 超文本传输协议(Hyper Text Transfer Protocol)"></a>HTTP - 超文本传输协议(Hyper Text Transfer Protocol)</h2><p>HTTP 负责 web 服务器与 web 浏览器之间的通信。</p>
+<p>HTTP 用于从 web 客户端（浏览器）向 web 服务器发送请求，并从 web 服务器向 web 客户端返回内容（网页）。</p>
+<hr>
+<h2 id="HTTPS-安全的-HTTP（HTTP-Secure）"><a href="#HTTPS-安全的-HTTP（HTTP-Secure）" class="headerlink" title="HTTPS - 安全的 HTTP（HTTP Secure）"></a>HTTPS - 安全的 HTTP（HTTP Secure）</h2><p>HTTPS 负责在 web 服务器和 web 浏览器之间的安全通信。</p>
+<p>作为有代表性的应用，HTTPS 会用于处理信用卡交易和其他的敏感数据。</p>
+<hr>
+<h2 id="SSL-安全套接字层（Secure-Sockets-Layer）"><a href="#SSL-安全套接字层（Secure-Sockets-Layer）" class="headerlink" title="SSL - 安全套接字层（Secure Sockets Layer）"></a>SSL - 安全套接字层（Secure Sockets Layer）</h2><p>SSL 协议用于为安全数据传输加密数据。</p>
+<hr>
+<h2 id="SMTP-简易邮件传输协议（Simple-Mail-Transfer-Protocol）"><a href="#SMTP-简易邮件传输协议（Simple-Mail-Transfer-Protocol）" class="headerlink" title="SMTP - 简易邮件传输协议（Simple Mail Transfer Protocol）"></a>SMTP - 简易邮件传输协议（Simple Mail Transfer Protocol）</h2><p>SMTP 用于电子邮件的传输。</p>
+<hr>
+<h2 id="MIME-多用途因特网邮件扩展（Multi-purpose-Internet-Mail-Extensions）"><a href="#MIME-多用途因特网邮件扩展（Multi-purpose-Internet-Mail-Extensions）" class="headerlink" title="MIME - 多用途因特网邮件扩展（Multi-purpose Internet Mail Extensions）"></a>MIME - 多用途因特网邮件扩展（Multi-purpose Internet Mail Extensions）</h2><p>MIME 协议使 SMTP 有能力通过 TCP/IP 网络传输多媒体文件，包括声音、视频和二进制数据。</p>
+<hr>
+<h2 id="IMAP-因特网消息访问协议（Internet-Message-Access-Protocol）"><a href="#IMAP-因特网消息访问协议（Internet-Message-Access-Protocol）" class="headerlink" title="IMAP - 因特网消息访问协议（Internet Message Access Protocol）"></a>IMAP - 因特网消息访问协议（Internet Message Access Protocol）</h2><p>IMAP 用于存储和取回电子邮件。</p>
+<hr>
+<h2 id="POP-邮局协议（Post-Office-Protocol）"><a href="#POP-邮局协议（Post-Office-Protocol）" class="headerlink" title="POP - 邮局协议（Post Office Protocol）"></a>POP - 邮局协议（Post Office Protocol）</h2><p>POP 用于从电子邮件服务器向个人电脑下载电子邮件。</p>
+<hr>
+<h2 id="FTP-文件传输协议（File-Transfer-Protocol）"><a href="#FTP-文件传输协议（File-Transfer-Protocol）" class="headerlink" title="FTP - 文件传输协议（File Transfer Protocol）"></a>FTP - 文件传输协议（File Transfer Protocol）</h2><p>FTP 负责计算机之间的文件传输。</p>
+<hr>
+<h2 id="NTP-网络时间协议（Network-Time-Protocol）"><a href="#NTP-网络时间协议（Network-Time-Protocol）" class="headerlink" title="NTP - 网络时间协议（Network Time Protocol）"></a>NTP - 网络时间协议（Network Time Protocol）</h2><p>NTP 用于在计算机之间同步时间（钟）。</p>
+<hr>
+<h2 id="DHCP-动态主机配置协议（Dynamic-Host-Configuration-Protocol）"><a href="#DHCP-动态主机配置协议（Dynamic-Host-Configuration-Protocol）" class="headerlink" title="DHCP - 动态主机配置协议（Dynamic Host Configuration Protocol）"></a>DHCP - 动态主机配置协议（Dynamic Host Configuration Protocol）</h2><p>DHCP 用于向网络中的计算机分配动态 IP 地址。</p>
+<hr>
+<h2 id="SNMP-简单网络管理协议（Simple-Network-Management-Protocol）"><a href="#SNMP-简单网络管理协议（Simple-Network-Management-Protocol）" class="headerlink" title="SNMP - 简单网络管理协议（Simple Network Management Protocol）"></a>SNMP - 简单网络管理协议（Simple Network Management Protocol）</h2><p>SNMP 用于计算机网络的管理。</p>
+<hr>
+<h2 id="LDAP-轻量级的目录访问协议（Lightweight-Directory-Access-Protocol）"><a href="#LDAP-轻量级的目录访问协议（Lightweight-Directory-Access-Protocol）" class="headerlink" title="LDAP - 轻量级的目录访问协议（Lightweight Directory Access Protocol）"></a>LDAP - 轻量级的目录访问协议（Lightweight Directory Access Protocol）</h2><p>LDAP 用于从因特网搜集关于用户和电子邮件地址的信息。</p>
+<hr>
+<h2 id="ICMP-因特网消息控制协议（Internet-Control-Message-Protocol）"><a href="#ICMP-因特网消息控制协议（Internet-Control-Message-Protocol）" class="headerlink" title="ICMP - 因特网消息控制协议（Internet Control Message Protocol）"></a>ICMP - 因特网消息控制协议（Internet Control Message Protocol）</h2><p>ICMP 负责网络中的错误处理。</p>
+<hr>
+<h2 id="ARP-地址解析协议（Address-Resolution-Protocol）"><a href="#ARP-地址解析协议（Address-Resolution-Protocol）" class="headerlink" title="ARP - 地址解析协议（Address Resolution Protocol）"></a>ARP - 地址解析协议（Address Resolution Protocol）</h2><p>ARP - 用于通过 IP 来查找基于 IP 地址的计算机网卡的硬件地址。</p>
+<hr>
+<h2 id="RARP-反向地址转换协议（Reverse-Address-Resolution-Protocol）"><a href="#RARP-反向地址转换协议（Reverse-Address-Resolution-Protocol）" class="headerlink" title="RARP - 反向地址转换协议（Reverse Address Resolution Protocol）"></a>RARP - 反向地址转换协议（Reverse Address Resolution Protocol）</h2><p>RARP 用于通过 IP 查找基于硬件地址的计算机网卡的 IP 地址。</p>
+<hr>
+<h2 id="BOOTP-自举协议（Boot-Protocol）"><a href="#BOOTP-自举协议（Boot-Protocol）" class="headerlink" title="BOOTP - 自举协议（Boot Protocol）"></a>BOOTP - 自举协议（Boot Protocol）</h2><p>BOOTP 用于从网络启动计算机。</p>
+<hr>
+<h2 id="PPTP-点对点隧道协议（Point-to-Point-Tunneling-Protocol）"><a href="#PPTP-点对点隧道协议（Point-to-Point-Tunneling-Protocol）" class="headerlink" title="PPTP - 点对点隧道协议（Point to Point Tunneling Protocol）"></a>PPTP - 点对点隧道协议（Point to Point Tunneling Protocol）</h2><p>PPTP 用于私人网络之间的连接（隧道）。</p>
+<h1 id="TCP-IP-邮件"><a href="#TCP-IP-邮件" class="headerlink" title="TCP/IP 邮件"></a>TCP/IP 邮件</h1><hr>
+<p>电子邮件是 TCP/IP 最重要的应用之一。</p>
+<hr>
+<h2 id="您不会用到…"><a href="#您不会用到…" class="headerlink" title="您不会用到…"></a>您不会用到…</h2><p>当您写邮件时，您不会用到 TCP/IP。</p>
+<p>当您写邮件时，您用到的是电子邮件程序，例如莲花软件的 Notes，微软公司出品的 Outlook，或者 Netscape Communicator 等等。</p>
+<hr>
+<h2 id="邮件程序会用到…"><a href="#邮件程序会用到…" class="headerlink" title="邮件程序会用到…"></a>邮件程序会用到…</h2><p>您的电子邮件程序使用不同的 TCP/IP 协议：</p>
+<ul>
+<li>使用 SMTP 来发送邮件</li>
+<li>使用 POP 从邮件服务器下载邮件</li>
+<li>使用 IMAP 连接到邮件服务器</li>
+</ul>
+<hr>
+<h2 id="SMTP-简单邮件传输协议"><a href="#SMTP-简单邮件传输协议" class="headerlink" title="SMTP - 简单邮件传输协议"></a>SMTP - 简单邮件传输协议</h2><p>SMTP 协议用于传输电子邮件。SMTP 负责把邮件发送到另一台计算机。</p>
+<p>通常情况下，邮件会被送到一台邮件服务器（SMTP 服务器），然后被送到另一台（或几台）服务器，然后最终被送到它的目的地。</p>
+<p>SMTP 也可以传送纯文本，但是无法传输诸如图片、声音或者电影之类的二进制数据。</p>
+<p>SMTP 使用 MIME 协议通过 TCP/IP 网络来发送二进制数据。MIME 协议会将二进制数据转换为纯文本。</p>
+<hr>
+<h2 id="POP-邮局协议"><a href="#POP-邮局协议" class="headerlink" title="POP - 邮局协议"></a>POP - 邮局协议</h2><p>POP 协议被邮件程序用来取回邮件服务器上面的邮件。</p>
+<p>假如您的邮件程序使用 POP，那么一旦它连接上邮件服务器，您的所有的邮件都会被下载到邮件程序中（或者称之为邮件客户端）。</p>
+<hr>
+<h2 id="IMAP-因特网消息访问协议"><a href="#IMAP-因特网消息访问协议" class="headerlink" title="IMAP - 因特网消息访问协议"></a>IMAP - 因特网消息访问协议</h2><p>与 POP 类似，IMAP 协议同样被邮件程序使用。</p>
+<p>IMAP 协议与 POP 协议之间的主要差异是：如果 IMAP 连上了邮件服务器，它不会自动地将邮件下载到邮件程序之中。</p>
+<p>IMAP 使您有能力在下载邮件之前先通过邮件服务器端查看他们。通过 IMAP，您可以选择下载这些邮件或者仅仅是删除它们。比方说您需要从不同的位置访问邮件服务器，但是仅仅希望回到办公室的时候再下载邮件，IMAP 在这种情况下会很有用。</p>
+
+    </div>
+
+    
+    
+    
+    <div>
+      
+        <div>
+    
+        <div style="text-align:center;color: #ccc;font-size:14px;">-------------本文结束<i class="fa fa-paw"></i>感谢您的阅读-------------</div>
+    
+</div>
+
+      
+    </div>
+        <div class="reward-container">
+  <div>坚持原创技术分享，您的支持将鼓励我继续创作！</div>
+  <button disable="enable" onclick="var qr = document.getElementById(&quot;qr&quot;); qr.style.display = (qr.style.display === 'none') ? 'block' : 'none';">
+    打赏
+  </button>
+  <div id="qr" style="display: none;">
+      
+      <div style="display: inline-block;">
+        <img src="/images/wechatpay.jpg" alt="Hongery 微信支付">
+        <p>微信支付</p>
+      </div>
+      
+      <div style="display: inline-block;">
+        <img src="/images/alipay.jpg" alt="Hongery 支付宝">
+        <p>支付宝</p>
+      </div>
+
+  </div>
+</div>
+
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>Hongery
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="http://yoursite.com/2020/04/05/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/TCPIP/" title="TCP&#x2F;IP">http://yoursite.com/2020/04/05/计算机网络/TCPIP/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E7%90%86%E8%AE%BA%E7%9F%A5%E8%AF%86/" rel="tag"># 理论知识</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/04/05/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/HTPP/" rel="prev" title="HTPP">
+      <i class="fa fa-chevron-left"></i> HTPP
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2020/04/05/LeetCode/01%E4%B8%A4%E6%95%B0%E4%B9%8B%E5%92%8C/" rel="next" title="01两数之和">
+      01两数之和 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let activeClass = CONFIG.comments.activeClass;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#TCP-IP"><span class="nav-text">TCP&#x2F;IP</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#TCP-IP应用"><span class="nav-text">TCP&#x2F;IP应用</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#您的浏览器与服务器都在使用-TCP-IP-协议"><span class="nav-text">您的浏览器与服务器都在使用 TCP&#x2F;IP 协议</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#您的-E-Mail-使用-TCP-IP-协议"><span class="nav-text">您的 E-Mail 使用 TCP&#x2F;IP 协议</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#因特网地址是-TCP-IP-协议"><span class="nav-text">因特网地址是 TCP&#x2F;IP 协议</span></a></li></ol></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#什么是-TCP-IP？"><span class="nav-text">什么是 TCP&#x2F;IP？</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#在-TCP-IP-内部"><span class="nav-text">在 TCP&#x2F;IP 内部</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#TCP-使用固定的连接"><span class="nav-text">TCP 使用固定的连接</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#IP-是无连接的"><span class="nav-text">IP 是无连接的</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#IP-路由器"><span class="nav-text">IP 路由器</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#TCP-IP-1"><span class="nav-text">TCP&#x2F;IP</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#TCP-IP-寻址"><span class="nav-text">TCP&#x2F;IP 寻址</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#IP地址"><span class="nav-text">IP地址</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#IP-地址包含-4-组数字："><span class="nav-text">IP 地址包含 4 组数字：</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#32-比特-4-字节"><span class="nav-text">32 比特 &#x3D; 4 字节</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#IP-V6"><span class="nav-text">IP V6</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#域名"><span class="nav-text">域名</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#TCP-IP-协议"><span class="nav-text">TCP&#x2F;IP 协议</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#协议族"><span class="nav-text">协议族</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#TCP-传输控制协议"><span class="nav-text">TCP - 传输控制协议</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#IP-网际协议（Internet-Protocol）"><span class="nav-text">IP - 网际协议（Internet Protocol）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#HTTP-超文本传输协议-Hyper-Text-Transfer-Protocol"><span class="nav-text">HTTP - 超文本传输协议(Hyper Text Transfer Protocol)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#HTTPS-安全的-HTTP（HTTP-Secure）"><span class="nav-text">HTTPS - 安全的 HTTP（HTTP Secure）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#SSL-安全套接字层（Secure-Sockets-Layer）"><span class="nav-text">SSL - 安全套接字层（Secure Sockets Layer）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#SMTP-简易邮件传输协议（Simple-Mail-Transfer-Protocol）"><span class="nav-text">SMTP - 简易邮件传输协议（Simple Mail Transfer Protocol）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#MIME-多用途因特网邮件扩展（Multi-purpose-Internet-Mail-Extensions）"><span class="nav-text">MIME - 多用途因特网邮件扩展（Multi-purpose Internet Mail Extensions）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#IMAP-因特网消息访问协议（Internet-Message-Access-Protocol）"><span class="nav-text">IMAP - 因特网消息访问协议（Internet Message Access Protocol）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#POP-邮局协议（Post-Office-Protocol）"><span class="nav-text">POP - 邮局协议（Post Office Protocol）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#FTP-文件传输协议（File-Transfer-Protocol）"><span class="nav-text">FTP - 文件传输协议（File Transfer Protocol）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#NTP-网络时间协议（Network-Time-Protocol）"><span class="nav-text">NTP - 网络时间协议（Network Time Protocol）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#DHCP-动态主机配置协议（Dynamic-Host-Configuration-Protocol）"><span class="nav-text">DHCP - 动态主机配置协议（Dynamic Host Configuration Protocol）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#SNMP-简单网络管理协议（Simple-Network-Management-Protocol）"><span class="nav-text">SNMP - 简单网络管理协议（Simple Network Management Protocol）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#LDAP-轻量级的目录访问协议（Lightweight-Directory-Access-Protocol）"><span class="nav-text">LDAP - 轻量级的目录访问协议（Lightweight Directory Access Protocol）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ICMP-因特网消息控制协议（Internet-Control-Message-Protocol）"><span class="nav-text">ICMP - 因特网消息控制协议（Internet Control Message Protocol）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ARP-地址解析协议（Address-Resolution-Protocol）"><span class="nav-text">ARP - 地址解析协议（Address Resolution Protocol）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#RARP-反向地址转换协议（Reverse-Address-Resolution-Protocol）"><span class="nav-text">RARP - 反向地址转换协议（Reverse Address Resolution Protocol）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#BOOTP-自举协议（Boot-Protocol）"><span class="nav-text">BOOTP - 自举协议（Boot Protocol）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#PPTP-点对点隧道协议（Point-to-Point-Tunneling-Protocol）"><span class="nav-text">PPTP - 点对点隧道协议（Point to Point Tunneling Protocol）</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#TCP-IP-邮件"><span class="nav-text">TCP&#x2F;IP 邮件</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#您不会用到…"><span class="nav-text">您不会用到…</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#邮件程序会用到…"><span class="nav-text">邮件程序会用到…</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#SMTP-简单邮件传输协议"><span class="nav-text">SMTP - 简单邮件传输协议</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#POP-邮局协议"><span class="nav-text">POP - 邮局协议</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#IMAP-因特网消息访问协议"><span class="nav-text">IMAP - 因特网消息访问协议</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Hongery"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">Hongery</p>
+  <div class="site-description" itemprop="description">直到这一刻微笑着说话为止，我至少留下了一公升眼泪</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">107</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">9</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/Hongery" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;Hongery" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://blog.csdn.net/weixin_40098405" title="CSDN → https:&#x2F;&#x2F;blog.csdn.net&#x2F;weixin_40098405" rel="noopener" target="_blank"><i class="fa fa-fw fa-crosshairs"></i>CSDN</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:1281185088@qq.com" title="E-Mail1 → mailto:1281185088@qq.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail1</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:hongery@yeah.net" title="E-Mail2 → mailto:hongery@yeah.net" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail2</a>
+      </span>
+  </div>
+  <div class="cc-license motion-element" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">hongery</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+      <span class="post-meta-item-text">站点总字数：</span>
+    <span title="站点总字数">NaNm</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span class="post-meta-item-text">站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">NaN:aN字</span>
+</div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>
+<!-- 页面点击小红心 -->
+<script type="text/javascript" src="/js/clicklove.js"></script>

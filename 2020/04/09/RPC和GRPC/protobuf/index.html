@@ -1,0 +1,725 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.1.1">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/avatar.jpg">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/avatar.jpg">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    hostname: new URL('http://yoursite.com').hostname,
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.6.0',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},
+    copycode: {"enable":true,"show_result":true,"style":"mac"},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":true},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    comments: {"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: 'search.xml',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}
+  };
+</script>
+
+  <meta name="description" content="protobuf初识protobuf是一种高效的数据格式，平台无关、语言无关、可扩展，可用于 RPC 系统和持续数据存储系统。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="protobuf">
+<meta property="og:url" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2020&#x2F;04&#x2F;09&#x2F;RPC%E5%92%8CGRPC&#x2F;protobuf&#x2F;index.html">
+<meta property="og:site_name" content="Hongery">
+<meta property="og:description" content="protobuf初识protobuf是一种高效的数据格式，平台无关、语言无关、可扩展，可用于 RPC 系统和持续数据存储系统。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2020&#x2F;04&#x2F;09&#x2F;RPC%E5%92%8CGRPC&#x2F;protobuf&#x2F;images&#x2F;wps7.jpg">
+<meta property="article:published_time" content="2020-04-09T07:59:43.000Z">
+<meta property="article:modified_time" content="2020-04-09T16:10:55.267Z">
+<meta property="article:author" content="Hongery">
+<meta property="article:tag" content="go">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2020&#x2F;04&#x2F;09&#x2F;RPC%E5%92%8CGRPC&#x2F;protobuf&#x2F;images&#x2F;wps7.jpg">
+
+<link rel="canonical" href="http://yoursite.com/2020/04/09/RPC%E5%92%8CGRPC/protobuf/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true
+  };
+</script>
+
+  <title>protobuf | Hongery</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Hongery</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">记录学习中的点点滴滴</p>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="none"
+           placeholder="搜索..." spellcheck="false"
+           type="text" id="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+  <a href="https://github.com/Hongery" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/04/09/RPC%E5%92%8CGRPC/protobuf/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="Hongery">
+      <meta itemprop="description" content="直到这一刻微笑着说话为止，我至少留下了一公升眼泪">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hongery">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          protobuf
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-04-09 15:59:43" itemprop="dateCreated datePublished" datetime="2020-04-09T15:59:43+08:00">2020-04-09</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-04-10 00:10:55" itemprop="dateModified" datetime="2020-04-10T00:10:55+08:00">2020-04-10</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/RPC%E5%92%8CGRPC/" itemprop="url" rel="index">
+                    <span itemprop="name">RPC和GRPC</span>
+                  </a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span><br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-file-word-o"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>6.2k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-clock-o"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>6 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h1 id="protobuf初识"><a href="#protobuf初识" class="headerlink" title="protobuf初识"></a>protobuf初识</h1><p>protobuf是一种高效的数据格式，平台无关、语言无关、可扩展，可用于 RPC 系统和持续数据存储系统。</p>
+<a id="more"></a>
+
+<h2 id="protobuf"><a href="#protobuf" class="headerlink" title="protobuf"></a>protobuf</h2><h3 id="protobuf介绍"><a href="#protobuf介绍" class="headerlink" title="protobuf介绍"></a>protobuf介绍</h3><p><code>Protobuf</code>是<code>Protocol Buffer</code>的简称，它是Google公司于2008年开源的一种高效的平台无关、语言无关、可扩展的数据格式，目前Protobuf作为接口规范的描述语言，可以作为Go语言RPC接口的基础工具。</p>
+<h3 id="protobuf使用"><a href="#protobuf使用" class="headerlink" title="protobuf使用"></a>protobuf使用</h3><p><code>protobuf</code>是一个与语言无关的一个数据协议，所以我们需要先编写IDL文件然后借助专用工具生成指定语言的代码，从而实现数据的序列化与反序列化过程。</p>
+<p>大致开发流程如下： 1. IDL编写 2. 生成指定语言的代码 3. 序列化和反序列化</p>
+<h3 id="protobuf语法"><a href="#protobuf语法" class="headerlink" title="protobuf语法"></a>protobuf语法</h3><p><a href="https://colobu.com/2017/03/16/Protobuf3-language-guide/" target="_blank" rel="noopener">protobuf3语法指南</a></p>
+<h5 id="1-基本规范"><a href="#1-基本规范" class="headerlink" title="1.基本规范"></a>1.基本规范</h5><p> 文件以<strong>.proto</strong>做为文件后缀，除结构定义外的语句以分号结尾</p>
+<p> 结构定义可以包含：<strong>message、service、enum</strong></p>
+<p> rpc方法定义结尾的分号可有可无</p>
+<p> Message命名采用<strong>驼峰</strong>命名方式，字段命名采用小写字母加下划线分隔方式</p>
+<figure class="highlight protobuf"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">message</span> <span class="title">SongServerRequest</span> </span>&#123;  </span><br><span class="line">		<span class="keyword">required</span> <span class="built_in">string</span> song_name = <span class="number">1</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p> Enums类型名采用驼峰命名方式，字段命名采用大写字母加下划线分隔方式</p>
+<figure class="highlight crystal"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">enum</span> <span class="title">Foo</span> &#123; </span></span><br><span class="line">	FIRST_VALUE = <span class="number">1</span>;  </span><br><span class="line">	SECOND_VALUE = <span class="number">2</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>Service与rpc方法名统一采用驼峰式命名</p>
+<h5 id="2-字段规则"><a href="#2-字段规则" class="headerlink" title="2. 字段规则"></a><strong>2.</strong> 字段规则</h5><p>字段格式：限定修饰符 | 数据类型 | 字段名称 | = | 字段编码值 | [字段默认值]</p>
+<ol>
+<li><p>限定修饰符包含 <strong>required\optional\repeated</strong></p>
+<p><strong>Required</strong>: 表示是一个必须字段，必须相对于发送方，在发送消息之前必须设置该字段的值，对于接收方，必须能够识别该字段的意思。发送之前没有设置required字段或者无法识别required字段都会引发编解码异常，导致消息被丢弃</p>
+<p><strong>Optional</strong>：表示是一个可选字段，可选对于发送方，在发送消息时，可以有选择性的设置或者不设置该字段的值。对于接收方，如果能够识别可选字段就进行相应的处理，如果无法识别，则忽略该字段，消息中的其它字段正常处理。—因为optional字段的特性，很多接口在升级版本中都把后来添加的字段都统一的设置为optional字段，这样老的版本无需升级程序也可以正常的与新的软件进行通信，只不过新的字段无法识别而已，因为并不是每个节点都需要新的功能，因此可以做到按需升级和平滑过渡</p>
+</li>
+</ol>
+<p><strong>Repeated</strong>：表示该字段可以包含0~N个元素。其特性和optional一样，但是每一次可以包含多个值。可以看作是在传递一个数组的值</p>
+<p>2.<strong>数据类型</strong></p>
+<p>n Protobuf定义了一套基本数据类型。几乎都可以映射到C++\Java等语言的基础数据类型</p>
+<p><img src="./images/wps7.jpg" alt="img"> </p>
+<p>n N 表示打包的字节并不是固定。而是根据数据的大小或者长度</p>
+<p>n 关于 fixed32 和int32的区别。fixed32的打包效率比int32的效率高，但是使用的空间一般比int32多。因此一个属于时间效率高，一个属于空间效率高</p>
+<p>l 字段名称</p>
+<p>n 字段名称的命名与C、C++、Java等语言的变量命名方式几乎是相同的</p>
+<p>n protobuf建议字段的命名采用以下划线分割的驼峰式。例如 first_name 而不是firstName</p>
+<p>l 字段编码值</p>
+<p>n 有了该值，通信双方才能互相识别对方的字段，相同的编码值，其限定修饰符和数据类型必须相同，编码值的取值范围为 1~2^32（4294967296）</p>
+<p>n 其中 1~15的编码时间和空间效率都是最高的，编码值越大，其编码的时间和空间效率就越低，所以建议把经常要传递的值把其字段编码设置为1-15之间的值</p>
+<p>n 1900~2000编码值为Google protobuf 系统内部保留值，建议不要在自己的项目中使用</p>
+<p>l 字段默认值</p>
+<p>n 当在传递数据时，对于required数据类型，如果用户没有设置值，则使用默认值传递到对端</p>
+<h5 id="3-service如何定义"><a href="#3-service如何定义" class="headerlink" title="3. service如何定义"></a><strong>3.</strong> service如何定义</h5><p>​     如果想要将消息类型用在RPC系统中，可以在.proto文件中定义一个RPC服务接口，protocol buffer编译器会根据所选择的不同语言生成服务接口代码</p>
+<p>​      例如，想要定义一个RPC服务并具有一个方法，该方法接收SearchRequest并返回一个SearchResponse，此时可以在.proto文件中进行如下定义：</p>
+<figure class="highlight protobuf"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">service</span> <span class="title">SearchService</span> </span>&#123;</span><br><span class="line">		<span class="function"><span class="keyword">rpc</span> Search (SearchRequest) <span class="keyword">returns</span> (SearchResponse) &#123;&#125;</span></span><br><span class="line"><span class="function">&#125;</span></span><br></pre></td></tr></table></figure>
+
+<p>生成的接口代码作为客户端与服务端的约定，服务端必须实现定义的所有接口方法，客户端直接调用同名方法向服务端发起请求，比较麻烦的是，即便业务上不需要参数也必须指定一个请求消息，一般会定义一个空message</p>
+<h5 id="4-Message如何定义"><a href="#4-Message如何定义" class="headerlink" title="4. Message如何定义"></a>4. Message如何定义</h5><ul>
+<li><p>一个message类型定义描述了一个请求或响应的消息格式，可以包含多种类型字段</p>
+</li>
+<li><p>例如定义一个搜索请求的消息格式，每个请求包含查询字符串、页码、每页数目</p>
+</li>
+<li><p>字段名用小写，转为go文件后自动变为大写，message就相当于结构体</p>
+<figure class="highlight protobuf"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">syntax = <span class="string">"proto3"</span>;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">message</span> <span class="title">SearchRequest</span> </span>&#123;</span><br><span class="line">    <span class="built_in">string</span> query = <span class="number">1</span>;            <span class="comment">// 查询字符串</span></span><br><span class="line">    <span class="built_in">int32</span>  page_number = <span class="number">2</span>;     <span class="comment">// 页码</span></span><br><span class="line">    <span class="built_in">int32</span>  result_per_page = <span class="number">3</span>;   <span class="comment">// 每页条数</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>l 首行声明使用的protobuf版本为proto3</p>
+</li>
+<li><p>l SearchRequest 定义了三个字段，每个字段声明以分号结尾，.proto文件支持双斜线 // 添加单行注释</p>
+</li>
+</ul>
+<h5 id="5-添加更多Message类型"><a href="#5-添加更多Message类型" class="headerlink" title="5.添加更多Message类型"></a>5.添加更多Message类型</h5><p> 一个.proto文件中可以定义多个消息类型，一般用于同时定义多个相关的消息，例如在同一个.proto文件中同时定义搜索请求和响应消息</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">syntax &#x3D; &quot;proto3&quot;;</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; SearchRequest 搜索请求</span><br><span class="line">message SearchRequest &#123;</span><br><span class="line">    string query &#x3D; 1;            &#x2F;&#x2F; 查询字符串</span><br><span class="line">    int32  page_number &#x3D; 2;     &#x2F;&#x2F; 页码</span><br><span class="line">    int32  result_per_page &#x3D; 3;   &#x2F;&#x2F; 每页条数</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; SearchResponse 搜索响应</span><br><span class="line">message SearchResponse &#123;</span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h5 id="6-如何使用其他Message"><a href="#6-如何使用其他Message" class="headerlink" title="6. 如何使用其他Message"></a><strong>6.</strong> 如何使用其他Message</h5><p>message支持嵌套使用，作为另一message中的字段类型</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">message SearchResponse &#123;</span><br><span class="line">    repeated Result results &#x3D; 1;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">message Result &#123;</span><br><span class="line">    string url &#x3D; 1;</span><br><span class="line">    string title &#x3D; 2;</span><br><span class="line">    repeated string snippets &#x3D; 3;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h5 id="7-Message嵌套的使用"><a href="#7-Message嵌套的使用" class="headerlink" title="7. Message嵌套的使用"></a><strong>7.</strong> Message嵌套的使用</h5><p> 支持嵌套消息，消息可以包含另一个消息作为其字段。也可以在消息内定义一个新的消息</p>
+<p> 内部声明的message类型名称只可在内部直接使用</p>
+<figure class="highlight protobuf"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">message</span> <span class="title">SearchResponse</span> </span>&#123;</span><br><span class="line">    <span class="class"><span class="keyword">message</span> <span class="title">Result</span> </span>&#123;</span><br><span class="line">        <span class="built_in">string</span> url = <span class="number">1</span>;</span><br><span class="line">        <span class="built_in">string</span> title = <span class="number">2</span>;</span><br><span class="line">        <span class="keyword">repeated</span> <span class="built_in">string</span> snippets = <span class="number">3</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">repeated</span> Result results = <span class="number">1</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p> 另外，还可以多层嵌套</p>
+<figure class="highlight protobuf"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">message</span> <span class="title">Outer</span> </span>&#123;                <span class="comment">// Level 0</span></span><br><span class="line">    <span class="class"><span class="keyword">message</span> <span class="title">MiddleAA</span> </span>&#123;        <span class="comment">// Level 1</span></span><br><span class="line">        <span class="class"><span class="keyword">message</span> <span class="title">Inner</span> </span>&#123;        <span class="comment">// Level 2</span></span><br><span class="line">            <span class="built_in">int64</span> ival = <span class="number">1</span>;</span><br><span class="line">            <span class="built_in">bool</span>  booly = <span class="number">2</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="class"><span class="keyword">message</span> <span class="title">MiddleBB</span> </span>&#123;         <span class="comment">// Level 1</span></span><br><span class="line">        <span class="class"><span class="keyword">message</span> <span class="title">Inner</span> </span>&#123;         <span class="comment">// Level 2</span></span><br><span class="line">            <span class="built_in">int32</span> ival = <span class="number">1</span>;</span><br><span class="line">            <span class="built_in">bool</span>  booly = <span class="number">2</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h5 id="8-proto3的Map类型"><a href="#8-proto3的Map类型" class="headerlink" title="8. proto3的Map类型"></a><strong>8.</strong> proto3的Map类型</h5><ul>
+<li><p>proto3支持map类型声明</p>
+<figure class="highlight protobuf"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">map&lt;key_type, value_type&gt; map_field = N;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">message</span> <span class="title">Project</span> </span>&#123;...&#125;</span><br><span class="line">map&lt;<span class="built_in">string</span>, Project&gt; projects = <span class="number">1</span>;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>键、值类型可以是内置的类型，也可以是自定义message类型</p>
+</li>
+<li><p>字段不支持repeated属性</p>
+</li>
+</ul>
+<h5 id="9-proto文件编译"><a href="#9-proto文件编译" class="headerlink" title="9.   .proto文件编译"></a><strong>9.</strong>   .proto文件编译</h5><ol>
+<li>通过定义好的.proto文件生成Java, Python, C++, Go, Ruby, JavaNano, Objective-C, or C# 代码，需要安装编译器protoc</li>
+<li>当使用protocol buffer编译器运行.proto文件时，编译器将生成所选语言的代码，用于使用在.proto文件中定义的消息类型、服务接口约定等。不同语言生成的代码格式不同：</li>
+</ol>
+<ul>
+<li>C++: 每个.proto文件生成一个.h文件和一个.cc文件，每个消息类型对应一个类</li>
+<li>Java: 生成一个.java文件，同样每个消息对应一个类，同时还有一个特殊的Builder类用于创建消息接口</li>
+<li>Python: 姿势不太一样，每个.proto文件中的消息类型生成一个含有静态描述符的模块，该模块与一个元类metaclass在运行时创建需要的Python数据访问类</li>
+<li>Go: 生成一个.pb.go文件，每个消息类型对应一个结构体</li>
+<li>Ruby: 生成一个.rb文件的Ruby模块，包含所有消息类型</li>
+<li>JavaNano: 类似Java，但不包含Builder类</li>
+<li>Objective-C: 每个.proto文件生成一个pbobjc.h和一个pbobjc.m文件</li>
+<li>C#: 生成.cs文件包含，每个消息类型对应一个类</li>
+</ul>
+<h5 id="10-import导入定义"><a href="#10-import导入定义" class="headerlink" title="10. import导入定义"></a><strong>10.</strong> import导入定义</h5><ul>
+<li>l 可以使用import语句导入使用其它描述文件中声明的类型</li>
+<li>l protobuf 接口文件可以像C语言的h文件一个，分离为多个，在需要的时候通过 import导入需要对文件。其行为和C语言的#include或者java的import的行为大致相同，例如import “others.proto”;</li>
+<li>l protocol buffer编译器会在 -I / –proto_path参数指定的目录中查找导入的文件，如果没有指定该参数，默认在当前目录中查找</li>
+</ul>
+<h5 id="11-包的使用"><a href="#11-包的使用" class="headerlink" title="11. 包的使用"></a><strong>11.</strong> 包的使用</h5><ul>
+<li><p>在.proto文件中使用package声明包名，避免命名冲突</p>
+<figure class="highlight protobuf"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">syntax = <span class="string">"proto3"</span>;</span><br><span class="line"><span class="keyword">package</span> foo.bar;</span><br><span class="line"><span class="class"><span class="keyword">message</span> <span class="title">Open</span> </span>&#123;...&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>在其他的消息格式定义中可以使用包名+消息名的方式来使用类型，如</p>
+<figure class="highlight protobuf"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">message</span> <span class="title">Foo</span> </span>&#123;</span><br><span class="line">    ...</span><br><span class="line">    foo.bar.Open open = <span class="number">1</span>;</span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>在不同的语言中，包名定义对编译后生成的代码的影响不同</p>
+</li>
+<li><p>C++ 中：对应C++命名空间，例如Open会在命名空间foo::bar中</p>
+</li>
+<li><p>Java 中：package会作为Java包名，除非指定了option jave_package选项</p>
+</li>
+<li><p>Python 中：package被忽略</p>
+</li>
+<li><p>Go 中：默认使用package名作为包名，除非指定了option go_package选项</p>
+</li>
+<li><p>JavaNano 中：同Java</p>
+</li>
+<li><p>C# 中：package会转换为驼峰式命名空间，如Foo.Bar,除非指定了option csharp_namespace选项</p>
+</li>
+</ul>
+<h3 id="编译器安装"><a href="#编译器安装" class="headerlink" title="编译器安装"></a>编译器安装</h3><h3 id="ptotoc"><a href="#ptotoc" class="headerlink" title="ptotoc"></a>ptotoc</h3><p><code>protobuf</code>协议编译器是用c++编写的，根据自己的操作系统下载对应版本的<code>protoc</code>编译器：<a href="https://github.com/protocolbuffers/protobuf/releases，解压后拷贝到`GOPATH/bin`目录下。" target="_blank" rel="noopener">https://github.com/protocolbuffers/protobuf/releases，解压后拷贝到`GOPATH/bin`目录下。</a></p>
+<h3 id="protoc-gen-go"><a href="#protoc-gen-go" class="headerlink" title="protoc-gen-go"></a>protoc-gen-go</h3><p>安装生成Go语言代码的工具</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">go get -u github.com/golang/protobuf/protoc-gen-go</span><br></pre></td></tr></table></figure>
+
+<h3 id="编写IDL代码"><a href="#编写IDL代码" class="headerlink" title="编写IDL代码"></a>编写IDL代码</h3><p>在<code>protobuf_demo/address</code>目录下新建一个名为<code>person.proto</code>的文件具体内容如下：</p>
+<figure class="highlight protobuf"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 指定使用protobuf版本</span></span><br><span class="line"><span class="comment">// 此处使用v3版本</span></span><br><span class="line">syntax = <span class="string">"proto3"</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 包名，通过protoc生成go文件</span></span><br><span class="line"><span class="keyword">package</span> address;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 性别类型</span></span><br><span class="line"><span class="comment">// 枚举类型第一个字段必须为0</span></span><br><span class="line"><span class="class"><span class="keyword">enum</span> <span class="title">GenderType</span> </span>&#123;</span><br><span class="line">    SECRET = <span class="number">0</span>;</span><br><span class="line">    FEMALE = <span class="number">1</span>;</span><br><span class="line">    MALE = <span class="number">2</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 人</span></span><br><span class="line"><span class="class"><span class="keyword">message</span> <span class="title">Person</span> </span>&#123;</span><br><span class="line">    <span class="built_in">int64</span> id = <span class="number">1</span>;</span><br><span class="line">    <span class="built_in">string</span> name = <span class="number">2</span>;</span><br><span class="line">    GenderType gender = <span class="number">3</span>;</span><br><span class="line">    <span class="built_in">string</span> number = <span class="number">4</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 联系簿</span></span><br><span class="line"><span class="class"><span class="keyword">message</span> <span class="title">ContactBook</span> </span>&#123;</span><br><span class="line">    <span class="keyword">repeated</span> Person persons = <span class="number">1</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="生成go语言代码"><a href="#生成go语言代码" class="headerlink" title="生成go语言代码"></a>生成go语言代码</h3><p>在<code>protobuf_demo/address</code>目录下执行以下命令。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">address $ protoc --go_out=. ./person.proto</span><br></pre></td></tr></table></figure>
+
+<p>此时在当前目录下会生成一个<code>person.pb.go</code>文件，我们的Go语言代码里就是使用这个文件。 在<code>protobuf_demo/main.go</code>文件中：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">	<span class="string">"fmt"</span></span><br><span class="line">	<span class="string">"io/ioutil"</span></span><br><span class="line"></span><br><span class="line">	<span class="string">"github.com/golang/protobuf/proto"</span></span><br><span class="line"></span><br><span class="line">	<span class="string">"github.com/Q1mi/studygo/code_demo/protobuf_demo/address"</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="comment">// protobuf demo</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	<span class="keyword">var</span> cb address.ContactBook</span><br><span class="line"></span><br><span class="line">	p1 := address.Person&#123;</span><br><span class="line">		Name:   <span class="string">"小王子"</span>,</span><br><span class="line">		Gender: address.GenderType_MALE,</span><br><span class="line">		Number: <span class="string">"7878778"</span>,</span><br><span class="line">	&#125;</span><br><span class="line">	fmt.Println(p1)</span><br><span class="line">	cb.Persons = <span class="built_in">append</span>(cb.Persons, &amp;p1)</span><br><span class="line">	<span class="comment">// 序列化</span></span><br><span class="line">	data, err := proto.Marshal(&amp;p1)</span><br><span class="line">	<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">		fmt.Printf(<span class="string">"marshal failed,err:%v\n"</span>, err)</span><br><span class="line">		<span class="keyword">return</span></span><br><span class="line">	&#125;</span><br><span class="line">	ioutil.WriteFile(<span class="string">"./proto.dat"</span>, data, <span class="number">0644</span>)</span><br><span class="line"></span><br><span class="line">	data2, err := ioutil.ReadFile(<span class="string">"./proto.dat"</span>)</span><br><span class="line">	<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">		fmt.Printf(<span class="string">"read file failed, err:%v\n"</span>, err)</span><br><span class="line">		<span class="keyword">return</span></span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">var</span> p2 address.Person</span><br><span class="line">	proto.Unmarshal(data2, &amp;p2)</span><br><span class="line">	fmt.Println(p2)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+    </div>
+
+    
+    
+    
+    <div>
+      
+        <div>
+    
+        <div style="text-align:center;color: #ccc;font-size:14px;">-------------本文结束<i class="fa fa-paw"></i>感谢您的阅读-------------</div>
+    
+</div>
+
+      
+    </div>
+        <div class="reward-container">
+  <div>坚持原创技术分享，您的支持将鼓励我继续创作！</div>
+  <button disable="enable" onclick="var qr = document.getElementById(&quot;qr&quot;); qr.style.display = (qr.style.display === 'none') ? 'block' : 'none';">
+    打赏
+  </button>
+  <div id="qr" style="display: none;">
+      
+      <div style="display: inline-block;">
+        <img src="/images/wechatpay.jpg" alt="Hongery 微信支付">
+        <p>微信支付</p>
+      </div>
+      
+      <div style="display: inline-block;">
+        <img src="/images/alipay.jpg" alt="Hongery 支付宝">
+        <p>支付宝</p>
+      </div>
+
+  </div>
+</div>
+
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>Hongery
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="http://yoursite.com/2020/04/09/RPC%E5%92%8CGRPC/protobuf/" title="protobuf">http://yoursite.com/2020/04/09/RPC和GRPC/protobuf/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/go/" rel="tag"># go</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/04/09/RPC%E5%92%8CGRPC/RPC/" rel="prev" title="RPC">
+      <i class="fa fa-chevron-left"></i> RPC
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2020/04/09/RPC%E5%92%8CGRPC/gRPC/" rel="next" title="gRPC">
+      gRPC <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let activeClass = CONFIG.comments.activeClass;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#protobuf初识"><span class="nav-text">protobuf初识</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#protobuf"><span class="nav-text">protobuf</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#protobuf介绍"><span class="nav-text">protobuf介绍</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#protobuf使用"><span class="nav-text">protobuf使用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#protobuf语法"><span class="nav-text">protobuf语法</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#1-基本规范"><span class="nav-text">1.基本规范</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2-字段规则"><span class="nav-text">2. 字段规则</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#3-service如何定义"><span class="nav-text">3. service如何定义</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#4-Message如何定义"><span class="nav-text">4. Message如何定义</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#5-添加更多Message类型"><span class="nav-text">5.添加更多Message类型</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#6-如何使用其他Message"><span class="nav-text">6. 如何使用其他Message</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#7-Message嵌套的使用"><span class="nav-text">7. Message嵌套的使用</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#8-proto3的Map类型"><span class="nav-text">8. proto3的Map类型</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#9-proto文件编译"><span class="nav-text">9.   .proto文件编译</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#10-import导入定义"><span class="nav-text">10. import导入定义</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#11-包的使用"><span class="nav-text">11. 包的使用</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#编译器安装"><span class="nav-text">编译器安装</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ptotoc"><span class="nav-text">ptotoc</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#protoc-gen-go"><span class="nav-text">protoc-gen-go</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#编写IDL代码"><span class="nav-text">编写IDL代码</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#生成go语言代码"><span class="nav-text">生成go语言代码</span></a></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Hongery"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">Hongery</p>
+  <div class="site-description" itemprop="description">直到这一刻微笑着说话为止，我至少留下了一公升眼泪</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">107</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">9</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/Hongery" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;Hongery" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://blog.csdn.net/weixin_40098405" title="CSDN → https:&#x2F;&#x2F;blog.csdn.net&#x2F;weixin_40098405" rel="noopener" target="_blank"><i class="fa fa-fw fa-crosshairs"></i>CSDN</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:1281185088@qq.com" title="E-Mail1 → mailto:1281185088@qq.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail1</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:hongery@yeah.net" title="E-Mail2 → mailto:hongery@yeah.net" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail2</a>
+      </span>
+  </div>
+  <div class="cc-license motion-element" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">hongery</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+      <span class="post-meta-item-text">站点总字数：</span>
+    <span title="站点总字数">NaNm</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span class="post-meta-item-text">站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">NaN:aN字</span>
+</div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>
+<!-- 页面点击小红心 -->
+<script type="text/javascript" src="/js/clicklove.js"></script>

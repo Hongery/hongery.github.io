@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.1.1">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/avatar.jpg">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/avatar.jpg">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    hostname: new URL('http://yoursite.com').hostname,
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.6.0',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},
+    copycode: {"enable":true,"show_result":true,"style":"mac"},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":true},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    comments: {"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: 'search.xml',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}
+  };
+</script>
+
+  <meta name="description" content="量子密码学研究量子密码学的学科被称为量子密码学，是密码学的一个重要分支。它实际上是古老密码学一次一密概念和量子物理相结合的一个新产物。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="第16章量子密码学">
+<meta property="og:url" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2019&#x2F;03&#x2F;17&#x2F;%E5%AE%8C%E6%95%B4%E5%AF%86%E7%A0%81%E5%AD%A6&#x2F;%E7%AC%AC17%E7%AB%A0%E9%87%8F%E5%AD%90%E5%AF%86%E7%A0%81%E5%AD%A6&#x2F;index.html">
+<meta property="og:site_name" content="Hongery">
+<meta property="og:description" content="量子密码学研究量子密码学的学科被称为量子密码学，是密码学的一个重要分支。它实际上是古老密码学一次一密概念和量子物理相结合的一个新产物。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2019-03-17T07:59:45.000Z">
+<meta property="article:modified_time" content="2020-04-05T13:28:39.175Z">
+<meta property="article:author" content="Hongery">
+<meta property="article:tag" content="密码学">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://yoursite.com/2019/03/17/%E5%AE%8C%E6%95%B4%E5%AF%86%E7%A0%81%E5%AD%A6/%E7%AC%AC17%E7%AB%A0%E9%87%8F%E5%AD%90%E5%AF%86%E7%A0%81%E5%AD%A6/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true
+  };
+</script>
+
+  <title>第16章量子密码学 | Hongery</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Hongery</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">记录学习中的点点滴滴</p>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="none"
+           placeholder="搜索..." spellcheck="false"
+           type="text" id="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+  <a href="https://github.com/Hongery" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/03/17/%E5%AE%8C%E6%95%B4%E5%AF%86%E7%A0%81%E5%AD%A6/%E7%AC%AC17%E7%AB%A0%E9%87%8F%E5%AD%90%E5%AF%86%E7%A0%81%E5%AD%A6/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="Hongery">
+      <meta itemprop="description" content="直到这一刻微笑着说话为止，我至少留下了一公升眼泪">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hongery">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          第16章量子密码学
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-03-17 15:59:45" itemprop="dateCreated datePublished" datetime="2019-03-17T15:59:45+08:00">2019-03-17</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-04-05 21:28:39" itemprop="dateModified" datetime="2020-04-05T21:28:39+08:00">2020-04-05</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E5%AF%86%E7%A0%81%E5%AD%A6/" itemprop="url" rel="index">
+                    <span itemprop="name">密码学</span>
+                  </a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span><br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-file-word-o"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>2.6k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-clock-o"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>2 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h3 id="量子密码学"><a href="#量子密码学" class="headerlink" title="量子密码学"></a>量子密码学</h3><p>研究量子密码学的学科被称为量子密码学，是密码学的一个重要分支。它实际上是古老密码学一次一密概念和量子物理相结合的一个新产物。</p>
+<a id="more"></a>
+
+<h2 id="1-量子物理"><a href="#1-量子物理" class="headerlink" title="1 量子物理"></a>1 量子物理</h2><p>量子界的理论，都是无法进行解释的。你问为什么，没人能够回答你。现在科学家只是通过发现量子物理的一些特性对其进行应用，而无法对量子世界的理论进行论证或者解释。</p>
+<p>量子界最著名的薛定谔的猫，大家很熟悉，关于猫的死和活完全是由观察者说着算的。在量子世界里，未打开盒子之前，猫有两种可能性，此时属于叠加状态，它是活的也是死的，但是盒子被打开后，猫的生死就定了。同时，打开盒子的人不同，结果可能也不同。这很好的说明了量子世界：什么东西都是概念性的，都是概率性的，每种可能都会被尝试。而我们处在的宏观世界，也可以叫经典世界，所有事物都具有确定性，完全与量子世界不同。</p>
+<p>简单说一下量子物理的基本特性，具体如下：<br>1）测量塌缩性：<br>除非该量子态本身即为测量算符的本征态，否则对量子态进行测量会导致“波包塌缩”，即测量将会改变最初的量子态。<br>2）不确定性：<br>不能同时精确测量两个非对易物理量。<br>3）不可克隆性：<br>无法对一个未知的量子态进行精确的复制。<br>4）单个光子不可再分：<br>不存在半个光子</p>
+<p>目前应用最广的量子力学是光子力学。光子具有波粒二象性：即说光子既具有一粒一粒的粒子的特性，又有像声波一样的波动性。当时间为瞬时值时，光子以粒子的形式传播；当时间为延续值时，光子以波的形式传播。光子在传导时会在某个方向上发生振荡，上、下、左、右，多数则是按照某个角度振荡，正常的太阳光是非极化的，在每一个方向都有光子振荡。当大量的光子在同一个方向振荡时，它们是极化的，极化滤波器只允许在同方向极化的光子通过，而其余方向则不能通过。光子的偏振有两个基，一是水平线和垂直线组成的基，称为线偏振光子，另一个是左对角线和右对角线组成的基，称为圆偏振光子。如果一个光子脉冲在一个给定的基上被极化后发送，而接收方在同一组基上测量，则可得到极化光度。反之，若接收方使用错误的基，则得到的是随机结果。所以光子的状态完全由观察者的测量器决定，在测量之前你永远不知道它现在处于什么状态，这个状态我们叫它量子纠缠状态。</p>
+<h2 id="1-6-2-量子密码学"><a href="#1-6-2-量子密码学" class="headerlink" title="1.6.2 量子密码学"></a>1.6.2 量子密码学</h2><p>之前讲过一次一密这个密码概念，它具有无条件的安全性，但是一次一密乱码本的传送是最困难的，成本极其高昂，无法真正意义上的进行使用。但随着量子物理的研究，终于找到了解决了一次一密致命问题的方案，利用量子力学传输密码本。利用信息载体（例如光子等粒子）的量子特性，以量子态作为符号描述的密码称为量子密码。<br>量子密码的发展已有30多年的历史。20世纪60年代，美国人<code>Wiesner</code>以<code>量子钞票</code>的形式提出量子密码学的原始概念，并在正式发表文章中提出了更重要的共轭编码和概率信息传递的概念，正是后者称为量子密码学的原始萌芽。但是这个思想无法在当时年代接受。直到1984年，IBM公司的<code>Bennett</code>与加拿大的<code>Brasard</code>提出了量子密钥分配的新概念，以及一个量子密码分配协议–BB84协议，标志着量子密码的开始。有意思的是<code>Bennett</code>是<code>Wiesner</code>的大学同学。</p>
+<p>量子密码体系包含了量子保密、量子认证、量子安全协议、量子密码分析等研究方向。</p>
+<p>量子密码学基于量子物理特性，将信息隐藏在光子里，利用量子力学随机产生一个密钥并传输给接收者。密钥的形式都是以量子比特进行传输的，载体是光子。量子比特：利用量子的叠加原理，0和1叠加构成了量子态，这个量子态就叫量子比特。</p>
+<p>举个例子说明量子密码学如何操作的：Alice是信息发送方，Bob是信息接收方，他们都有光子的圆偏振和线偏振两种检测器。</p>
+<p>1）Alice将1，2，3，4四个光子发送给Bob，在发送之前Alice对这四个光子进行了测量，不过在测量之前Alice也不会知道结果是什么。1和2是用圆偏振；3和4是线偏振。测到的结果是1:左对角状态；2是右对角状态；3是水平状态；4是垂直状态。<br>2）Bob收到这四个被Alice测量过的光子之后，并不知道Alice是怎么顺序测量的，所以随机的用测量器对光子进行测量，他的测量顺序是1圆偏振；2是线偏振；3是圆偏振；4是线偏振。测到的结果是1:左对角状态；2是水平状态；3是右对角状态；4是垂直状态。<br>3）Bob把测量顺序和结果告诉Alice，公开信道即可。<br>4）Alice进行比较，告诉Bob哪些测量结果是对的，并且测量仪器也是对的。比如收到的1光子是左对角状态，那么通过圆偏振测量，出来的只能是左对角状态。<br>5）双方保留测量结果一致的值。规定左对角状态和水平状态用1表示，右对角状态和垂直状态用0表示。所以他们得到的比特序列是10<br>6）10就是他们进行加密的密钥</p>
+<p>通过例子我们可以看出，量子密码属于对称密码学，双方共用一份密钥。</p>
+<h2 id="1-6-3-量子密码学的安全性"><a href="#1-6-3-量子密码学的安全性" class="headerlink" title="1.6.3 量子密码学的安全性"></a>1.6.3 量子密码学的安全性</h2><p>量子密码的安全性不再是像其他密码分支那样去解决数学难题，而是用量子力学的物理特性来保证的。<br>接上边的例子，入侵者窃取到第4个光子，并进行了测量。他可能测量后的结果一样，也就是4光子的状态没变，此时，Bob接收到的4光子没有问题，测量结果也是对的。这种情况下Alice和Bob是察觉不到有窃听者的。但是窃听者经过测量后，光子的状态发生了改变，那么此时Bob接收到的光子也就不是Alice给发送的状态的，肯定测量结果也是不对的。这样Alice和Bob进行比对时也就发现了入侵者，然后重新进行新的光子传送。所以如果多个光子传送时，窃听者测量多个光子后，按照概率事件，肯定会被Alice和Bob发现的。而且量子是不能被复制的，所以光子在传输中不会被传输中被攻击者进行克隆复制。所以量子密码学是非常安全的。</p>
+<p>现实中不光测量会改变光子的偏振方向，很小的干扰也会改变光子的偏振方向。在制造光子的时候，即使偏振的角度有一度的偏差，这些错误也会累积。物理学家目前只能在200公里内的范围内传输量子密钥。甚至用强光也会破坏量子探测器。互联网基础设施。</p>
+<h2 id="1-6-4-量子密码学的发展"><a href="#1-6-4-量子密码学的发展" class="headerlink" title="1.6.4 量子密码学的发展"></a>1.6.4 量子密码学的发展</h2><p>量子技术的发展是对当前密码体系的巨大挑战，如果量子技术得到更大突破，那么整个现阶段的密码体系将会崩溃。很多数学难题，通过当前算力需要几万年的时间才能解出，但是通过量子技术可能就几个小时甚至更少时间。所以，量子密码学各国都在努力研究中。</p>
+<p>目前已经有不少量子密码的应用出现了，但是大都是在政府，军事层面，民用还不算多。不过不久的明天，量子密码一定会代替现有的密码体系。</p>
+
+    </div>
+
+    
+    
+    
+    <div>
+      
+        <div>
+    
+        <div style="text-align:center;color: #ccc;font-size:14px;">-------------本文结束<i class="fa fa-paw"></i>感谢您的阅读-------------</div>
+    
+</div>
+
+      
+    </div>
+        <div class="reward-container">
+  <div>坚持原创技术分享，您的支持将鼓励我继续创作！</div>
+  <button disable="enable" onclick="var qr = document.getElementById(&quot;qr&quot;); qr.style.display = (qr.style.display === 'none') ? 'block' : 'none';">
+    打赏
+  </button>
+  <div id="qr" style="display: none;">
+      
+      <div style="display: inline-block;">
+        <img src="/images/wechatpay.jpg" alt="Hongery 微信支付">
+        <p>微信支付</p>
+      </div>
+      
+      <div style="display: inline-block;">
+        <img src="/images/alipay.jpg" alt="Hongery 支付宝">
+        <p>支付宝</p>
+      </div>
+
+  </div>
+</div>
+
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>Hongery
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="http://yoursite.com/2019/03/17/%E5%AE%8C%E6%95%B4%E5%AF%86%E7%A0%81%E5%AD%A6/%E7%AC%AC17%E7%AB%A0%E9%87%8F%E5%AD%90%E5%AF%86%E7%A0%81%E5%AD%A6/" title="第16章量子密码学">http://yoursite.com/2019/03/17/完整密码学/第17章量子密码学/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E5%AF%86%E7%A0%81%E5%AD%A6/" rel="tag"># 密码学</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2019/03/17/%E5%AE%8C%E6%95%B4%E5%AF%86%E7%A0%81%E5%AD%A6/%E7%AC%AC16%E7%AB%A0%E6%95%B0%E5%AD%97%E7%AD%BE%E5%90%8D/" rel="prev" title="第15章数字签名">
+      <i class="fa fa-chevron-left"></i> 第15章数字签名
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2019/03/17/%E5%AE%8C%E6%95%B4%E5%AF%86%E7%A0%81%E5%AD%A6/%E7%AC%AC15%E7%AB%A0RipeMD160%E7%AE%97%E6%B3%95/" rel="next" title="第14章RipeMD160算法">
+      第14章RipeMD160算法 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let activeClass = CONFIG.comments.activeClass;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#量子密码学"><span class="nav-text">量子密码学</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-量子物理"><span class="nav-text">1 量子物理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-6-2-量子密码学"><span class="nav-text">1.6.2 量子密码学</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-6-3-量子密码学的安全性"><span class="nav-text">1.6.3 量子密码学的安全性</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-6-4-量子密码学的发展"><span class="nav-text">1.6.4 量子密码学的发展</span></a></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Hongery"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">Hongery</p>
+  <div class="site-description" itemprop="description">直到这一刻微笑着说话为止，我至少留下了一公升眼泪</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">107</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">9</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/Hongery" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;Hongery" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://blog.csdn.net/weixin_40098405" title="CSDN → https:&#x2F;&#x2F;blog.csdn.net&#x2F;weixin_40098405" rel="noopener" target="_blank"><i class="fa fa-fw fa-crosshairs"></i>CSDN</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:1281185088@qq.com" title="E-Mail1 → mailto:1281185088@qq.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail1</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:hongery@yeah.net" title="E-Mail2 → mailto:hongery@yeah.net" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail2</a>
+      </span>
+  </div>
+  <div class="cc-license motion-element" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">hongery</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+      <span class="post-meta-item-text">站点总字数：</span>
+    <span title="站点总字数">NaNm</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span class="post-meta-item-text">站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">NaN:aN字</span>
+</div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>
+<!-- 页面点击小红心 -->
+<script type="text/javascript" src="/js/clicklove.js"></script>

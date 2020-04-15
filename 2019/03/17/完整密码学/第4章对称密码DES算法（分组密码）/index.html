@@ -1,0 +1,756 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.1.1">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/avatar.jpg">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/avatar.jpg">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    hostname: new URL('http://yoursite.com').hostname,
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.6.0',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},
+    copycode: {"enable":true,"show_result":true,"style":"mac"},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":true},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    comments: {"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: 'search.xml',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}
+  };
+</script>
+
+  <meta name="description" content="DES算法DES算法为密码体制中的对称密码体制，又被称为美国数据加密标准，是1972年美国IBM公司研制的对称密码体制加密算法，英文全称是Data Encryption Standard。于1973年5月被美国采纳为联邦信息处理标准。该标准每5年审查一次。因为DES的安全性出现问题，同时AES的出现，美联邦在1994年1月取消了DES作为联邦加密标准。DES加密不断被破解，其中用时最短的时间是22">
+<meta property="og:type" content="article">
+<meta property="og:title" content="第4章对称密码DES算法（分组密码）">
+<meta property="og:url" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2019&#x2F;03&#x2F;17&#x2F;%E5%AE%8C%E6%95%B4%E5%AF%86%E7%A0%81%E5%AD%A6&#x2F;%E7%AC%AC4%E7%AB%A0%E5%AF%B9%E7%A7%B0%E5%AF%86%E7%A0%81DES%E7%AE%97%E6%B3%95%EF%BC%88%E5%88%86%E7%BB%84%E5%AF%86%E7%A0%81%EF%BC%89&#x2F;index.html">
+<meta property="og:site_name" content="Hongery">
+<meta property="og:description" content="DES算法DES算法为密码体制中的对称密码体制，又被称为美国数据加密标准，是1972年美国IBM公司研制的对称密码体制加密算法，英文全称是Data Encryption Standard。于1973年5月被美国采纳为联邦信息处理标准。该标准每5年审查一次。因为DES的安全性出现问题，同时AES的出现，美联邦在1994年1月取消了DES作为联邦加密标准。DES加密不断被破解，其中用时最短的时间是22">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http:&#x2F;&#x2F;img.kongyixueyuan.com&#x2F;DES%E6%A1%86%E6%9E%B6.png">
+<meta property="og:image" content="http:&#x2F;&#x2F;img.kongyixueyuan.com&#x2F;DES%E8%BF%AD%E4%BB%A3.png">
+<meta property="og:image" content="http:&#x2F;&#x2F;img.kongyixueyuan.com&#x2F;DES%E5%AD%90%E5%AF%86%E9%92%A5.png">
+<meta property="og:image" content="http:&#x2F;&#x2F;img.kongyixueyuan.com&#x2F;DES%E5%87%BD%E6%95%B0f.png">
+<meta property="og:image" content="http:&#x2F;&#x2F;img.kongyixueyuan.com&#x2F;DES%E6%89%A9%E5%B1%95%E7%BD%AE%E6%8D%A2E.jpg">
+<meta property="og:image" content="http:&#x2F;&#x2F;img.kongyixueyuan.com&#x2F;DES%20S%E7%9B%92.gif">
+<meta property="article:published_time" content="2019-03-17T07:59:45.000Z">
+<meta property="article:modified_time" content="2020-04-05T13:27:06.887Z">
+<meta property="article:author" content="Hongery">
+<meta property="article:tag" content="密码学">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http:&#x2F;&#x2F;img.kongyixueyuan.com&#x2F;DES%E6%A1%86%E6%9E%B6.png">
+
+<link rel="canonical" href="http://yoursite.com/2019/03/17/%E5%AE%8C%E6%95%B4%E5%AF%86%E7%A0%81%E5%AD%A6/%E7%AC%AC4%E7%AB%A0%E5%AF%B9%E7%A7%B0%E5%AF%86%E7%A0%81DES%E7%AE%97%E6%B3%95%EF%BC%88%E5%88%86%E7%BB%84%E5%AF%86%E7%A0%81%EF%BC%89/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true
+  };
+</script>
+
+  <title>第4章对称密码DES算法（分组密码） | Hongery</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Hongery</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">记录学习中的点点滴滴</p>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="none"
+           placeholder="搜索..." spellcheck="false"
+           type="text" id="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+  <a href="https://github.com/Hongery" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/03/17/%E5%AE%8C%E6%95%B4%E5%AF%86%E7%A0%81%E5%AD%A6/%E7%AC%AC4%E7%AB%A0%E5%AF%B9%E7%A7%B0%E5%AF%86%E7%A0%81DES%E7%AE%97%E6%B3%95%EF%BC%88%E5%88%86%E7%BB%84%E5%AF%86%E7%A0%81%EF%BC%89/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="Hongery">
+      <meta itemprop="description" content="直到这一刻微笑着说话为止，我至少留下了一公升眼泪">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hongery">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          第4章对称密码DES算法（分组密码）
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-03-17 15:59:45" itemprop="dateCreated datePublished" datetime="2019-03-17T15:59:45+08:00">2019-03-17</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-04-05 21:27:06" itemprop="dateModified" datetime="2020-04-05T21:27:06+08:00">2020-04-05</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E5%AF%86%E7%A0%81%E5%AD%A6/" itemprop="url" rel="index">
+                    <span itemprop="name">密码学</span>
+                  </a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span><br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-file-word-o"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>5.1k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-clock-o"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>5 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h3 id="DES算法"><a href="#DES算法" class="headerlink" title="DES算法"></a>DES算法</h3><p>DES算法为密码体制中的对称密码体制，又被称为美国数据加密标准，是1972年美国IBM公司研制的对称密码体制加密算法，英文全称是Data Encryption Standard。于1973年5月被美国采纳为联邦信息处理标准。该标准每5年审查一次。因为DES的安全性出现问题，同时AES的出现，美联邦在1994年1月取消了DES作为联邦加密标准。DES加密不断被破解，其中用时最短的时间是22小时15分钟，所以DES算法现在应用越来越少了。</p>
+<a id="more"></a>DES是以64比特的明文为一个单位来进行加密的，超过64比特的数据，要求按固定的64比特的大小分组。每组64比特的明文加密得到同样长度的密文。DES的密钥长度为64位。加密运算时实际用到的密钥长度是56位，原密钥舍弃掉8位比特，分别是每隔8位的比特，即原密钥的第8位，第16位，......，第64位。而舍弃掉的这8位比特作用是校验奇偶性的。这8个比特的定义如下：若其前面7个比特中有奇数个1，则该比特为0，反之为1。
+
+<h2 id="1-DES算法加密过程"><a href="#1-DES算法加密过程" class="headerlink" title="1. DES算法加密过程"></a>1. DES算法加密过程</h2><p>DES是一个迭代分组密码，在对明文加密之前先对明文进行补长，使补长后明文的比特长度模64为0，再按照每组64比特分组。依次对分组密文进行加密，最终把加密后的结果拼接一起，得到密文。<br>每组64位的输入数据块m的加密过程如下：</p>
+<p>1) 首先m经过初始置换IP得到m0 ；<br>2) 将m0分成左右各为32比特两部分，记为m0 = L0 R0 ；<br>3) 对L0和R0进行16轮迭代运算加密，得到L16和R16；<br>4) 再对L16R16进行初始置换IP的逆初始置换IP^-1 ，得到该分组输入块的密文。<br>DES加密总体框架如下图：<br><img src="http://img.kongyixueyuan.com/DES%E6%A1%86%E6%9E%B6.png" alt="img"></p>
+<h3 id="1-1-初始置换IP"><a href="#1-1-初始置换IP" class="headerlink" title="1.1 初始置换IP"></a>1.1 初始置换IP</h3><p>初始置换IP是将一个64比特的消息中的各个比特进行换位，目的是让消息中的各个比特的顺序错乱。设m=m1m2…m64，根据初始置换IP表进行置换。初始置换IP表里的元素代表m的第几位。置换原则是按行依次对m的每个比特进行替换，比如m1置换后是m58，m2置换后是m50，以此类推，最后的m64置换后是m7。经过置换后的分组明文块由两部分组成，记为L0R0。</p>
+<p>初始置换IP表：</p>
+<table>
+<thead>
+<tr>
+<th align="left">IP</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">58 50 42 34 26 18 10 2</td>
+</tr>
+<tr>
+<td align="left">60 52 44 36 28 20 12 4</td>
+</tr>
+<tr>
+<td align="left">62 54 46 38 30 22 14 6</td>
+</tr>
+<tr>
+<td align="left">64 56 48 40 32 24 16 8</td>
+</tr>
+<tr>
+<td align="left">57 49 41 33 25 17 9 1</td>
+</tr>
+<tr>
+<td align="left">59 51 43 35 27 19 11 3</td>
+</tr>
+<tr>
+<td align="left">61 53 45 37 29 21 13 5</td>
+</tr>
+<tr>
+<td align="left">63 55 47 39 31 23 15 7</td>
+</tr>
+</tbody></table>
+<h3 id="1-2-16轮迭代运算"><a href="#1-2-16轮迭代运算" class="headerlink" title="1.2 16轮迭代运算"></a>1.2 16轮迭代运算</h3><p>迭代运算的结构是Feistel。在Feistel结构中，加密的每个过程称为轮，全过程就是若干轮的加密运算。DES第16轮加密运算与前15轮不一样，过程分为两步：1.和前15轮一样得到L16和R16；2.将得到的L16和R16两部分整体进行互换，得到最终的L16R16。<br>每一轮的运算规则如下：<br>Li = Ri-1<br>Ri = Li-1 ⊕ f(Ri-1 , ki)<br>其中L0和R0已知；⊕表示两个比特串按位异或，f是一个非线形函数，ki是由密钥按照一定规则每一轮生成的长度均为48位的比特串。<br>具体的迭代过程如下图所示：</p>
+<p><img src="http://img.kongyixueyuan.com/DES%E8%BF%AD%E4%BB%A3.png" alt="img"></p>
+<p>迭代过程中最重要的内容是每轮子密钥ki的生成和非线形函数f。下面我们依次分析这两部分内容。</p>
+<h4 id="1-2-1-子密钥ki的生成"><a href="#1-2-1-子密钥ki的生成" class="headerlink" title="1.2.1 子密钥ki的生成"></a>1.2.1 子密钥ki的生成</h4><p>子密钥的生成是随着f函数的轮数顺序产生的。生成过程如下：<br>1） 给定一个64比特的初始密钥k，利用置换PC-1（表1.2.1）得到56位密钥，然后将这56位密钥分成左右两部分，前28比特记为C0，后28比特记为D0。经过这次置换就会丢弃掉8位比特，这在DES的开始部分已经有解释。<br>2） 对于第i轮，1&lt;=i&lt;=16，首先计算<br>Ci=LSi(Ci-1)<br>Di=LSi(Di-1)<br>其中，LSi表示左循环移位，当i=1，2，9，16时，左循环移1位，当i=3，4，5，6，7，8，10，11，12，13，14，15时，左循环移位2位。<br>经过上边的左移位后，我们会得到当前i轮的Ci和Di。<br>3） 将移位后的Ci和Di利用PC-2（表1.2.2）置换，最终得到长度为48位的比特串，也就是子密钥。</p>
+<p>具体过程的示意图如下：<br><img src="http://img.kongyixueyuan.com/DES%E5%AD%90%E5%AF%86%E9%92%A5.png" alt="img"></p>
+<p>表1.2.1</p>
+<table>
+<thead>
+<tr>
+<th align="left">PC-1</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">57 49 41 33 25 17 9</td>
+</tr>
+<tr>
+<td align="left">1 58 50 42 34 26 18</td>
+</tr>
+<tr>
+<td align="left">10 2 59 51 43 35 27</td>
+</tr>
+<tr>
+<td align="left">19 11 3 60 52 44 36</td>
+</tr>
+<tr>
+<td align="left">63 55 47 39 31 23 15</td>
+</tr>
+<tr>
+<td align="left">7 62 54 46 38 30 22</td>
+</tr>
+<tr>
+<td align="left">14 6 61 53 45 37 29</td>
+</tr>
+<tr>
+<td align="left">21 13 5 28 20 12 4</td>
+</tr>
+</tbody></table>
+<p>表1.2.2</p>
+<table>
+<thead>
+<tr>
+<th align="left">PC-2</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">14 17 11 24 1 5</td>
+</tr>
+<tr>
+<td align="left">3 28 15 6 21 10</td>
+</tr>
+<tr>
+<td align="left">23 19 12 4 26 8</td>
+</tr>
+<tr>
+<td align="left">16 7 27 20 13 2</td>
+</tr>
+<tr>
+<td align="left">41 52 31 37 47 55</td>
+</tr>
+<tr>
+<td align="left">30 40 51 45 33 48</td>
+</tr>
+<tr>
+<td align="left">44 49 39 56 34 53</td>
+</tr>
+<tr>
+<td align="left">46 42 50 36 29 32</td>
+</tr>
+</tbody></table>
+<h4 id="1-2-2-非线形函数f"><a href="#1-2-2-非线形函数f" class="headerlink" title="1.2.2 非线形函数f"></a>1.2.2 非线形函数f</h4><p>f函数的参数有两个变量，一个是32比特的Ri-1，另一个是48比特的ki，输出的结果为32比特。具体执行如下图：<br><img src="http://img.kongyixueyuan.com/DES%E5%87%BD%E6%95%B0f.png" alt="img"></p>
+<p>过程是：</p>
+<p>&lt;1&gt; Ri-1是每轮迭代运算初始值的右半部分。它的长度为32位。通过扩展置换E（表1.2.3）扩展成一个48比特的串；<br>扩展置换E表里的数字都是32比特串的第几位。通过表可以看出32比特串分成8组，每组4位，然后将每组的4位前后根据表扩展，如第一组前面添加32比特串的第32位比特，后边添加32位比特串的第5位比特，其他依次类推。</p>
+<p>&lt;2&gt; 48比特的串与长度一致的ki进行异或运算</p>
+<p>&lt;3&gt; 将&lt;2&gt;步得到的48比特串分成8个6比特的串，即为A1A2A3A4A5A6A7A8</p>
+<p>&lt;4&gt; 将A1，A2，A3，A4，A5，A6，A7，A8分别作为8个S盒的输入，查表（表1.2.4）得到输出B1，B2，B3，B4，B5，B6，B7，B8；<br>每个S盒都是将6比特消息映射成一个4比特的消息。设Si盒的输入位6比特串x=x1x2x3x4x5x6，将x1x6转换成10进制的0～3的某个数，它对应表中的行数，将x2x3x4x5转换成0～15的10进制的某个数，它作为表的列号，利用行号和列号查询对应S盒表得到一个整数，将该整数转换成二进制就是输出结果。例如S1盒的输入是110011，则行号是11（第3行），列号是1001（第9列），查表得到整数11，再转换成二进制为1011，这就是1盒的输出结果。</p>
+<p>&lt;5&gt; 将8个S盒的输出拼接一起得到B1B2B3B4B5B6B7B8，再将这32比特的串使用置换运算P（表1.2.5）得到最后的结果，也就是每轮函数f的输出。<br>置换运算P：P盒置换将每一位输入位映射到输出位。任何一位都不能被映射两次，也不能被略去。映射规则是，参照置换P表，将32位的输入的第16位放在第一位，第七位放在第二位，第二十位放在第三位，以此类推。</p>
+<p>表1.2.3<br><img src="http://img.kongyixueyuan.com/DES%E6%89%A9%E5%B1%95%E7%BD%AE%E6%8D%A2E.jpg" alt="img">备注：中间为32位，两侧为扩展位</p>
+<p>表1.2.4：<br><img src="http://img.kongyixueyuan.com/DES%20S%E7%9B%92.gif" alt="img"></p>
+<p>表1.2.5：</p>
+<table>
+<thead>
+<tr>
+<th align="left">置换P</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">16,7,20,21,29,12,28,17,1,15,23,26,5,18,31,10</td>
+</tr>
+<tr>
+<td align="left">2,8,24,14,32,27,3,9,19,13,30,6,22,11,4,25</td>
+</tr>
+</tbody></table>
+<h3 id="1-3-逆初始置换IP-1"><a href="#1-3-逆初始置换IP-1" class="headerlink" title="1.3 逆初始置换IP^-1"></a>1.3 逆初始置换IP^-1</h3><p>逆置换是初始置换的逆运算。参照表1.2.6，从初始置换规则中可以看到，原始数据的第1位置换到了第40位，第2位置换到了第8位。则逆置换就是将第40位置换到第1位，第8位置换到第2位。以此类推，逆置换规则如下。</p>
+<p>表1.2.6：</p>
+<table>
+<thead>
+<tr>
+<th align="left">逆初始置换IP^-1</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">40,8,48,16,56,24,64,32,39,7,47,15,55,23,63,31</td>
+</tr>
+<tr>
+<td align="left">38,6,46,14,54,22,62,30,37,5,45,13,53,21,61,29</td>
+</tr>
+<tr>
+<td align="left">36,4,44,12,52,20,60,28,35,3,43,11,51,19,59,27</td>
+</tr>
+<tr>
+<td align="left">34,2,42,10,50,18,58 26,33,1,41, 9,49,17,57,25</td>
+</tr>
+</tbody></table>
+<h2 id="2-DES算法解密过程"><a href="#2-DES算法解密过程" class="headerlink" title="2 DES算法解密过程"></a>2 DES算法解密过程</h2><p>加密和解密使用相同的算法。加密和解密唯一不同的是秘钥的次序是相反的。就是说如果每一轮的加密秘钥分别是K1、K2、K3…K16，那么解密秘钥就是K16、K15、K14…K1。为每一轮产生秘钥的算法也是循环的。加密是秘钥循环左移，解密是秘钥循环右移。解密秘钥每次移动的位数是：0、1、2、2、2、2、2、2、1、2、2、2、2、2、2、1。具体不做讲解。但是要注意一点，解密的结果并不一定是我们原来的加密数据，可能还含有你补得位，一定要把补位去掉才是你的原来的数据。</p>
+<h2 id="3-DES算法特点"><a href="#3-DES算法特点" class="headerlink" title="3 DES算法特点"></a>3 DES算法特点</h2><p>1、分组加密算法：<br>以64位为分组。64位明文输入，64位密文输出。</p>
+<p>2、对称算法：<br>加密和解密使用同一秘钥</p>
+<p>3、有效密钥长度为56位<br>秘钥通常表示为64位数，但每个第8位用作奇偶校验，可以忽略。</p>
+<p>4、代替和置换<br>DES算法是两种加密技术的组合：混乱和扩散。先替代后置换。</p>
+<p>5、易于实现<br>DES算法只是使用了标准的算术和逻辑运算，其作用的数最多也只有64 位，因此用70年代末期的硬件技术很容易实现</p>
+<h2 id="4-golang实现DES-CBC模式加解密"><a href="#4-golang实现DES-CBC模式加解密" class="headerlink" title="4 golang实现DES_CBC模式加解密"></a>4 golang实现DES_CBC模式加解密</h2><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">    <span class="string">"crypto/cipher"</span><span class="comment">//密码</span></span><br><span class="line">    <span class="string">"crypto/des"</span></span><br><span class="line">    <span class="string">"encoding/base64"</span><span class="comment">//将对象转换成字符串</span></span><br><span class="line">    <span class="string">"fmt"</span></span><br><span class="line">    <span class="string">"bytes"</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="comment">//DES加密的方法</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">MyDesEncrypt</span><span class="params">(origData,key[]<span class="keyword">byte</span>)</span></span>  &#123;</span><br><span class="line">  <span class="comment">//生成加密块</span></span><br><span class="line">    block,_:=des.NewCipher(key)</span><br><span class="line">    <span class="comment">//按照blocksize的长度padding</span></span><br><span class="line">    origData =PKCS5Padding(origData,des.BlockSize)</span><br><span class="line">    <span class="comment">//设置加密方式</span></span><br><span class="line">    blockMode:=cipher.NewCBCEncrypter(block,key)</span><br><span class="line">    <span class="comment">//创建明文长度的字节数组</span></span><br><span class="line">    crypted :=<span class="built_in">make</span>([]<span class="keyword">byte</span>,<span class="built_in">len</span>(origData))</span><br><span class="line">    <span class="comment">//加密明文</span></span><br><span class="line">    blockMode.CryptBlocks(crypted,origData)</span><br><span class="line">    <span class="comment">//将字节数组转换成字符串</span></span><br><span class="line">    fmt.Println(base64.StdEncoding.EncodeToString(crypted))</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//明文补码</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">PKCS5Padding</span><span class="params">(ciphertext []<span class="keyword">byte</span>,blockSize <span class="keyword">int</span>)</span> []<span class="title">byte</span></span> &#123;</span><br><span class="line">    padding:=blockSize-<span class="built_in">len</span>(ciphertext)%blockSize</span><br><span class="line"></span><br><span class="line">    padtext := bytes.Repeat([]<span class="keyword">byte</span>&#123;<span class="keyword">byte</span>(padding)&#125;,padding)<span class="comment">//补码过程</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">append</span>(ciphertext,padtext...)</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//实现去补码</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">PKCS5UnPadding</span><span class="params">(origData []<span class="keyword">byte</span>)</span>[]<span class="title">byte</span></span>  &#123;</span><br><span class="line">    length:=<span class="built_in">len</span>(origData)</span><br><span class="line">    unpadding:=<span class="keyword">int</span>(origData[length<span class="number">-1</span>])</span><br><span class="line">    <span class="keyword">return</span> origData[:(length-unpadding)]</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//DES解密方法</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">MyDESDecrypt</span><span class="params">(data <span class="keyword">string</span>,key []<span class="keyword">byte</span>)</span></span>  &#123;</span><br><span class="line">    <span class="comment">//将字符串转换成字节数组</span></span><br><span class="line">     crypted,_:=base64.StdEncoding.DecodeString(data)</span><br><span class="line">     <span class="comment">//将字节密钥转换成block块</span></span><br><span class="line">     block,_:=des.NewCipher(key)</span><br><span class="line">     <span class="comment">//设置解密方式</span></span><br><span class="line">     blockMode:=cipher.NewCBCDecrypter(block,key)</span><br><span class="line">     <span class="comment">//创建秘文大小的数组变量</span></span><br><span class="line">     origData:=<span class="built_in">make</span>([]<span class="keyword">byte</span>,<span class="built_in">len</span>(crypted))</span><br><span class="line">     <span class="comment">//解密秘文到数组origData中</span></span><br><span class="line">     blockMode.CryptBlocks(origData,crypted)</span><br><span class="line">     origData=PKCS5UnPadding(origData)</span><br><span class="line">     fmt.Println(<span class="keyword">string</span>((origData)))</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span>  &#123;</span><br><span class="line">    fmt.Println(<span class="string">"hello world"</span>)</span><br><span class="line">    <span class="comment">//声明一个密钥,利用此密钥实现明文的加密和解密</span></span><br><span class="line">    key :=[]<span class="keyword">byte</span>(<span class="string">"12345698"</span>)</span><br><span class="line">    MyDesEncrypt([]<span class="keyword">byte</span>(<span class="string">"hello world "</span> ),key)</span><br><span class="line">    MyDESDecrypt(<span class="string">"NIJWb9F1DO11q08fSnB/HA=="</span>,key)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+    </div>
+
+    
+    
+    
+    <div>
+      
+        <div>
+    
+        <div style="text-align:center;color: #ccc;font-size:14px;">-------------本文结束<i class="fa fa-paw"></i>感谢您的阅读-------------</div>
+    
+</div>
+
+      
+    </div>
+        <div class="reward-container">
+  <div>坚持原创技术分享，您的支持将鼓励我继续创作！</div>
+  <button disable="enable" onclick="var qr = document.getElementById(&quot;qr&quot;); qr.style.display = (qr.style.display === 'none') ? 'block' : 'none';">
+    打赏
+  </button>
+  <div id="qr" style="display: none;">
+      
+      <div style="display: inline-block;">
+        <img src="/images/wechatpay.jpg" alt="Hongery 微信支付">
+        <p>微信支付</p>
+      </div>
+      
+      <div style="display: inline-block;">
+        <img src="/images/alipay.jpg" alt="Hongery 支付宝">
+        <p>支付宝</p>
+      </div>
+
+  </div>
+</div>
+
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>Hongery
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="http://yoursite.com/2019/03/17/%E5%AE%8C%E6%95%B4%E5%AF%86%E7%A0%81%E5%AD%A6/%E7%AC%AC4%E7%AB%A0%E5%AF%B9%E7%A7%B0%E5%AF%86%E7%A0%81DES%E7%AE%97%E6%B3%95%EF%BC%88%E5%88%86%E7%BB%84%E5%AF%86%E7%A0%81%EF%BC%89/" title="第4章对称密码DES算法（分组密码）">http://yoursite.com/2019/03/17/完整密码学/第4章对称密码DES算法（分组密码）/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E5%AF%86%E7%A0%81%E5%AD%A6/" rel="tag"># 密码学</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2019/03/17/%E5%AE%8C%E6%95%B4%E5%AF%86%E7%A0%81%E5%AD%A6/%E7%AC%AC8%E7%AB%A0%E9%9D%9E%E5%AF%B9%E7%A7%B0%E5%AF%86%E7%A0%81RSA%E7%AE%97%E6%B3%95/" rel="prev" title="第8章非对称密码RSA算法">
+      <i class="fa fa-chevron-left"></i> 第8章非对称密码RSA算法
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2019/03/17/%E5%AE%8C%E6%95%B4%E5%AF%86%E7%A0%81%E5%AD%A6/%E7%AC%AC5%E7%AB%A0%E5%AF%B9%E7%A7%B0%E5%AF%86%E7%A0%813DES%EF%BC%88%E5%88%86%E7%BB%84%E5%AF%86%E7%A0%81%EF%BC%89%E7%AE%97%E6%B3%95/" rel="next" title="第5章对称密码3DES算法（分组密码）">
+      第5章对称密码3DES算法（分组密码） <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let activeClass = CONFIG.comments.activeClass;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#DES算法"><span class="nav-text">DES算法</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-DES算法加密过程"><span class="nav-text">1. DES算法加密过程</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-1-初始置换IP"><span class="nav-text">1.1 初始置换IP</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-2-16轮迭代运算"><span class="nav-text">1.2 16轮迭代运算</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-2-1-子密钥ki的生成"><span class="nav-text">1.2.1 子密钥ki的生成</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-2-2-非线形函数f"><span class="nav-text">1.2.2 非线形函数f</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-3-逆初始置换IP-1"><span class="nav-text">1.3 逆初始置换IP^-1</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-DES算法解密过程"><span class="nav-text">2 DES算法解密过程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-DES算法特点"><span class="nav-text">3 DES算法特点</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-golang实现DES-CBC模式加解密"><span class="nav-text">4 golang实现DES_CBC模式加解密</span></a></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Hongery"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">Hongery</p>
+  <div class="site-description" itemprop="description">直到这一刻微笑着说话为止，我至少留下了一公升眼泪</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">107</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">9</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/Hongery" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;Hongery" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://blog.csdn.net/weixin_40098405" title="CSDN → https:&#x2F;&#x2F;blog.csdn.net&#x2F;weixin_40098405" rel="noopener" target="_blank"><i class="fa fa-fw fa-crosshairs"></i>CSDN</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:1281185088@qq.com" title="E-Mail1 → mailto:1281185088@qq.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail1</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:hongery@yeah.net" title="E-Mail2 → mailto:hongery@yeah.net" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail2</a>
+      </span>
+  </div>
+  <div class="cc-license motion-element" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">hongery</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+      <span class="post-meta-item-text">站点总字数：</span>
+    <span title="站点总字数">NaNm</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span class="post-meta-item-text">站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">NaN:aN字</span>
+</div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>
+<!-- 页面点击小红心 -->
+<script type="text/javascript" src="/js/clicklove.js"></script>

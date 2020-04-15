@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.1.1">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/avatar.jpg">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/avatar.jpg">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    hostname: new URL('http://yoursite.com').hostname,
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.6.0',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},
+    copycode: {"enable":true,"show_result":true,"style":"mac"},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":true},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    comments: {"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: 'search.xml',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}
+  };
+</script>
+
+  <meta name="description" content="AES算法AES英文全称是Advanced Encryption Standard,中文是高级加密标准。它的出现就是为了替代之前的加密标准DES。1997年1月2号，美国国家标准技术研究所（National Institute of Standards and Technology: NIST）发起征集高级加密标准算法的活动，目的是重新确立一种新的分组密码代替DES，成为新的美联邦信息处理的标准。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="第6章对称密码AES算法（分组密码）">
+<meta property="og:url" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2019&#x2F;03&#x2F;17&#x2F;%E5%AE%8C%E6%95%B4%E5%AF%86%E7%A0%81%E5%AD%A6&#x2F;%E7%AC%AC6%E7%AB%A0%E5%AF%B9%E7%A7%B0%E5%AF%86%E7%A0%81AES%E7%AE%97%E6%B3%95%EF%BC%88%E5%88%86%E7%BB%84%E5%AF%86%E7%A0%81%EF%BC%89&#x2F;index.html">
+<meta property="og:site_name" content="Hongery">
+<meta property="og:description" content="AES算法AES英文全称是Advanced Encryption Standard,中文是高级加密标准。它的出现就是为了替代之前的加密标准DES。1997年1月2号，美国国家标准技术研究所（National Institute of Standards and Technology: NIST）发起征集高级加密标准算法的活动，目的是重新确立一种新的分组密码代替DES，成为新的美联邦信息处理的标准。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http:&#x2F;&#x2F;img.kongyixueyuan.com&#x2F;AES%20S%E7%9B%92.png">
+<meta property="og:image" content="http:&#x2F;&#x2F;img.kongyixueyuan.com&#x2F;AES%20%E9%80%86S%E7%9B%92.png">
+<meta property="og:image" content="http:&#x2F;&#x2F;img.kongyixueyuan.com&#x2F;Aes%E5%B7%A6%E7%A7%BB.png">
+<meta property="og:image" content="http:&#x2F;&#x2F;img.kongyixueyuan.com&#x2F;AES%E5%8A%A0%E8%A7%A3%E5%AF%86.png">
+<meta property="article:published_time" content="2019-03-17T07:59:45.000Z">
+<meta property="article:modified_time" content="2020-04-05T13:27:22.116Z">
+<meta property="article:author" content="Hongery">
+<meta property="article:tag" content="密码学">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http:&#x2F;&#x2F;img.kongyixueyuan.com&#x2F;AES%20S%E7%9B%92.png">
+
+<link rel="canonical" href="http://yoursite.com/2019/03/17/%E5%AE%8C%E6%95%B4%E5%AF%86%E7%A0%81%E5%AD%A6/%E7%AC%AC6%E7%AB%A0%E5%AF%B9%E7%A7%B0%E5%AF%86%E7%A0%81AES%E7%AE%97%E6%B3%95%EF%BC%88%E5%88%86%E7%BB%84%E5%AF%86%E7%A0%81%EF%BC%89/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true
+  };
+</script>
+
+  <title>第6章对称密码AES算法（分组密码） | Hongery</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Hongery</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">记录学习中的点点滴滴</p>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="none"
+           placeholder="搜索..." spellcheck="false"
+           type="text" id="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+  <a href="https://github.com/Hongery" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/03/17/%E5%AE%8C%E6%95%B4%E5%AF%86%E7%A0%81%E5%AD%A6/%E7%AC%AC6%E7%AB%A0%E5%AF%B9%E7%A7%B0%E5%AF%86%E7%A0%81AES%E7%AE%97%E6%B3%95%EF%BC%88%E5%88%86%E7%BB%84%E5%AF%86%E7%A0%81%EF%BC%89/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="Hongery">
+      <meta itemprop="description" content="直到这一刻微笑着说话为止，我至少留下了一公升眼泪">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hongery">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          第6章对称密码AES算法（分组密码）
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-03-17 15:59:45" itemprop="dateCreated datePublished" datetime="2019-03-17T15:59:45+08:00">2019-03-17</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-04-05 21:27:22" itemprop="dateModified" datetime="2020-04-05T21:27:22+08:00">2020-04-05</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E5%AF%86%E7%A0%81%E5%AD%A6/" itemprop="url" rel="index">
+                    <span itemprop="name">密码学</span>
+                  </a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span><br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-file-word-o"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>5.7k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-clock-o"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>5 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h3 id="AES算法"><a href="#AES算法" class="headerlink" title="AES算法"></a>AES算法</h3><p>AES英文全称是Advanced Encryption Standard,中文是高级加密标准。它的出现就是为了替代之前的加密标准DES。1997年1月2号，美国国家标准技术研究所（National Institute of Standards and Technology: NIST）发起征集高级加密标准算法的活动，目的是重新确立一种新的分组密码代替DES，成为新的美联邦信息处理的标准。该活动得到了全世界很多密码工作者的响应，先后有很多人提交了自己设计的算法。最终获胜的是由两位比利时的著名密码学家Joan Daemen和Vincent Rijmen设计的Rijndael算法。2001年11月，NIST正式公布该算法，命名为AES算法。</p>
+<a id="more"></a>
+
+<h2 id="1-AES算法原理"><a href="#1-AES算法原理" class="headerlink" title="1. AES算法原理"></a>1. AES算法原理</h2><p>AES算法采用分组密码体制，即AES加密会首先把明文切成一段一段的，而且每段数据的长度要求必须是128位16个字节，如果最后一段不够16个字节，需要用Padding来把这段数据填满16个字节，然后分组对每段数据进行加密，最后再把每段加密数据拼起来形成最终的密文。AES算法的密钥长度可以有三种，分别是128位，256位，512位。<br>AES算法的加密过程使用了四个变换：字节替换变换（SubBytes）、行移位变换（SiftRows）、列混淆变换（MixColumns）和轮密钥加变换（AddRoundKey）。解密过程用了这四个变换的逆操作，分别是逆字节替换变换（InvSubBytes）、逆行移位变换（InvShiftRows）、逆列混淆变换（InvMixColumns）和轮密钥加变换。这里说明一下，轮密钥加变换的逆运算就是它本身，所以名字就通用一个。</p>
+<h3 id="1-1-字节替换变换"><a href="#1-1-字节替换变换" class="headerlink" title="1.1 字节替换变换"></a>1.1 字节替换变换</h3><p>字节替换变换是一个非线形变换。输入的任意字节我们看作是有限域GF(2^8 )的元素，也就是这些字节都会在这个有限域内找到。在这个有限域内任何元素通过映射运算都会找到与之对应的元素，而且他们之间映射是可逆的。根据这个映射关系，制作了一个S盒对照表。根据这个表我们会很容易的查找对应的映射元素。如果输入的字节为xy，查找S盒中的第x行盒第y列找到对应的值，将其输出替换xy输出。例如1D，替换之后就是A4。S盒的制作方法这里不做讲解。</p>
+<p>下表就是AES的S盒：<br><img src="http://img.kongyixueyuan.com/AES%20S%E7%9B%92.png" alt="img">注：S盒中的元素都是16进制,字母大写表示。</p>
+<h3 id="1-2-逆字节替换变换"><a href="#1-2-逆字节替换变换" class="headerlink" title="1.2 逆字节替换变换"></a>1.2 逆字节替换变换</h3><p>逆字节替换变换是字节替换变换的逆变换。字节替换变换的映射运算是可逆的，所以根据映射逆运算也制作了一张逆S盒的对照表。查找方法与字节替换变换方法一样。例如A4，替换之后就是1D。逆S盒的制作方法这里也不做讲解。<br>下表就是AES的逆S盒：<br><img src="http://img.kongyixueyuan.com/AES%20%E9%80%86S%E7%9B%92.png" alt="img">注：逆S盒中的元素都是16进制,字母大写表示。</p>
+<h3 id="1-3-行移位变换"><a href="#1-3-行移位变换" class="headerlink" title="1.3 行移位变换"></a>1.3 行移位变换</h3><p>行移位的功能是实现一个4x4矩阵内部字节之间的置换。AES算法的明文分组要求是每组的字节长度为16，就是因为能够刚好转换成4x4矩阵。<br>行移位的过程：第一行保持不变，第二行循环左移1个字节，第三行循环左移2个字节，第四行循环左移3个字节。<br>示意图如下：<br><img src="http://img.kongyixueyuan.com/Aes%E5%B7%A6%E7%A7%BB.png" alt="img"></p>
+<h3 id="1-4-逆行移位变换"><a href="#1-4-逆行移位变换" class="headerlink" title="1.4 逆行移位变换"></a>1.4 逆行移位变换</h3><p>逆向行移位即是相反的操作。即第一行保持不变，第二行循环右移1个字节，第三行循环右移2个字节，第四行循环右移3个字节。</p>
+<h3 id="1-5-列混淆变换"><a href="#1-5-列混淆变换" class="headerlink" title="1.5 列混淆变换"></a>1.5 列混淆变换</h3><p>列混淆变换将状态矩阵中的每一列视为系数在GF(2^8 )上的次数小于4的多项式与同一个固定的多项式a(x)进行模多项式m(x)=x^4 +1的乘法运算。在AES中，a(x)={03}x^3 +{01}x^2 +{01}x+{02}。</p>
+<h3 id="1-6-逆列混淆变换"><a href="#1-6-逆列混淆变换" class="headerlink" title="1.6 逆列混淆变换"></a>1.6 逆列混淆变换</h3><p>逆列混淆变换是列混淆变换的逆，它将状态矩阵中的每一列视为系数在GF(2^ 8)上的次数小于4的多项式与同一个固定的多项式a^-1 (x)进行模多项式m(x)=x^4 +1的乘法运算。a^-1 (x)={0B}x^3 +{0D}x^2 +{09}x+{0E}。</p>
+<h3 id="1-7-轮密钥加变换"><a href="#1-7-轮密钥加变换" class="headerlink" title="1.7 轮密钥加变换"></a>1.7 轮密钥加变换</h3><p>任何数和自身的异或结果为0。加密过程中，每轮的输入与轮密钥异或一次；因此，解密时再异或上该轮的密钥即可恢复输入。</p>
+<h3 id="1-8-密钥扩展算法"><a href="#1-8-密钥扩展算法" class="headerlink" title="1.8 密钥扩展算法"></a>1.8 密钥扩展算法</h3><p>AES加密的每一轮用到的密钥都是不一样的。AES密钥扩展算法的输入值是4个字（16字节），输出值是一个由44个字组成（176字节）的一维线性数组。</p>
+<h2 id="2-AES加密过程"><a href="#2-AES加密过程" class="headerlink" title="2. AES加密过程"></a>2. AES加密过程</h2><p>AES的解密就是加密的逆运算，所以这里我只讲解AES加密的过程。一般AES的每组明文加密需要重复10轮加密才能完成，所有分组的明文经过10轮加密后，拼接一起就是最后的密文。下面我只讲解一轮的加密过程。<br>每一轮的加密过程：</p>
+<ol>
+<li><p>将明文分成N组，每组长度为128比特，也就是16个字节；</p>
+</li>
+<li><p>将分组明文字节输出转换成16进制（字母大写输出）；</p>
+</li>
+<li><p>该轮分组</p>
+</li>
+<li><p>将分组明文进行字节替换；</p>
+</li>
+<li><p>字节替换后，转换成4X4矩阵，然后进行行移位变换；</p>
+</li>
+<li><p>将列混淆变换后的4X4矩阵，再进行列混淆变换，输出处理后的字节数组；</p>
+</li>
+<li><p>轮密钥加：经过第6步后的字节数组与轮密钥进行XOR异或运算得到新的字节数组；</p>
+</li>
+<li><p>第7部回到第4步</p>
+<p>整体的加解密过程如下图：<br><img src="http://img.kongyixueyuan.com/AES%E5%8A%A0%E8%A7%A3%E5%AF%86.png" alt="img"></p>
+</li>
+</ol>
+<h2 id="3-AES的安全性"><a href="#3-AES的安全性" class="headerlink" title="3. AES的安全性"></a>3. AES的安全性</h2><p>AES加密算法中，每轮使用不同的常数消除了密钥的对称性；使用了非对称性的密钥扩展算法消除了相同密钥的可能性；加密和解密使用不同的变换，从而消除了弱密钥和半弱密钥存在的肯能性。经过验证，AES加密算法能有效地抵抗现有的攻击，如差分攻击、相关密钥攻击、插值攻击等。</p>
+<h2 id="4-golang实现AES-CFB加解密"><a href="#4-golang实现AES-CFB加解密" class="headerlink" title="4. golang实现AES_CFB加解密"></a>4. golang实现AES_CFB加解密</h2><p>AES_CFB加解密代码实现：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">    <span class="string">"fmt"</span></span><br><span class="line">    <span class="string">"crypto/aes"</span></span><br><span class="line">    <span class="string">"io"</span></span><br><span class="line">    <span class="string">"crypto/rand"</span></span><br><span class="line">    <span class="string">"crypto/cipher"</span></span><br><span class="line">    <span class="string">"encoding/base64"</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="comment">//通过CFB模式，进行AES加密</span></span><br><span class="line"><span class="comment">//加密</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">AESEncrypt</span><span class="params">(plaintext []<span class="keyword">byte</span>, key []<span class="keyword">byte</span>)</span> []<span class="title">byte</span></span> &#123;</span><br><span class="line">    <span class="comment">//分组密钥,key字节的长度必须是16或24，或32；密钥的长度可以使用128位、192位或256位；位只有两种形式0和1，而字节是有8个位组成的。可以表示256个状态。1字节（byte）=8位（bit）</span></span><br><span class="line">    block,_:=aes.NewCipher(key)</span><br><span class="line">    <span class="comment">//block 是个*aes.aesCipherGCMiv 类型 包含encode 和decode  这两个code类型是[]uint32, n。 n=BlockSize+28，n是新创建enc和dec的长度</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">//创建数组，目的是存储你接下来加密的密文</span></span><br><span class="line">    ciphertext:=<span class="built_in">make</span>([]<span class="keyword">byte</span>,aes.BlockSize+<span class="built_in">len</span>(plaintext))</span><br><span class="line">    <span class="comment">//设置内存空间可读，类似在明文前面加入一个长度16切片，用于被读取内存流</span></span><br><span class="line">    iv :=ciphertext[:aes.BlockSize]</span><br><span class="line">    <span class="comment">//[]uint8</span></span><br><span class="line">    <span class="comment">//[0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]</span></span><br><span class="line">    <span class="comment">//读内存流,把rand.reader随机读取的内存流数据复制到iv里</span></span><br><span class="line">    io.ReadFull(rand.Reader,iv)<span class="comment">//n是iv的长度</span></span><br><span class="line">    <span class="comment">//iv=[127 78 10 244 97 152 178 224 62 49 156 74 239 99 211 94]每次不一样，包含时间戳应该</span></span><br><span class="line">    <span class="comment">//设置加密模式，返回一个流，也就是把iv放到block里，返回stream流</span></span><br><span class="line">    <span class="comment">//下边方法将iv的数copy到block里的next字段的字节数组里</span></span><br><span class="line">    stream :=cipher.NewCFBEncrypter(block,iv)</span><br><span class="line"></span><br><span class="line"><span class="comment">//&amp;&#123;0xc42007e2a0 [127 78 10 244 97 152 178 224 62 49 156 74 239 99 211 94]（输出和读出的iv一样） [0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0] 16 false&#125;</span></span><br><span class="line">    <span class="comment">//拿着你的密文进行异或运算，加密利用ciphertext[:aes.BlockSize]与明文进行异或,overlap使部分重叠</span></span><br><span class="line"></span><br><span class="line">    stream.XORKeyStream(ciphertext[aes.BlockSize:],plaintext)</span><br><span class="line">    <span class="keyword">return</span> ciphertext</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//解密</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">AesDecrypt</span><span class="params">(ciphertext []<span class="keyword">byte</span>,key []<span class="keyword">byte</span>)</span>[]<span class="title">byte</span></span>  &#123;</span><br><span class="line">    block,_:=aes.NewCipher(key)</span><br><span class="line">    iv:=ciphertext[:aes.BlockSize]</span><br><span class="line">    ciphertext=ciphertext[aes.BlockSize:]</span><br><span class="line">    <span class="comment">//设置解密方式</span></span><br><span class="line">    stream :=cipher.NewCFBDecrypter(block,iv)</span><br><span class="line">    <span class="comment">//解密</span></span><br><span class="line">    stream.XORKeyStream(ciphertext,ciphertext)</span><br><span class="line">    <span class="keyword">return</span> ciphertext</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span>  &#123;</span><br><span class="line">    fmt.Println(<span class="string">"hello world"</span>)</span><br><span class="line">    <span class="keyword">var</span> encryptcode = AESEncrypt([]<span class="keyword">byte</span>(<span class="string">"abc"</span>),[]<span class="keyword">byte</span>(<span class="string">"123456789abcdejg"</span>))</span><br><span class="line">    <span class="keyword">var</span> decryptcode =AesDecrypt( encryptcode,[]<span class="keyword">byte</span>(<span class="string">"123456789abcdejg"</span>))</span><br><span class="line">    fmt.Println(<span class="keyword">string</span>(decryptcode))</span><br><span class="line">    fmt.Println(base64.StdEncoding.EncodeToString(encryptcode))</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="5-golang实现AES-CTR加解密"><a href="#5-golang实现AES-CTR加解密" class="headerlink" title="5. golang实现AES_CTR加解密"></a>5. golang实现AES_CTR加解密</h2><p>AES_CTR加解密代码实现：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">    <span class="string">"bytes"</span></span><br><span class="line">    <span class="string">"crypto/aes"</span></span><br><span class="line">    <span class="string">"crypto/cipher"</span></span><br><span class="line">    <span class="string">"fmt"</span></span><br><span class="line"></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span>  &#123;</span><br><span class="line">    str:=[]<span class="keyword">byte</span>(<span class="string">"helloworld"</span>)</span><br><span class="line">    key:=[]<span class="keyword">byte</span>(<span class="string">"12345678qwertyui"</span>)</span><br><span class="line">    encrypt:=AesCTR_Encrypt(str,key)</span><br><span class="line">    fmt.Printf(<span class="string">"%x\n"</span>,encrypt)</span><br><span class="line">    decrypt:=AesCTR_Decrypt(encrypt,key)</span><br><span class="line">    fmt.Println(<span class="keyword">string</span>(decrypt))</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">AesCTR_Encrypt</span><span class="params">(plainText, key []<span class="keyword">byte</span>)</span> []<span class="title">byte</span></span> &#123;</span><br><span class="line">    <span class="comment">//判断用户传过来的key是否符合16字节，如果不符合16字节加以处理</span></span><br><span class="line">    keylen := <span class="built_in">len</span>(key)</span><br><span class="line">    <span class="keyword">if</span> keylen == <span class="number">0</span> &#123; <span class="comment">//如果用户传入的密钥为空那么就用默认密钥</span></span><br><span class="line">        key = []<span class="keyword">byte</span>(<span class="string">"Abskjeqiu1234567"</span>) <span class="comment">//默认密钥</span></span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> keylen &gt; <span class="number">0</span> &amp;&amp; keylen &lt; <span class="number">16</span> &#123; <span class="comment">//如果密钥长度在0到16之间，那么用0补齐剩余的</span></span><br><span class="line">        key = <span class="built_in">append</span>(key, bytes.Repeat([]<span class="keyword">byte</span>&#123;<span class="number">0</span>&#125;, (<span class="number">16</span> - keylen))...)</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> keylen &gt; <span class="number">16</span> &#123;</span><br><span class="line">        key = key[:<span class="number">16</span>]</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//1.指定使用的加密aes算法</span></span><br><span class="line">    block, err := aes.NewCipher(key)</span><br><span class="line">    <span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">        <span class="built_in">panic</span>(err)</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//2.不需要填充,直接获取ctr分组模式的stream</span></span><br><span class="line">    <span class="comment">// 返回一个计数器模式的、底层采用block生成key流的Stream接口，初始向量iv的长度必须等于block的块尺寸。</span></span><br><span class="line">    iv := []<span class="keyword">byte</span>(<span class="string">"wumansgygoaesctf"</span>)</span><br><span class="line"></span><br><span class="line">    stream := cipher.NewCTR(block, iv)</span><br><span class="line"></span><br><span class="line">    <span class="comment">//3.加密操作</span></span><br><span class="line">    cipherText := <span class="built_in">make</span>([]<span class="keyword">byte</span>, <span class="built_in">len</span>(plainText))</span><br><span class="line">    stream.XORKeyStream(cipherText, plainText)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> cipherText</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">AesCTR_Decrypt</span><span class="params">(cipherText, key []<span class="keyword">byte</span>)</span> []<span class="title">byte</span></span> &#123;</span><br><span class="line">    <span class="comment">//判断用户传过来的key是否符合16字节，如果不符合16字节加以处理</span></span><br><span class="line">    keylen := <span class="built_in">len</span>(key)</span><br><span class="line">    <span class="keyword">if</span> keylen == <span class="number">0</span> &#123; <span class="comment">//如果用户传入的密钥为空那么就用默认密钥</span></span><br><span class="line">        key = []<span class="keyword">byte</span>(<span class="string">"Abskjeqiu1234567"</span>) <span class="comment">//默认密钥</span></span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> keylen &gt; <span class="number">0</span> &amp;&amp; keylen &lt; <span class="number">16</span> &#123; <span class="comment">//如果密钥长度在0到16之间，那么用0补齐剩余的</span></span><br><span class="line">        key = <span class="built_in">append</span>(key, bytes.Repeat([]<span class="keyword">byte</span>&#123;<span class="number">0</span>&#125;, (<span class="number">16</span> - keylen))...)</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> keylen &gt; <span class="number">16</span> &#123;</span><br><span class="line">        key = key[:<span class="number">16</span>]</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//1.指定算法:aes</span></span><br><span class="line">    block, err := aes.NewCipher(key)</span><br><span class="line">    <span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">        <span class="built_in">panic</span>(err)</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//2.返回一个计数器模式的、底层采用block生成key流的Stream接口，初始向量iv的长度必须等于block的块尺寸。</span></span><br><span class="line">    iv := []<span class="keyword">byte</span>(<span class="string">"wumansgygoaesctf"</span>)</span><br><span class="line">    stream := cipher.NewCTR(block, iv)</span><br><span class="line"></span><br><span class="line">    <span class="comment">//3.解密操作</span></span><br><span class="line">    plainText := <span class="built_in">make</span>([]<span class="keyword">byte</span>, <span class="built_in">len</span>(cipherText))</span><br><span class="line">    stream.XORKeyStream(plainText, cipherText)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> plainText</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//输出</span></span><br><span class="line"><span class="number">40</span>dbbf4ab999bb36d0d5</span><br><span class="line">helloworld</span><br></pre></td></tr></table></figure>
+    </div>
+
+    
+    
+    
+    <div>
+      
+        <div>
+    
+        <div style="text-align:center;color: #ccc;font-size:14px;">-------------本文结束<i class="fa fa-paw"></i>感谢您的阅读-------------</div>
+    
+</div>
+
+      
+    </div>
+        <div class="reward-container">
+  <div>坚持原创技术分享，您的支持将鼓励我继续创作！</div>
+  <button disable="enable" onclick="var qr = document.getElementById(&quot;qr&quot;); qr.style.display = (qr.style.display === 'none') ? 'block' : 'none';">
+    打赏
+  </button>
+  <div id="qr" style="display: none;">
+      
+      <div style="display: inline-block;">
+        <img src="/images/wechatpay.jpg" alt="Hongery 微信支付">
+        <p>微信支付</p>
+      </div>
+      
+      <div style="display: inline-block;">
+        <img src="/images/alipay.jpg" alt="Hongery 支付宝">
+        <p>支付宝</p>
+      </div>
+
+  </div>
+</div>
+
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>Hongery
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="http://yoursite.com/2019/03/17/%E5%AE%8C%E6%95%B4%E5%AF%86%E7%A0%81%E5%AD%A6/%E7%AC%AC6%E7%AB%A0%E5%AF%B9%E7%A7%B0%E5%AF%86%E7%A0%81AES%E7%AE%97%E6%B3%95%EF%BC%88%E5%88%86%E7%BB%84%E5%AF%86%E7%A0%81%EF%BC%89/" title="第6章对称密码AES算法（分组密码）">http://yoursite.com/2019/03/17/完整密码学/第6章对称密码AES算法（分组密码）/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E5%AF%86%E7%A0%81%E5%AD%A6/" rel="tag"># 密码学</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2019/03/17/%E5%AE%8C%E6%95%B4%E5%AF%86%E7%A0%81%E5%AD%A6/%E7%AC%AC5%E7%AB%A0%E5%AF%B9%E7%A7%B0%E5%AF%86%E7%A0%813DES%EF%BC%88%E5%88%86%E7%BB%84%E5%AF%86%E7%A0%81%EF%BC%89%E7%AE%97%E6%B3%95/" rel="prev" title="第5章对称密码3DES算法（分组密码）">
+      <i class="fa fa-chevron-left"></i> 第5章对称密码3DES算法（分组密码）
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2019/03/17/%E5%AE%8C%E6%95%B4%E5%AF%86%E7%A0%81%E5%AD%A6/%E7%AC%AC14%E7%AB%A0HMAC%E5%93%88%E5%B8%8C%E6%B6%88%E6%81%AF%E7%A0%81%E9%AA%8C%E8%AF%81%E7%AE%97%E6%B3%95/" rel="next" title="第13章HMAC哈希消息认证码">
+      第13章HMAC哈希消息认证码 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let activeClass = CONFIG.comments.activeClass;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#AES算法"><span class="nav-text">AES算法</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-AES算法原理"><span class="nav-text">1. AES算法原理</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-1-字节替换变换"><span class="nav-text">1.1 字节替换变换</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-2-逆字节替换变换"><span class="nav-text">1.2 逆字节替换变换</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-3-行移位变换"><span class="nav-text">1.3 行移位变换</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-4-逆行移位变换"><span class="nav-text">1.4 逆行移位变换</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-5-列混淆变换"><span class="nav-text">1.5 列混淆变换</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-6-逆列混淆变换"><span class="nav-text">1.6 逆列混淆变换</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-7-轮密钥加变换"><span class="nav-text">1.7 轮密钥加变换</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-8-密钥扩展算法"><span class="nav-text">1.8 密钥扩展算法</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-AES加密过程"><span class="nav-text">2. AES加密过程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-AES的安全性"><span class="nav-text">3. AES的安全性</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-golang实现AES-CFB加解密"><span class="nav-text">4. golang实现AES_CFB加解密</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5-golang实现AES-CTR加解密"><span class="nav-text">5. golang实现AES_CTR加解密</span></a></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Hongery"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">Hongery</p>
+  <div class="site-description" itemprop="description">直到这一刻微笑着说话为止，我至少留下了一公升眼泪</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">107</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">9</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/Hongery" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;Hongery" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://blog.csdn.net/weixin_40098405" title="CSDN → https:&#x2F;&#x2F;blog.csdn.net&#x2F;weixin_40098405" rel="noopener" target="_blank"><i class="fa fa-fw fa-crosshairs"></i>CSDN</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:1281185088@qq.com" title="E-Mail1 → mailto:1281185088@qq.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail1</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:hongery@yeah.net" title="E-Mail2 → mailto:hongery@yeah.net" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail2</a>
+      </span>
+  </div>
+  <div class="cc-license motion-element" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">hongery</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+      <span class="post-meta-item-text">站点总字数：</span>
+    <span title="站点总字数">NaNm</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span class="post-meta-item-text">站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">NaN:aN字</span>
+</div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>
+<!-- 页面点击小红心 -->
+<script type="text/javascript" src="/js/clicklove.js"></script>

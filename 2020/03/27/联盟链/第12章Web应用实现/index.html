@@ -1,0 +1,786 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.1.1">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/avatar.jpg">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/avatar.jpg">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    hostname: new URL('http://yoursite.com').hostname,
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.6.0',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},
+    copycode: {"enable":true,"show_result":true,"style":"mac"},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":true},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    comments: {"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: 'search.xml',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}
+  };
+</script>
+
+  <meta name="description" content="MVC是什么：合理的设计我们的应用目标 理解 MVC 架构的概念 能够在项目中应用 MVC 架构模式">
+<meta property="og:type" content="article">
+<meta property="og:title" content="第12章web应用实现">
+<meta property="og:url" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2020&#x2F;03&#x2F;27&#x2F;%E8%81%94%E7%9B%9F%E9%93%BE&#x2F;%E7%AC%AC12%E7%AB%A0Web%E5%BA%94%E7%94%A8%E5%AE%9E%E7%8E%B0&#x2F;index.html">
+<meta property="og:site_name" content="Hongery">
+<meta property="og:description" content="MVC是什么：合理的设计我们的应用目标 理解 MVC 架构的概念 能够在项目中应用 MVC 架构模式">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http:&#x2F;&#x2F;image.chaindesk.cn&#x2F;12.1_7_1.png&#x2F;mark">
+<meta property="og:image" content="http:&#x2F;&#x2F;image.chaindesk.cn&#x2F;12.1_7_2.png&#x2F;mark">
+<meta property="og:image" content="http:&#x2F;&#x2F;image.chaindesk.cn&#x2F;12.1_a.png&#x2F;mark">
+<meta property="og:image" content="http:&#x2F;&#x2F;image.chaindesk.cn&#x2F;12.1_8.png&#x2F;mark">
+<meta property="og:image" content="http:&#x2F;&#x2F;image.chaindesk.cn&#x2F;index.png&#x2F;mark">
+<meta property="og:image" content="http:&#x2F;&#x2F;image.chaindesk.cn&#x2F;queryReq.png&#x2F;mark">
+<meta property="og:image" content="http:&#x2F;&#x2F;image.chaindesk.cn&#x2F;setInfo.png&#x2F;mark">
+<meta property="og:image" content="http:&#x2F;&#x2F;image.chaindesk.cn&#x2F;setResponse.png&#x2F;mark">
+<meta property="og:image" content="http:&#x2F;&#x2F;image.chaindesk.cn&#x2F;query2.png&#x2F;mark">
+<meta property="article:published_time" content="2020-03-27T12:36:33.000Z">
+<meta property="article:modified_time" content="2020-03-29T11:00:28.545Z">
+<meta property="article:author" content="Hongery">
+<meta property="article:tag" content="blockchain">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http:&#x2F;&#x2F;image.chaindesk.cn&#x2F;12.1_7_1.png&#x2F;mark">
+
+<link rel="canonical" href="http://yoursite.com/2020/03/27/%E8%81%94%E7%9B%9F%E9%93%BE/%E7%AC%AC12%E7%AB%A0Web%E5%BA%94%E7%94%A8%E5%AE%9E%E7%8E%B0/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true
+  };
+</script>
+
+  <title>第12章web应用实现 | Hongery</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Hongery</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">记录学习中的点点滴滴</p>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="none"
+           placeholder="搜索..." spellcheck="false"
+           type="text" id="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+  <a href="https://github.com/Hongery" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/03/27/%E8%81%94%E7%9B%9F%E9%93%BE/%E7%AC%AC12%E7%AB%A0Web%E5%BA%94%E7%94%A8%E5%AE%9E%E7%8E%B0/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="Hongery">
+      <meta itemprop="description" content="直到这一刻微笑着说话为止，我至少留下了一公升眼泪">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hongery">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          第12章web应用实现
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-03-27 20:36:33" itemprop="dateCreated datePublished" datetime="2020-03-27T20:36:33+08:00">2020-03-27</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-03-29 19:00:28" itemprop="dateModified" datetime="2020-03-29T19:00:28+08:00">2020-03-29</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Hyperledger-Fabric/" itemprop="url" rel="index">
+                    <span itemprop="name">Hyperledger Fabric</span>
+                  </a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span><br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-file-word-o"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>8.1k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-clock-o"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>7 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h3 id="MVC是什么：合理的设计我们的应用"><a href="#MVC是什么：合理的设计我们的应用" class="headerlink" title="MVC是什么：合理的设计我们的应用"></a>MVC是什么：合理的设计我们的应用</h3><h2 id="目标"><a href="#目标" class="headerlink" title="目标"></a>目标</h2><ol>
+<li>理解 MVC 架构的概念</li>
+<li>能够在项目中应用 MVC 架构模式</li>
+</ol>
+<a id="more"></a>
+
+<h2 id="12-1-MVC"><a href="#12-1-MVC" class="headerlink" title="12.1 MVC"></a>12.1 MVC</h2><p>应用程序开发人员在工作中都需要考虑一些问题，如：</p>
+<ul>
+<li>如何简化开发</li>
+<li>如何降低应用程序的耦合性</li>
+<li>如何提高代码的重用性</li>
+<li>如何提高应用程序的可扩展性及维护性</li>
+<li>……</li>
+</ul>
+<p>1979年，由 Trygve Reenskaug 在 Smalltalk-80 系统上首次提出了 MVC 的概念，主要核心就是由专业的人做专业的事。MVC 模式代表 Model（模型）－View（视图）－Controller（控制器）模式。这种模式主要应用于应用程序的分层开发。将应用程序中显示什么数据、数据由谁处理、怎么处理进行分离，可以由不同的开发人员专注于自己的领域，而无需关注其它。</p>
+<h3 id="12-1-1-MVC架构概念"><a href="#12-1-1-MVC架构概念" class="headerlink" title="12.1.1 MVC架构概念"></a>12.1.1 MVC架构概念</h3><p>MVC将应用程序划分为三种组件，并明确定义了它们之间的相互作用：</p>
+<ul>
+<li><strong>模型（Model）：</strong>用于封装与应用程序的业务逻辑相关的数据以及对数据的处理法。”Model”有对数据直接访问的权力，例如对数据库的访问。”Model”不依赖”View”和”Controller”，也就是说， Model 不关心它会被如何显示或是如何被操作。但是 Model 中数据的变化一般会通过一种刷新机制被公布。为了实现这种机制，那些用于监视此 Model 的 View 必须事先在此 Model 上注册，从而，View 可以了解在数据 Model 上发生的改变</li>
+<li><strong>视图（View）：</strong>能够实现数据有目的的显示。在 View 中一般没有程序上的逻辑。为了实现 View 上的刷新功能，View 需要访问它监视的数据模型（Model），因此应该事先在被它监视的数据那里注册</li>
+<li><strong>控制器（Controller）：</strong>可以将控制器理解为一个桥梁，处理事件并作出响应。负责从视图读取数据，控制用户输入，并向模型发送数据</li>
+</ul>
+<h3 id="12-1-2-MVC架构优缺点"><a href="#12-1-2-MVC架构优缺点" class="headerlink" title="12.1.2 MVC架构优缺点"></a>12.1.2 MVC架构优缺点</h3><p>不论是什么技术，使用什么理念，尤其是能够经过长时间的应用实践，都有其显著的优点，有优点，也必然存在一些缺点，下面我们来看一下 MVC 模式的优缺点。</p>
+<h4 id="优点"><a href="#优点" class="headerlink" title="优点"></a>优点</h4><ul>
+<li>高内聚性 － MVC可以在控制器上对相关操作进行逻辑分组。特定模型的视图也可以组合在一起。</li>
+<li>耦合性低 － MVC框架的本质是模型，视图或控制器之间的耦合较低</li>
+<li>重用性高 －允许使用各种不同样式的视图来访问同一个服务器端的代码；将数据和业务规则从表示层分开，可以最大化的重用代码。模型也有状态管理和数据持久性处理的功能</li>
+<li>提高可扩展性与可维护性 － 由于分离视图层和业务逻辑层也使得WEB应用更易于维护和修改</li>
+<li>利于项目的管理 － 由于不同的层各司其职，每一层不同的应用具有某些相同的特征，有利于通过工程化、工具化管理程序代码。控制器也提供了一个好处，就是可以使用控制器来联接不同的模型和视图去完成用户的需求</li>
+<li>简化了分组开发－不同的开发人员可同步开发应用项目中的视图、控制器逻辑和业务逻辑</li>
+</ul>
+<h4 id="缺点"><a href="#缺点" class="headerlink" title="缺点"></a>缺点</h4><ul>
+<li>增加系统结构及代码量－对于简单的界面，严格遵循MVC，使模型、视图与控制器分离，会增加结构的复杂性及相应的代码量</li>
+<li>不适用于中小型应用项目 － 将MVC应用到规模并不是很大的应用程序通常会降低开发效率，增加开发成本</li>
+<li>显著的学习曲线 － 关于掌握多种技术的知识成为常态。使用MVC的开发人员需要熟练掌握多种技术</li>
+</ul>
+<h3 id="12-1-3-MVC架构的实际应用"><a href="#12-1-3-MVC架构的实际应用" class="headerlink" title="12.1.3 MVC架构的实际应用"></a>12.1.3 MVC架构的实际应用</h3><p>MVC 不是一种技术，而是一种理念。下面是一个通过 JavaScript 所实现的基于 MVC 模型，在这个简短的代码中就写成了一个具有完整 MVC 架构模式概念的示例。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/** 模拟 Model, View, Controller */</span></span><br><span class="line"><span class="keyword">var</span> M = &#123;&#125;, V = &#123;&#125;, C = &#123;&#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment">/** Model 负责存储数据 */</span></span><br><span class="line">M.data = <span class="string">"hello world"</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">/** View 负责将数据显示在屏幕上 */</span></span><br><span class="line">V.render = <span class="function">(<span class="params">M</span>) =&gt;</span> &#123; alert(M.data); &#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/** Controller 作为一个 M 和 V 的桥梁 */</span></span><br><span class="line">C.handleOnload = <span class="function"><span class="params">()</span> =&gt;</span> &#123; V.render(M); &#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/** 在网页加载时调用 Controller */</span></span><br><span class="line"><span class="built_in">window</span>.onload = C.handleOnload;</span><br></pre></td></tr></table></figure>
+
+<h3 id="调用链码－设计业务层"><a href="#调用链码－设计业务层" class="headerlink" title="调用链码－设计业务层"></a>调用链码－设计业务层</h3><h2 id="目标-1"><a href="#目标-1" class="headerlink" title="目标"></a>目标</h2><ol>
+<li>实现应用业务层</li>
+<li>掌握SDK调用链码的相关API</li>
+</ol>
+<h2 id="任务实现"><a href="#任务实现" class="headerlink" title="任务实现"></a>任务实现</h2><p><code>fabric-sdk</code> 不仅提供了相应的强大功能，而且还给开发人员设计提供了相应的API 接口，以方便开发人员随时调用。做为开发设计人员，我们不仅要考虑用户操作的方便性及可交互性，还需要考虑应用程序后期的可扩展性及维护性，为此我们将为应用增加一个业务层，所有的客户请求都由业务层发送给链码，通过对链码的调用，进而实现对分类账本状态的操作。</p>
+<h3 id="12-2-1-事件处理"><a href="#12-2-1-事件处理" class="headerlink" title="12.2.1 事件处理"></a>12.2.1 事件处理</h3><p>在项目根目录下创建一个 <code>service</code> 目录作为业务层，在业务层中，我们使用 <code>Fabric-SDK-Go</code> 提供的接口对象调用相应的 API 以实现对链码的访问，最终实现对分类账本中的状态进行操作。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> <span class="built_in">cd</span> <span class="variable">$GOPATH</span>/src/github.com/kongyixueyuan.com/kongyixueyuan</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> mkdir service</span></span><br></pre></td></tr></table></figure>
+
+<p>在 <code>service</code> 目录下创建 <code>domain.go</code> 文件并进行编辑， 声明一个结构体及对事件相关而封装的源代码</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> vim service/domain.go</span></span><br></pre></td></tr></table></figure>
+
+<p><code>domain.go</code> 文件完整内容如下：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">  author: hanxiaodong</span></span><br><span class="line"><span class="comment">  QQ群（专业Fabric交流群）：862733552</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">package</span> service</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">    <span class="string">"github.com/hyperledger/fabric-sdk-go/pkg/client/channel"</span></span><br><span class="line">    <span class="string">"fmt"</span></span><br><span class="line">    <span class="string">"time"</span></span><br><span class="line">    <span class="string">"github.com/hyperledger/fabric-sdk-go/pkg/common/providers/fab"</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="keyword">type</span> ServiceSetup <span class="keyword">struct</span> &#123;</span><br><span class="line">    ChaincodeID    <span class="keyword">string</span></span><br><span class="line">    Client    *channel.Client</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">regitserEvent</span><span class="params">(client *channel.Client, chaincodeID, eventID <span class="keyword">string</span>)</span> <span class="params">(fab.Registration, &lt;-<span class="keyword">chan</span> *fab.CCEvent)</span></span> &#123;</span><br><span class="line"></span><br><span class="line">    reg, notifier, err := client.RegisterChaincodeEvent(chaincodeID, eventID)</span><br><span class="line">    <span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">        fmt.Println(<span class="string">"注册链码事件失败: %s"</span>, err)</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> reg, notifier</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">eventResult</span><span class="params">(notifier &lt;-<span class="keyword">chan</span> *fab.CCEvent, eventID <span class="keyword">string</span>)</span> <span class="title">error</span></span> &#123;</span><br><span class="line">    <span class="keyword">select</span> &#123;</span><br><span class="line">    <span class="keyword">case</span> ccEvent := &lt;-notifier:</span><br><span class="line">        fmt.Printf(<span class="string">"接收到链码事件: %v\n"</span>, ccEvent)</span><br><span class="line">    <span class="keyword">case</span> &lt;-time.After(time.Second * <span class="number">20</span>):</span><br><span class="line">        <span class="keyword">return</span> fmt.Errorf(<span class="string">"不能根据指定的事件ID接收到相应的链码事件(%s)"</span>, eventID)</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">nil</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="12-2-2-调用链码添加状态"><a href="#12-2-2-调用链码添加状态" class="headerlink" title="12.2.2 调用链码添加状态"></a>12.2.2 调用链码添加状态</h3><p>在 <code>service</code> 目录下创建 <code>SimpleService.go</code> 文件</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> vim service/SimpleService.go</span></span><br></pre></td></tr></table></figure>
+
+<p>在 <code>SimpleService.go</code> 文件中编写内容如下，通过一个 <code>SetInfo</code> 函数实现链码的调用，向分类账本中添加状态的功能：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">  author: hanxiaodong</span></span><br><span class="line"><span class="comment">  QQ群（专业Fabric交流群）：862733552</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">package</span> service</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">    <span class="string">"github.com/hyperledger/fabric-sdk-go/pkg/client/channel"</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(t *ServiceSetup)</span> <span class="title">SetInfo</span><span class="params">(name, num <span class="keyword">string</span>)</span> <span class="params">(<span class="keyword">string</span>, error)</span></span> &#123;</span><br><span class="line"></span><br><span class="line">    eventID := <span class="string">"eventSetInfo"</span></span><br><span class="line">    reg, notifier := regitserEvent(t.Client, t.ChaincodeID, eventID)</span><br><span class="line">    <span class="keyword">defer</span> t.Client.UnregisterChaincodeEvent(reg)</span><br><span class="line"></span><br><span class="line">    req := channel.Request&#123;ChaincodeID: t.ChaincodeID, Fcn: <span class="string">"set"</span>, Args: [][]<span class="keyword">byte</span>&#123;[]<span class="keyword">byte</span>(name), []<span class="keyword">byte</span>(num), []<span class="keyword">byte</span>(eventID)&#125;&#125;</span><br><span class="line">    respone, err := t.Client.Execute(req)</span><br><span class="line">    <span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="string">""</span>, err</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    err = eventResult(notifier, eventID)</span><br><span class="line">    <span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="string">""</span>, err</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">string</span>(respone.TransactionID), <span class="literal">nil</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>测试添加状态</strong></p>
+<p>编辑 <code>main.go</code> 文件</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> vim main.go</span></span><br></pre></td></tr></table></figure>
+
+<p><code>main.go</code> 中创建一个对象，并调用 <code>SetInfo</code> 函数，内容如下：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">  author: hanxiaodong</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">    [......]</span><br><span class="line">    <span class="string">"github.com/kongyixueyuan.com/kongyixueyuan/service"</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line">[......]</span><br><span class="line">    <span class="comment">//===========================================//</span></span><br><span class="line"></span><br><span class="line">    serviceSetup := service.ServiceSetup&#123;</span><br><span class="line">        ChaincodeID:SimpleCC,</span><br><span class="line">        Client:channelClient,</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    msg, err := serviceSetup.SetInfo(<span class="string">"hanxiaodong"</span>, <span class="string">"kongyixueyuan"</span>)</span><br><span class="line">    <span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">        fmt.Println(err)</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        fmt.Println(msg)</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//===========================================//</span></span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>执行 <code>make</code> 命令运行应用程序</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> make</span></span><br></pre></td></tr></table></figure>
+
+<p>执行后如下图所示：</p>
+<p><img src="http://image.chaindesk.cn/12.1_7_1.png/mark" alt="测试添加状态"></p>
+<h3 id="12-2-3-调用链码查询状态"><a href="#12-2-3-调用链码查询状态" class="headerlink" title="12.2.3 调用链码查询状态"></a>12.2.3 调用链码查询状态</h3><p>通过上面的 <code>setInfo(name, num string)</code> 函数，实现了向分类账本中添加状态，那么我们还需要实现从该分类账本中根据指定的 key 查询出相应的状态，编辑 <code>service/SimpleService.go</code> 文件，向该文件中添加实现查询状态的相应代码。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> vim service/SimpleService.go</span></span><br></pre></td></tr></table></figure>
+
+<p>定义一个 <code>GetInfo</code> 函数，接收一个字符串类型的参数，该函数实现通过调用链码而查询状态的功能，该函数完整代码如下：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">[......]</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(t *ServiceSetup)</span> <span class="title">GetInfo</span><span class="params">(name <span class="keyword">string</span>)</span> <span class="params">(<span class="keyword">string</span>, error)</span></span>&#123;</span><br><span class="line"></span><br><span class="line">    req := channel.Request&#123;ChaincodeID: t.ChaincodeID, Fcn: <span class="string">"get"</span>, Args: [][]<span class="keyword">byte</span>&#123;[]<span class="keyword">byte</span>(name)&#125;&#125;</span><br><span class="line">    respone, err := t.Client.Query(req)</span><br><span class="line">    <span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="string">""</span>, err</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">string</span>(respone.Payload), <span class="literal">nil</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>测试查询状态</strong></p>
+<p>编辑 <code>main.go</code> 文件</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> vim main.go</span></span><br></pre></td></tr></table></figure>
+
+<p>在 <code>main.go</code> 文件中添加调用代码如下内容：</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">[......]</span><br><span class="line"></span><br><span class="line">    msg, err = serviceSetup.GetInfo(<span class="string">"hanxiaodong"</span>)</span><br><span class="line">    <span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">        fmt.Println(err)</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        fmt.Println(msg)</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//===========================================//</span></span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>执行 <code>make</code> 命令运行应用程序</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> make</span></span><br></pre></td></tr></table></figure>
+
+<p>执行后如下图所示：</p>
+<p><img src="http://image.chaindesk.cn/12.1_7_2.png/mark" alt="业务层测试"></p>
+<p>未经授权禁止转载、改编，转载请注明出处！</p>
+<p>本文地址: <a href="https://www.chaindesk.cn/witbook/11/219" target="_blank" rel="noopener">https://www.chaindesk.cn/witbook/11/219</a></p>
+<h3 id="MVC架构应用实现"><a href="#MVC架构应用实现" class="headerlink" title="MVC架构应用实现"></a>MVC架构应用实现</h3><h2 id="目标-2"><a href="#目标-2" class="headerlink" title="目标"></a>目标</h2><ol>
+<li>完成Web应用</li>
+<li>理解Goweb应用开发重点</li>
+</ol>
+<h2 id="任务实现-1"><a href="#任务实现-1" class="headerlink" title="任务实现"></a>任务实现</h2><h3 id="12-3-1-目录结构"><a href="#12-3-1-目录结构" class="headerlink" title="12.3.1 目录结构"></a>12.3.1 目录结构</h3><p>通过业务层已经实现了利用 <code>fabric-sdk-go</code> 调用链码查询或操作分类账本状态，但是开发人员的工作不可能就此而止，需要考虑用户该如何使用此应用程序，一般情况下，交给用户使用的应用程序有以下两种方式：</p>
+<ol>
+<li>桌面应用：传统实现方式，将应用程序打包成为一个可执行的安装程序之后，由用户安装在本地然后运行（可能需要特定的环境），进而进行相关操作。</li>
+<li>Web浏览器应用：此方式相对于用户而言，非常方便，用户只需要在本地的浏览器中就可以使用应用程序的相关功能。</li>
+</ol>
+<p>为了方便用户的操作使用，我们使用第二种方式来实现。以便于让用户通过浏览器就可以实现对分类账的操作。同样我们需要考虑应用程序后期的可扩展性及维护性，为此我们将应用程序进行了分层管理，设计增加了控制层及视图层。</p>
+<p>视图层提供用户的可视界面与交互，控制层接收用户的请求，由控制层访问业务层，进而调用链码对分类账进行操作，之后将操作结果响应给客户端浏览器。</p>
+<p>Go 语言本身提供了一个 Web 服务器来处理 HTTP 请求，并为 HTML 页面提供模板。下面我们来实现 Web 应用程序。</p>
+<p>新建web目录，包含三个其他目录的目录。将使用 MVC（Model（模型）－View（视图） - Controller（控制器））模式使其更具可读性及扩展性、维护性。模型将是区块链部分，视图是模板，控制器由<code>controllers</code>目录中的功能提供。</p>
+<ul>
+<li><code>web/tpl</code>：包含所有的HTML页面</li>
+<li><code>web/static</code>：包含所有静态CSS，Javascript，图片等文件</li>
+<li><code>web/controllers</code> ：包含将呈现模板的所有函数</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> <span class="built_in">cd</span> <span class="variable">$GOPATH</span>/src/github.com/kongyixueyuan.com/kongyixueyuan</span></span><br></pre></td></tr></table></figure>
+
+<p>创建相应的目录：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> mkdir -p web/controller</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> mkdir -p web/static/css</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> mkdir -p web/static/img</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> mkdir -p web/tpl</span></span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>提示：可以直接使用 <code>git clone https://github.com/kevin-hf/hfsdkgoweb.git</code> 命令克隆完整的内容到项目的根目录中，然后将文件夹重命名： <code>mv hfsdkgoweb/ web</code> ，重新命名后直接跳至 8.6 步骤执行。</p>
+</blockquote>
+<p><strong><code>web/controller</code> 目录</strong></p>
+<p><code>controller/controllerHandler.go</code> ： 用于接收并处理各种客户端请求的源代码文件</p>
+<p><code>controller/controllerResponse</code>：用于编写响应客户端请求的源代码文件</p>
+<p><strong><code>web/static</code>目录下包括三个子目录，分别为：</strong></p>
+<p><code>web/static/css</code> ：用于存放页面布局及显示样式所需的 <code>CSS</code> 文件</p>
+<p><code>web/static/js</code> ：用于存放编写的与用户交互的 <code>JavaScript</code> 源码文件</p>
+<p><code>web/static/img</code>：用户存放页面显示所需的所有图片文件</p>
+<p><strong><code>web/tpl</code> 目录下包括三个静态 HTML 页面文件，分别为：</strong></p>
+<p><code>web/tpl/index.html</code>： 用户访问的首页面</p>
+<p><code>web/tpl/queryReq.html</code>： 用于显示显示查询结果的页面</p>
+<p><code>web/tpl/setInfo.html</code>： 用户设置/修改状态的页面</p>
+<p><strong><code>web/webServer.go</code></strong>：用于指定启动Web服务及相应的路由信息</p>
+<p>具体目录结构如下图所示：</p>
+<p><img src="http://image.chaindesk.cn/12.1_a.png/mark" alt="web应用目录结构"></p>
+<h3 id="12-3-2-指定响应处理文件"><a href="#12-3-2-指定响应处理文件" class="headerlink" title="12.3.2 指定响应处理文件"></a>12.3.2 指定响应处理文件</h3><p>在 <code>web/controller</code> 目录下创建 <code>controllerResponse.go</code> 文件，用于响应客户端的请求</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> vim web/controller/controllerResponse.go</span></span><br></pre></td></tr></table></figure>
+
+<p><code>controllerResponse.go</code> 内容参见：</p>
+<ul>
+<li><a href="https://github.com/kevin-hf/hfsdkgoweb/blob/master/controller/controllerResponse.go" target="_blank" rel="noopener">web/controller/controllerResponse.go</a></li>
+</ul>
+<h3 id="12-3-3-请求处理控制器"><a href="#12-3-3-请求处理控制器" class="headerlink" title="12.3.3 请求处理控制器"></a>12.3.3 请求处理控制器</h3><p>在 <code>web/controller</code> 目录下添加 <code>controllerHandler.go</code> 文件，用于接收客户端请求并做出相应的处理</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> vim web/controller/controllerHandler.go</span></span><br></pre></td></tr></table></figure>
+
+<p><code>controllerHandler.go</code> 文件中添加内容参见：</p>
+<ul>
+<li><a href="https://github.com/kevin-hf/hfsdkgoweb/blob/master/controller/controllerHandler.go" target="_blank" rel="noopener">web/controller/controllerHandler.go</a></li>
+</ul>
+<h3 id="12-3-4-编写页面"><a href="#12-3-4-编写页面" class="headerlink" title="12.3.4 编写页面"></a>12.3.4 编写页面</h3><p>页面详细内容参见：</p>
+<ul>
+<li><a href="https://github.com/kevin-hf/hfsdkgoweb/blob/master/tpl/index.html" target="_blank" rel="noopener">web/tpl/index.html</a></li>
+<li><a href="https://github.com/kevin-hf/hfsdkgoweb/blob/master/tpl/queryReq.html" target="_blank" rel="noopener">web/tpl/queryReq.html</a></li>
+<li><a href="https://github.com/kevin-hf/hfsdkgoweb/blob/master/tpl/setInfo.html" target="_blank" rel="noopener">web/tpl/setInfo.html</a></li>
+</ul>
+<h3 id="12-3-5-添加路由信息"><a href="#12-3-5-添加路由信息" class="headerlink" title="12.3.5 添加路由信息"></a>12.3.5 添加路由信息</h3><p>在 <code>web</code> 目录中添加 <code>webServer.go</code> 文件</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> vim web/webServer.go</span></span><br></pre></td></tr></table></figure>
+
+<p>编辑 <code>webServer.go</code> 文件，内容参见：</p>
+<ul>
+<li><a href="https://github.com/kevin-hf/hfsdkgoweb/blob/master/webServer.go" target="_blank" rel="noopener">web/webServer.go</a></li>
+</ul>
+<h3 id="12-3-6-启动Web服务"><a href="#12-3-6-启动Web服务" class="headerlink" title="12.3.6 启动Web服务"></a>12.3.6 启动Web服务</h3><p>最后编辑 <code>main.go</code> ，以便启动Web界面实现Web应用程序</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> vim main.go</span></span><br></pre></td></tr></table></figure>
+
+<p>添加如下内容:</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span>(</span><br><span class="line">    [......]</span><br><span class="line">    <span class="string">"github.com/kongyixueyuan.com/kongyixueyuan/web"</span></span><br><span class="line">    <span class="string">"github.com/kongyixueyuan.com/kongyixueyuan/web/controller"</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span>&#123;&#125;</span><br><span class="line">    [......]</span><br><span class="line"></span><br><span class="line">    app := controller.Application&#123;</span><br><span class="line">        Fabric: &amp;serviceSetup,</span><br><span class="line">    &#125;</span><br><span class="line">    web.WebStart(&amp;app)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>执行 <code>make</code> 命令启动Web应用：</p>
+<p><img src="http://image.chaindesk.cn/12.1_8.png/mark" alt="启动Web应用"></p>
+<h3 id="12-3-7-页面访问"><a href="#12-3-7-页面访问" class="headerlink" title="12.3.7 页面访问"></a>12.3.7 页面访问</h3><p>打开浏览器访问: <a href="http://localhost:9000/" target="_blank" rel="noopener">htt://localhost:9000/</a></p>
+<p>因为我们这是一个简单的 Web 应用示例，所以页面不会要求达到多么美观的地步，只是能够实现相应的功能即可。根据访问的地址，首先进入 <code>index.html</code> 页面，该 <code>index.html</code> 页面提供了两个链接（也可以通过页面顶部的菜单中访问），用于实现在在分类账本中进行状态查询或对分类账本中的状态进行修改的操作（在此不实现添加状态的操作）。</p>
+<p><img src="http://image.chaindesk.cn/index.png/mark" alt="index"></p>
+<p>因为我们在业务层中测试过一次，通过调用业务层向分类账中添加了一条状态， 所以现在分类帐中有一个 <code>key 为 Hanxiaodong</code>，<code>value 为 Kongyixueyuan</code> 的键值对数据，可以点击 <code>查询信息</code> 的链接实现查询</p>
+<p><img src="http://image.chaindesk.cn/queryReq.png/mark" alt="queryReq"></p>
+<p>点击页面中的 <code>设置/修改</code> 链接后进入一个表单页面，该页面提供了一个更改状态的表单，表单中的 key 为固定值，用户需要输入对应的 Val，之后点击提交按钮发送请求。</p>
+<p><img src="http://image.chaindesk.cn/setInfo.png/mark" alt="setInfo"></p>
+<p>在 Val 输入框中输入一个值，如 <code>ChainDesk</code> 后点击提交按钮，表单被提交到服务器，服务器处理完毕将返回操作成功的交易ID并将其显示在页面中。</p>
+<p><img src="http://image.chaindesk.cn/setResponse.png/mark" alt="setResponse"></p>
+<p>我们可以通过点击页面中的 <code>查询信息</code> 链接来查看状态是否更改成功</p>
+<p><img src="http://image.chaindesk.cn/query2.png/mark" alt="query2"></p>
+<h2 id="FAQ"><a href="#FAQ" class="headerlink" title="FAQ"></a>FAQ</h2><ol>
+<li><p>为什么要将客户端请求与响应的代码分开写在不同的文件中？</p>
+<p>一个文件中的编写的代码不宜过多，如果合理设计，分开写在不同的文件中有利于提高代码的可读性还可以提高应用程序的可维护性与可扩展性。</p>
+</li>
+<li><p>路由指的是什么意思？</p>
+<p>路由其实就是设定客户端不同的请求访问地址。</p>
+</li>
+</ol>
+
+    </div>
+
+    
+    
+    
+    <div>
+      
+        <div>
+    
+        <div style="text-align:center;color: #ccc;font-size:14px;">-------------本文结束<i class="fa fa-paw"></i>感谢您的阅读-------------</div>
+    
+</div>
+
+      
+    </div>
+        <div class="reward-container">
+  <div>坚持原创技术分享，您的支持将鼓励我继续创作！</div>
+  <button disable="enable" onclick="var qr = document.getElementById(&quot;qr&quot;); qr.style.display = (qr.style.display === 'none') ? 'block' : 'none';">
+    打赏
+  </button>
+  <div id="qr" style="display: none;">
+      
+      <div style="display: inline-block;">
+        <img src="/images/wechatpay.jpg" alt="Hongery 微信支付">
+        <p>微信支付</p>
+      </div>
+      
+      <div style="display: inline-block;">
+        <img src="/images/alipay.jpg" alt="Hongery 支付宝">
+        <p>支付宝</p>
+      </div>
+
+  </div>
+</div>
+
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>Hongery
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="http://yoursite.com/2020/03/27/%E8%81%94%E7%9B%9F%E9%93%BE/%E7%AC%AC12%E7%AB%A0Web%E5%BA%94%E7%94%A8%E5%AE%9E%E7%8E%B0/" title="第12章web应用实现">http://yoursite.com/2020/03/27/联盟链/第12章Web应用实现/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/blockchain/" rel="tag"># blockchain</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/03/27/%E8%81%94%E7%9B%9F%E9%93%BE/%E7%AC%AC10%E7%AB%A0Fabric-SDK-Go%E7%9A%84Web%E9%A1%B9%E7%9B%AE%E5%AE%9E%E6%88%98-%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/" rel="prev" title="第10章Fabric-SDK-Goweb项目">
+      <i class="fa fa-chevron-left"></i> 第10章Fabric-SDK-Goweb项目
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2020/04/05/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/HTPP/" rel="next" title="HTPP">
+      HTPP <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let activeClass = CONFIG.comments.activeClass;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#MVC是什么：合理的设计我们的应用"><span class="nav-text">MVC是什么：合理的设计我们的应用</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#目标"><span class="nav-text">目标</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#12-1-MVC"><span class="nav-text">12.1 MVC</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#12-1-1-MVC架构概念"><span class="nav-text">12.1.1 MVC架构概念</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#12-1-2-MVC架构优缺点"><span class="nav-text">12.1.2 MVC架构优缺点</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#优点"><span class="nav-text">优点</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#缺点"><span class="nav-text">缺点</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#12-1-3-MVC架构的实际应用"><span class="nav-text">12.1.3 MVC架构的实际应用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#调用链码－设计业务层"><span class="nav-text">调用链码－设计业务层</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#目标-1"><span class="nav-text">目标</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#任务实现"><span class="nav-text">任务实现</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#12-2-1-事件处理"><span class="nav-text">12.2.1 事件处理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#12-2-2-调用链码添加状态"><span class="nav-text">12.2.2 调用链码添加状态</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#12-2-3-调用链码查询状态"><span class="nav-text">12.2.3 调用链码查询状态</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#MVC架构应用实现"><span class="nav-text">MVC架构应用实现</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#目标-2"><span class="nav-text">目标</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#任务实现-1"><span class="nav-text">任务实现</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#12-3-1-目录结构"><span class="nav-text">12.3.1 目录结构</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#12-3-2-指定响应处理文件"><span class="nav-text">12.3.2 指定响应处理文件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#12-3-3-请求处理控制器"><span class="nav-text">12.3.3 请求处理控制器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#12-3-4-编写页面"><span class="nav-text">12.3.4 编写页面</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#12-3-5-添加路由信息"><span class="nav-text">12.3.5 添加路由信息</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#12-3-6-启动Web服务"><span class="nav-text">12.3.6 启动Web服务</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#12-3-7-页面访问"><span class="nav-text">12.3.7 页面访问</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#FAQ"><span class="nav-text">FAQ</span></a></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Hongery"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">Hongery</p>
+  <div class="site-description" itemprop="description">直到这一刻微笑着说话为止，我至少留下了一公升眼泪</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">107</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">9</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/Hongery" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;Hongery" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://blog.csdn.net/weixin_40098405" title="CSDN → https:&#x2F;&#x2F;blog.csdn.net&#x2F;weixin_40098405" rel="noopener" target="_blank"><i class="fa fa-fw fa-crosshairs"></i>CSDN</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:1281185088@qq.com" title="E-Mail1 → mailto:1281185088@qq.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail1</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:hongery@yeah.net" title="E-Mail2 → mailto:hongery@yeah.net" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail2</a>
+      </span>
+  </div>
+  <div class="cc-license motion-element" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">hongery</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+      <span class="post-meta-item-text">站点总字数：</span>
+    <span title="站点总字数">NaNm</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span class="post-meta-item-text">站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">NaN:aN字</span>
+</div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>
+<!-- 页面点击小红心 -->
+<script type="text/javascript" src="/js/clicklove.js"></script>

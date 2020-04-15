@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.1.1">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/avatar.jpg">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/avatar.jpg">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    hostname: new URL('http://yoursite.com').hostname,
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.6.0',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},
+    copycode: {"enable":true,"show_result":true,"style":"mac"},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":true},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    comments: {"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: 'search.xml',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}
+  };
+</script>
+
+  <meta name="description" content="椭圆曲线密码学1. 椭圆曲线密码学简介椭圆曲线密码学（英语：Elliptic curve cryptography，缩写为 ECC），一种建立公开密钥加密的算法，基于椭圆曲线数学。椭圆曲线在密码学中的使用是在1985年由Neal Koblitz和Victor Miller分别独立提出的。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="第10章椭圆曲线密码学">
+<meta property="og:url" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2019&#x2F;03&#x2F;17&#x2F;%E5%AE%8C%E6%95%B4%E5%AF%86%E7%A0%81%E5%AD%A6&#x2F;%E7%AC%AC10%E7%AB%A0%E6%A4%AD%E5%9C%86%E6%9B%B2%E7%BA%BF%E5%AF%86%E7%A0%81%E5%AD%A6&#x2F;index.html">
+<meta property="og:site_name" content="Hongery">
+<meta property="og:description" content="椭圆曲线密码学1. 椭圆曲线密码学简介椭圆曲线密码学（英语：Elliptic curve cryptography，缩写为 ECC），一种建立公开密钥加密的算法，基于椭圆曲线数学。椭圆曲线在密码学中的使用是在1985年由Neal Koblitz和Victor Miller分别独立提出的。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http:&#x2F;&#x2F;img.kongyixueyuan.com&#x2F;%E6%A4%AD%E5%9C%86%E6%9B%B2%E7%BA%BF%E5%9B%BE.jpg">
+<meta property="og:image" content="http:&#x2F;&#x2F;img.kongyixueyuan.com&#x2F;%E6%A4%AD%E5%9C%86%E6%9B%B2%E7%BA%BF%E5%8A%A0%E6%B3%95%E8%BF%90%E7%AE%97.jpg">
+<meta property="og:image" content="http:&#x2F;&#x2F;img.kongyixueyuan.com&#x2F;%E6%A4%AD%E5%9C%86%E6%9B%B2%E7%BA%BF2%E5%80%8D%E8%BF%90%E7%AE%97.jpg">
+<meta property="og:image" content="http:&#x2F;&#x2F;img.kongyixueyuan.com&#x2F;%E6%A4%AD%E5%9C%86%E6%9B%B2%E7%BA%BF%E6%AD%A3%E8%B4%9F%E8%BF%90%E7%AE%97.jpg">
+<meta property="article:published_time" content="2019-03-17T07:59:45.000Z">
+<meta property="article:modified_time" content="2020-04-05T13:27:52.756Z">
+<meta property="article:author" content="Hongery">
+<meta property="article:tag" content="密码学">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http:&#x2F;&#x2F;img.kongyixueyuan.com&#x2F;%E6%A4%AD%E5%9C%86%E6%9B%B2%E7%BA%BF%E5%9B%BE.jpg">
+
+<link rel="canonical" href="http://yoursite.com/2019/03/17/%E5%AE%8C%E6%95%B4%E5%AF%86%E7%A0%81%E5%AD%A6/%E7%AC%AC10%E7%AB%A0%E6%A4%AD%E5%9C%86%E6%9B%B2%E7%BA%BF%E5%AF%86%E7%A0%81%E5%AD%A6/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true
+  };
+</script>
+
+  <title>第10章椭圆曲线密码学 | Hongery</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Hongery</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">记录学习中的点点滴滴</p>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="none"
+           placeholder="搜索..." spellcheck="false"
+           type="text" id="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+  <a href="https://github.com/Hongery" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/03/17/%E5%AE%8C%E6%95%B4%E5%AF%86%E7%A0%81%E5%AD%A6/%E7%AC%AC10%E7%AB%A0%E6%A4%AD%E5%9C%86%E6%9B%B2%E7%BA%BF%E5%AF%86%E7%A0%81%E5%AD%A6/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="Hongery">
+      <meta itemprop="description" content="直到这一刻微笑着说话为止，我至少留下了一公升眼泪">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hongery">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          第10章椭圆曲线密码学
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-03-17 15:59:45" itemprop="dateCreated datePublished" datetime="2019-03-17T15:59:45+08:00">2019-03-17</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-04-05 21:27:52" itemprop="dateModified" datetime="2020-04-05T21:27:52+08:00">2020-04-05</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E5%AF%86%E7%A0%81%E5%AD%A6/" itemprop="url" rel="index">
+                    <span itemprop="name">密码学</span>
+                  </a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span><br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-file-word-o"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>4k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-clock-o"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>4 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h3 id="椭圆曲线密码学"><a href="#椭圆曲线密码学" class="headerlink" title="椭圆曲线密码学"></a>椭圆曲线密码学</h3><h2 id="1-椭圆曲线密码学简介"><a href="#1-椭圆曲线密码学简介" class="headerlink" title="1. 椭圆曲线密码学简介"></a>1. 椭圆曲线密码学简介</h2><p>椭圆曲线密码学（英语：Elliptic curve cryptography，缩写为 ECC），一种建立公开密钥加密的算法，基于椭圆曲线数学。椭圆曲线在密码学中的使用是在1985年由Neal Koblitz和Victor Miller分别独立提出的。</p>
+<a id="more"></a>ECC的主要优势是在某些情况下它比其他的方法使用更小的密钥——比如RSA加密算法——提供相当的或更高等级的安全。
+<p>椭圆曲线密码学的许多形式有稍微的不同，所有的都依赖于被广泛承认的解决椭圆曲线离散对数问题的困难性上.<br>不管是RSA还是ECC或者其它，公钥加密算法都是依赖于某个正向计算很简单（多项式时间复杂度），而逆向计算很难（指数级时间复杂度）的数学问题。<br>椭圆曲线依赖的数学难题是:<br>k为正整数，G是椭圆曲线上的点（称为基点）, k*G=Q , 已知G和Q，很难计算出k</p>
+<h2 id="2-椭圆曲线"><a href="#2-椭圆曲线" class="headerlink" title="2. 椭圆曲线"></a>2. 椭圆曲线</h2><p>一般，椭圆曲线可以用如下二元三阶方程表示：<br>　　y² = x³ + ax + b，其中a、b为系数。<br>参数a=0;b=7,得到y² = x³ +7，这个方程式产生的曲线就是secp256k1曲线。<br>曲线形状：<img src="http://img.kongyixueyuan.com/%E6%A4%AD%E5%9C%86%E6%9B%B2%E7%BA%BF%E5%9B%BE.jpg" alt="img"></p>
+<h2 id="3-椭圆曲线在密码学的应用"><a href="#3-椭圆曲线在密码学的应用" class="headerlink" title="3. 椭圆曲线在密码学的应用"></a>3. 椭圆曲线在密码学的应用</h2><p>椭圆曲线是连续的，并不适合用于加密；所以，我们必须把椭圆曲线变成离散的点，我们要把椭圆曲线定义在有限域上。<br>我们给出一个有限域Fp，Fp中有p（p为质数）个元素0,1,2,…, p-2,p-1<br>Fp的加法是a+b≡c(mod p)<br>Fp的乘法是a×b≡c(mod p)<br>Fp的除法是a÷b≡c(mod p)，即 a×b^(-1)≡c (mod p)，b-1也是一个0到p-1之间的整数，但满足b×b-1≡1 (mod p)</p>
+<p>考虑K=kG ，其中K、G为椭圆曲线Ep(a,b)上的点，n为G的阶（nG=O∞ ），k为小于n的整数。则给定k和G，根据加法法则，计算K很容易但反过来，给定K和G，求k就非常困难。因为实际使用中的ECC原则上把p取得相当大，n也相当大，要把n个解点逐一算出来列成上表是不可能的。这就是椭圆曲线加密算法的数学依据。 点G称为基点（base point）k（k 小于n）为私有密钥（privte key），K为公开密钥（public key)</p>
+<h2 id="4-椭圆曲线运算"><a href="#4-椭圆曲线运算" class="headerlink" title="4. 椭圆曲线运算"></a>4. 椭圆曲线运算</h2><p>• 加法<br>• 过曲线上的两点A、B画一条直线，找到直线与椭圆曲线的交点，交点关于x轴对称位置的点，定义为A+B，即为加法。如下图所示：<br><img src="http://img.kongyixueyuan.com/%E6%A4%AD%E5%9C%86%E6%9B%B2%E7%BA%BF%E5%8A%A0%E6%B3%95%E8%BF%90%E7%AE%97.jpg" alt="img">• 二倍运算<br>• 上述方法无法解释A + A，即两点重合的情况。因此在这种情况下，将椭圆曲线在A点的切线，与椭圆曲线的交点，交点关于x轴对称位置的点，定义为A + A，即2A，即为二倍运算。<br><img src="http://img.kongyixueyuan.com/%E6%A4%AD%E5%9C%86%E6%9B%B2%E7%BA%BF2%E5%80%8D%E8%BF%90%E7%AE%97.jpg" alt="img">• 正负取反<br>• 将A关于x轴对称位置的点定义为-A，即椭圆曲线的正负取反运算。如下图所示：<br><img src="http://img.kongyixueyuan.com/%E6%A4%AD%E5%9C%86%E6%9B%B2%E7%BA%BF%E6%AD%A3%E8%B4%9F%E8%BF%90%E7%AE%97.jpg" alt="img">• 无穷远点<br>• 如果将A与-A相加，过A与-A的直线平行于y轴，可以认为直线与椭圆曲线相交于无穷远点。<br>综上，定义了A+B、2A运算，因此给定椭圆曲线的某一点G，可以求出2G、3G（即G + 2G）、4G……。即：当给定G点时，已知x，求xG点并不困难。反之，已知xG点，求x则非常困难。此即为椭圆曲线加密算法背后的数学原理。</p>
+<h2 id="5-有限域上的椭圆曲线运算"><a href="#5-有限域上的椭圆曲线运算" class="headerlink" title="5. 有限域上的椭圆曲线运算"></a>5. 有限域上的椭圆曲线运算</h2><p>• 椭圆曲线要形成一条光滑的曲线，要求x,y取值均为实数，即实数域上的椭圆曲线。但椭圆曲线加密算法，并非使用实数域，而是使用有限域。按数论定义，有限域GF(p)指给定某个质数p，由0、1、2……p-1共p个元素组成的整数集合中定义的加减乘除运算。<br>• 假设椭圆曲线为y² = x³ + x + 1，其在有限域GF(23)上时，写作：y² ≡ x³ + x + 1 (mod 23)<br>• 此时，椭圆曲线不再是一条光滑曲线，而是一些不连续的点。以点(1,7)为例，7² ≡ 1³ + 1 + 1 ≡ 3 (mod 23)。如此还有如下点：<br>• (0,1) (0,22)(1,7) (1,16)(3,10) (3,13)(4,0)(5,4) (5,19)(6,4) (6,19)(7,11) (7,12)(9,7) (9,16)(11,3) (11,20)等等。<br>• 另外，如果P(x,y)为椭圆曲线上的点，则-P即(x,-y)也为椭圆曲线上的点。如点P(0,1)，-P=(0,-1)=(0,22)也为椭圆曲线上的点。</p>
+<h2 id="6-椭圆曲线加密算法原理"><a href="#6-椭圆曲线加密算法原理" class="headerlink" title="6. 椭圆曲线加密算法原理"></a>6. 椭圆曲线加密算法原理</h2><p>设私钥、公钥分别为k、K，即K = kG，其中G为G点。</p>
+<p>公钥加密：</p>
+<p>选择随机数r，将消息M生成密文C，该密文是一个点对，即：</p>
+<p>C = {rG, M+rK}，其中K为公钥</p>
+<p>私钥解密：</p>
+<p>M + rK - k(rG) = M + r(kG) - k(rG) = M</p>
+<p>其中k、K分别为私钥、公钥。</p>
+<h2 id="7-椭圆曲线签名算法原理"><a href="#7-椭圆曲线签名算法原理" class="headerlink" title="7. 椭圆曲线签名算法原理"></a>7. 椭圆曲线签名算法原理</h2><p>• 椭圆曲线签名算法，即ECDSA。设私钥、公钥分别为k、K，即K = kG，其中G为G点。<br>• 私钥签名：<br>• 1、选择随机数R，计算点RG(x, y)。<br>• 2、根据随机数R、消息M的哈希h、私钥k，计算出两个*big.int类型的数r，s。<br>• 3、将r，s转换成字节切片，并拼接一起，形成签名<br>• 4、将消息M、和签名发给接收方。<br>公钥验证签名：<br>1、接收方收到消息M、以及签名。<br>2、将签名提取出r，s<br>3、根据消息求哈希h。<br>4、通过r，s产生的一个点，如果这个点在椭圆曲线上，即验签成功。</p>
+<h2 id="8-椭圆曲线Ecc加密解密代码实现"><a href="#8-椭圆曲线Ecc加密解密代码实现" class="headerlink" title="8. 椭圆曲线Ecc加密解密代码实现"></a>8. 椭圆曲线Ecc加密解密代码实现</h2><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">•    <span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">   <span class="string">"/crypto/ecies"</span></span><br><span class="line">   <span class="string">"crypto/elliptic"</span></span><br><span class="line">   <span class="string">"crypto/rand"</span></span><br><span class="line">   <span class="string">"fmt"</span></span><br><span class="line">   <span class="string">"encoding/hex"</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">   msg:=<span class="string">"hello world"</span></span><br><span class="line"><span class="comment">//调用以太坊的曲线加密包下的方法产生私钥 prv,_:=ecies.GenerateKey(rand.Reader,elliptic.P256(),nil )</span></span><br><span class="line"><span class="comment">//私钥产生公钥</span></span><br><span class="line">   pub:=prv.PublicKey</span><br><span class="line"></span><br><span class="line"><span class="comment">//调用加密方法对明文进行加密</span></span><br><span class="line">ct,_:=ecies.Encrypt(rand.Reader,&amp;pub,[]<span class="keyword">byte</span>(msg),<span class="literal">nil</span>,<span class="literal">nil</span>)</span><br><span class="line">   scrt:=hex.EncodeToString(ct)</span><br><span class="line">   fmt.Println(scrt)</span><br><span class="line"><span class="comment">//对密文进行解密</span></span><br><span class="line">   ms,_:=prv.Decrypt(ct,<span class="literal">nil</span>,<span class="literal">nil</span>)</span><br><span class="line">   fmt.Println(<span class="keyword">string</span>(ms))</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="9-代码实现-ECDSA-椭圆曲线的签名和验签"><a href="#9-代码实现-ECDSA-椭圆曲线的签名和验签" class="headerlink" title="9. 代码实现(ECDSA)椭圆曲线的签名和验签"></a>9. 代码实现(ECDSA)椭圆曲线的签名和验签</h2><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">   <span class="string">"fmt"</span></span><br><span class="line">   <span class="string">"crypto/ecdsa"</span></span><br><span class="line">   <span class="string">"crypto/elliptic"</span></span><br><span class="line">   <span class="string">"crypto/rand"</span></span><br><span class="line">   <span class="string">"crypto/sha256"</span></span><br><span class="line">   <span class="string">"math/big"</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">   <span class="comment">//明文</span></span><br><span class="line">   message := []<span class="keyword">byte</span>(<span class="string">"Hello world"</span>)</span><br><span class="line"></span><br><span class="line">   <span class="comment">//获取私钥</span></span><br><span class="line">   key, err := NewSigningKey()</span><br><span class="line">   <span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">      <span class="keyword">return</span></span><br><span class="line">   &#125;</span><br><span class="line"></span><br><span class="line">   <span class="comment">//用私钥对明文进行签名</span></span><br><span class="line">   signature, err := Sign(message, key)</span><br><span class="line"></span><br><span class="line">   fmt.Printf(<span class="string">"签名后：%x\n"</span>, signature)</span><br><span class="line">   <span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">      <span class="keyword">return</span></span><br><span class="line">   &#125;</span><br><span class="line"></span><br><span class="line">   <span class="comment">//用公钥对签名进行验证，确认签名是否是对当前明文的有效</span></span><br><span class="line">   <span class="keyword">if</span> !Verify(message, signature, &amp;key.PublicKey) &#123;</span><br><span class="line">      fmt.Println(<span class="string">"验证失败！"</span>)</span><br><span class="line">      <span class="keyword">return</span></span><br><span class="line">   &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">      fmt.Println(<span class="string">"验证成功！"</span>)</span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">NewSigningKey</span><span class="params">()</span> <span class="params">(*ecdsa.PrivateKey, error)</span></span> &#123;</span><br><span class="line">   key, err := ecdsa.GenerateKey(elliptic.P256(), rand.Reader)</span><br><span class="line">   <span class="keyword">return</span> key, err</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 用私钥对明文进行签名</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">Sign</span><span class="params">(data []<span class="keyword">byte</span>, privkey *ecdsa.PrivateKey)</span> <span class="params">([]<span class="keyword">byte</span>, error)</span></span> &#123;</span><br><span class="line">   <span class="comment">// 对明文进行sha256散列，生成一个长度为32的字节数组</span></span><br><span class="line">   digest := sha256.Sum256(data)</span><br><span class="line"></span><br><span class="line">   <span class="comment">// 通过椭圆曲线方法对散列后的明文进行签名，返回两个big.int类型的大数</span></span><br><span class="line">   r, s, err := ecdsa.Sign(rand.Reader, privkey, digest[:])</span><br><span class="line">   <span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">      <span class="keyword">return</span> <span class="literal">nil</span>, err</span><br><span class="line">   &#125;</span><br><span class="line">   <span class="comment">//将大数转换成字节数组，并拼接起来，形成签名</span></span><br><span class="line">   signature := <span class="built_in">append</span>(r.Bytes(), s.Bytes()...)</span><br><span class="line">   <span class="keyword">return</span> signature, <span class="literal">nil</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 通过公钥验证签名</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">Verify</span><span class="params">(data, signature []<span class="keyword">byte</span>, pubkey *ecdsa.PublicKey)</span> <span class="title">bool</span></span> &#123;</span><br><span class="line">   <span class="comment">// 将明文转换成字节数组</span></span><br><span class="line">   digest := sha256.Sum256(data)</span><br><span class="line"></span><br><span class="line">   <span class="comment">//声明两个大数r，s</span></span><br><span class="line">   r := big.Int&#123;&#125;</span><br><span class="line">   s := big.Int&#123;&#125;</span><br><span class="line">   <span class="comment">//将签名平均分割成两部分切片，并将切片转换成*big.int类型</span></span><br><span class="line">   sigLen := <span class="built_in">len</span>(signature)</span><br><span class="line">   r.SetBytes(signature[:(sigLen / <span class="number">2</span>)])</span><br><span class="line">   s.SetBytes(signature[(sigLen / <span class="number">2</span>):])</span><br><span class="line"></span><br><span class="line">   <span class="comment">//通过公钥对得到的r，s进行验证</span></span><br><span class="line">   <span class="keyword">return</span> ecdsa.Verify(pubkey, digest[:], &amp;r, &amp;s)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+    </div>
+
+    
+    
+    
+    <div>
+      
+        <div>
+    
+        <div style="text-align:center;color: #ccc;font-size:14px;">-------------本文结束<i class="fa fa-paw"></i>感谢您的阅读-------------</div>
+    
+</div>
+
+      
+    </div>
+        <div class="reward-container">
+  <div>坚持原创技术分享，您的支持将鼓励我继续创作！</div>
+  <button disable="enable" onclick="var qr = document.getElementById(&quot;qr&quot;); qr.style.display = (qr.style.display === 'none') ? 'block' : 'none';">
+    打赏
+  </button>
+  <div id="qr" style="display: none;">
+      
+      <div style="display: inline-block;">
+        <img src="/images/wechatpay.jpg" alt="Hongery 微信支付">
+        <p>微信支付</p>
+      </div>
+      
+      <div style="display: inline-block;">
+        <img src="/images/alipay.jpg" alt="Hongery 支付宝">
+        <p>支付宝</p>
+      </div>
+
+  </div>
+</div>
+
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>Hongery
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="http://yoursite.com/2019/03/17/%E5%AE%8C%E6%95%B4%E5%AF%86%E7%A0%81%E5%AD%A6/%E7%AC%AC10%E7%AB%A0%E6%A4%AD%E5%9C%86%E6%9B%B2%E7%BA%BF%E5%AF%86%E7%A0%81%E5%AD%A6/" title="第10章椭圆曲线密码学">http://yoursite.com/2019/03/17/完整密码学/第10章椭圆曲线密码学/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E5%AF%86%E7%A0%81%E5%AD%A6/" rel="tag"># 密码学</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2019/03/17/%E5%AE%8C%E6%95%B4%E5%AF%86%E7%A0%81%E5%AD%A6/%E7%AC%AC12%E7%AB%A0%E5%93%88%E5%B8%8C%E7%AE%97%E6%B3%95/" rel="prev" title="第11章哈希（hash）算法">
+      <i class="fa fa-chevron-left"></i> 第11章哈希（hash）算法
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2019/03/17/%E5%AE%8C%E6%95%B4%E5%AF%86%E7%A0%81%E5%AD%A6/%E7%AC%AC3%E7%AB%A0%E5%AF%B9%E7%A7%B0%E5%AF%86%E7%A0%81RC4%E7%AE%97%E6%B3%95%EF%BC%88%E5%BA%8F%E5%88%97%E5%AF%86%E7%A0%81%EF%BC%89/" rel="next" title="第3章对称密码RC4算法（序列密码）">
+      第3章对称密码RC4算法（序列密码） <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let activeClass = CONFIG.comments.activeClass;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#椭圆曲线密码学"><span class="nav-text">椭圆曲线密码学</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#1-椭圆曲线密码学简介"><span class="nav-text">1. 椭圆曲线密码学简介</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-椭圆曲线"><span class="nav-text">2. 椭圆曲线</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-椭圆曲线在密码学的应用"><span class="nav-text">3. 椭圆曲线在密码学的应用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-椭圆曲线运算"><span class="nav-text">4. 椭圆曲线运算</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5-有限域上的椭圆曲线运算"><span class="nav-text">5. 有限域上的椭圆曲线运算</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#6-椭圆曲线加密算法原理"><span class="nav-text">6. 椭圆曲线加密算法原理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#7-椭圆曲线签名算法原理"><span class="nav-text">7. 椭圆曲线签名算法原理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#8-椭圆曲线Ecc加密解密代码实现"><span class="nav-text">8. 椭圆曲线Ecc加密解密代码实现</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#9-代码实现-ECDSA-椭圆曲线的签名和验签"><span class="nav-text">9. 代码实现(ECDSA)椭圆曲线的签名和验签</span></a></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Hongery"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">Hongery</p>
+  <div class="site-description" itemprop="description">直到这一刻微笑着说话为止，我至少留下了一公升眼泪</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">107</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">9</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/Hongery" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;Hongery" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://blog.csdn.net/weixin_40098405" title="CSDN → https:&#x2F;&#x2F;blog.csdn.net&#x2F;weixin_40098405" rel="noopener" target="_blank"><i class="fa fa-fw fa-crosshairs"></i>CSDN</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:1281185088@qq.com" title="E-Mail1 → mailto:1281185088@qq.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail1</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:hongery@yeah.net" title="E-Mail2 → mailto:hongery@yeah.net" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail2</a>
+      </span>
+  </div>
+  <div class="cc-license motion-element" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">hongery</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+      <span class="post-meta-item-text">站点总字数：</span>
+    <span title="站点总字数">NaNm</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span class="post-meta-item-text">站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">NaN:aN字</span>
+</div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>
+<!-- 页面点击小红心 -->
+<script type="text/javascript" src="/js/clicklove.js"></script>

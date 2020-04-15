@@ -1,0 +1,759 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.1.1">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/avatar.jpg">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/avatar.jpg">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    hostname: new URL('http://yoursite.com').hostname,
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.6.0',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},
+    copycode: {"enable":true,"show_result":true,"style":"mac"},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":true},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    comments: {"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: 'search.xml',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}
+  };
+</script>
+
+  <meta name="description" content="The Byzantine Generals Problem​        可靠的计算机系统必须处理会向系统的不同部分提供冲突信息的故障组件。这种情况可以用拜占庭军队的将军和他们的部队围困在敌方城市附近来概括地表达。 将军们只能通过使者交流，他们必须商定共同的战斗计划。 但是，其中一个或多个可能是叛徒，他们会试图混淆其他人。 问题是找到一种算法来确保忠实的将军们达成共识。 结果表明，仅在口头表达">
+<meta property="og:type" content="article">
+<meta property="og:title" content="BFT拜占庭问题">
+<meta property="og:url" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2020&#x2F;04&#x2F;09&#x2F;%E8%AE%BA%E6%96%87%E7%BF%BB%E8%AF%91&#x2F;%E6%8B%9C%E5%8D%A0%E5%BA%AD%E9%97%AE%E9%A2%98&#x2F;index.html">
+<meta property="og:site_name" content="Hongery">
+<meta property="og:description" content="The Byzantine Generals Problem​        可靠的计算机系统必须处理会向系统的不同部分提供冲突信息的故障组件。这种情况可以用拜占庭军队的将军和他们的部队围困在敌方城市附近来概括地表达。 将军们只能通过使者交流，他们必须商定共同的战斗计划。 但是，其中一个或多个可能是叛徒，他们会试图混淆其他人。 问题是找到一种算法来确保忠实的将军们达成共识。 结果表明，仅在口头表达">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2020&#x2F;04&#x2F;09&#x2F;%E8%AE%BA%E6%96%87%E7%BF%BB%E8%AF%91&#x2F;%E6%8B%9C%E5%8D%A0%E5%BA%AD%E9%97%AE%E9%A2%98&#x2F;images&#x2F;bft1.png">
+<meta property="og:image" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2020&#x2F;04&#x2F;09&#x2F;%E8%AE%BA%E6%96%87%E7%BF%BB%E8%AF%91&#x2F;%E6%8B%9C%E5%8D%A0%E5%BA%AD%E9%97%AE%E9%A2%98&#x2F;images&#x2F;bft2.png">
+<meta property="og:image" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2020&#x2F;04&#x2F;09&#x2F;%E8%AE%BA%E6%96%87%E7%BF%BB%E8%AF%91&#x2F;%E6%8B%9C%E5%8D%A0%E5%BA%AD%E9%97%AE%E9%A2%98&#x2F;images&#x2F;bft3.png">
+<meta property="og:image" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2020&#x2F;04&#x2F;09&#x2F;%E8%AE%BA%E6%96%87%E7%BF%BB%E8%AF%91&#x2F;%E6%8B%9C%E5%8D%A0%E5%BA%AD%E9%97%AE%E9%A2%98&#x2F;images&#x2F;bft4.png">
+<meta property="og:image" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2020&#x2F;04&#x2F;09&#x2F;%E8%AE%BA%E6%96%87%E7%BF%BB%E8%AF%91&#x2F;%E6%8B%9C%E5%8D%A0%E5%BA%AD%E9%97%AE%E9%A2%98&#x2F;images&#x2F;bft5.png">
+<meta property="article:published_time" content="2020-04-09T07:59:43.000Z">
+<meta property="article:modified_time" content="2020-04-15T06:52:19.172Z">
+<meta property="article:author" content="Hongery">
+<meta property="article:tag" content="论文">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2020&#x2F;04&#x2F;09&#x2F;%E8%AE%BA%E6%96%87%E7%BF%BB%E8%AF%91&#x2F;%E6%8B%9C%E5%8D%A0%E5%BA%AD%E9%97%AE%E9%A2%98&#x2F;images&#x2F;bft1.png">
+
+<link rel="canonical" href="http://yoursite.com/2020/04/09/%E8%AE%BA%E6%96%87%E7%BF%BB%E8%AF%91/%E6%8B%9C%E5%8D%A0%E5%BA%AD%E9%97%AE%E9%A2%98/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true
+  };
+</script>
+
+  <title>BFT拜占庭问题 | Hongery</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Hongery</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">记录学习中的点点滴滴</p>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="none"
+           placeholder="搜索..." spellcheck="false"
+           type="text" id="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+  <a href="https://github.com/Hongery" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/04/09/%E8%AE%BA%E6%96%87%E7%BF%BB%E8%AF%91/%E6%8B%9C%E5%8D%A0%E5%BA%AD%E9%97%AE%E9%A2%98/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="Hongery">
+      <meta itemprop="description" content="直到这一刻微笑着说话为止，我至少留下了一公升眼泪">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hongery">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          BFT拜占庭问题
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-04-09 15:59:43" itemprop="dateCreated datePublished" datetime="2020-04-09T15:59:43+08:00">2020-04-09</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-04-15 14:52:19" itemprop="dateModified" datetime="2020-04-15T14:52:19+08:00">2020-04-15</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E8%AE%BA%E6%96%87%E7%BF%BB%E8%AF%91/" itemprop="url" rel="index">
+                    <span itemprop="name">论文翻译</span>
+                  </a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span><br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-file-word-o"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>15k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-clock-o"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>14 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h3 id="The-Byzantine-Generals-Problem"><a href="#The-Byzantine-Generals-Problem" class="headerlink" title="The Byzantine Generals Problem"></a><strong>The Byzantine Generals Problem</strong></h3><p>​        可靠的计算机系统必须处理会向系统的不同部分提供冲突信息的故障组件。这种情况可以用拜占庭军队的将军和他们的部队围困在敌方城市附近来概括地表达。 将军们只能通过使者交流，他们必须商定共同的战斗计划。 但是，其中一个或多个可能是叛徒，他们会试图混淆其他人。 问题是找到一种算法来确保忠实的将军们达成共识。 结果表明，仅在口头表达的情况下，只有并且只有三分之二以上的将军忠诚时，这个问题才能解决。 所以一个叛徒可以混淆两个忠实的将军。 有了不可伪造的书面信息，这个问题对于任何数量的将军和可能的叛徒来说都是可以解决的。 然后讨论该解决方案在可靠的计算机系统中的应用。</p>
+<a id="more"></a>
+
+<h3 id="1-引言"><a href="#1-引言" class="headerlink" title="1.引言"></a>1.引言</h3><p>​        可靠的计算机系统必须能够应对一个或多个组件的故障。 发生故障的组件可能表现出一种通常被忽略的行为，即，将冲突的信息发送到系统的不同部分。 应对此类故障的问题抽象表示为拜占庭将军问题。 我们将本文的主要部分专门讨论了这个抽象问题，并通过指出如何将我们的解决方案用于实现可靠的计算机系统来进行总结。 我们假设拜占庭军队的几个师驻扎在一个敌方城市之外，每个师由其自己的将军指挥。将军只能通过使者相互沟通。 观察敌人之后，他们必须决定共同的行动计划.但是，有些将军可能是叛徒，试图阻止忠实的将军达成协议。<br>将军们必须有一种算法来保证:</p>
+<p><strong>A.所有忠实的将军都决定相同的行动计划。</strong></p>
+<p>​      忠实的将军都会按照算法说的去做，但是叛徒可以做他们想做的任何事情。无论叛徒做什么，该算法都必须保证条件A。忠实的将军们不仅应该达成协议，而且应该就合理的计划达成协议。因此，我们还想确保</p>
+<p><strong>B.少数叛徒不会使忠诚的将军们采取错误的计划。</strong><br>​       条件B很难形式化，因为它需要准确说出一个不好的计划，我们不会尝试这样做。相反，我们考虑将军们如何做出决定。每个将军观察敌人并将他的观察力传达给其他人。令v（i）为第i个将军传达的信息。每个将军使用某种方法将值v（1）….. v（n）组合到一个单独的行动计划中，其中n是将军的数量。<strong>条件A</strong>通过让所有将军使用相同的方法来组合信息来实现，条件B通过使用鲁棒的方法来实现。例如，如果要做出的唯一决定是进攻还是撤退，则v（i）将是通过将军 <code>i</code>认为哪种选择最好的决定，而最终决定可以基于其中的多数票。只有忠实的将军在两种可能性之间几乎均等地划分时，少数叛徒才会影响决策。</p>
+<p>​       虽然这种方法可能不是满足条件 A 和 B 的唯一方法，但它是我们所知道的唯一方法。它假定将军们用一种方法彼此交流他们的信息V(i)。显而易见的方法是通过信使相互发送 v(i)。然而，这不起作用，因为满足条件 A要求每个忠诚的将军获得相同的值 v(1)..V(n)。一个叛国的将军可以给不同的将军发出不同的价值观。要满足条件 B，下列条件必须满足:</p>
+<p><strong>1.每个忠诚的将军都必须获得相同的信息。</strong>一致性</p>
+<p>​       条件 1 意味着一个将军不一定能直接使用从第一个将军那里得到的 v(i)值，因为一个叛国的将军可以给不同的将军发送不同的值。这意味着，如果我们不小心，在满足条件 1 的情况下，我们可能会引入一种可能性，即将军们使用的 v(i)值不同于第一个将军发出的 v(i)值——即使第一个将军是忠诚的。如果要满足条件 b，我们就不能允许这种情况发生。例如，如果每一个忠诚的将军都发出“进攻”的信号，我们就不能允许少数叛徒使忠诚将军以“撤退”、“……”、“撤退”的信号为基础作出决定。因此，我们对每个 i 都有以下要求:</p>
+<p><strong>2.如果第i个将军是忠诚的，那么他发送的值必须被每个忠诚的将军用作 v(i)的值。</strong>正确性    </p>
+<p>我们可以重写条件 i 作为条件，即对于每一个 i(不管第一个将军是否忠诚)，1’。任何两个忠诚的将军使用相同的价值 v(i)。条件 1’和 2 都是由第 i 个将军发送的单个值的条件。因此，我们可以考虑限制在一个将军如何把他的信息传递给其他将军的问题上。我们用一个指挥官向他的副官们发出命令的方式来表达这个意思，得到以下的问题。</p>
+<p><strong>拜占庭将军问题指挥官必须向他的n-1中将下达命令</strong></p>
+<p><strong>IC1. 所有忠诚的副官都遵守同样的命令。</strong></p>
+<p><strong>IC2.如果指挥官是忠诚的，那么每个忠诚的中尉都会服从他发出的命令。</strong></p>
+<p>​        条件 IC1 和 IC2 称为交互式一致性条件。请注意，如果指挥官是忠诚的，那么 IC1就跟随 IC2。然而，指挥官并不需要忠诚。<br>​        为了解决我们最初的问题，第一位将军用一个解决方案向拜占庭将军问题发出命令，“使用 v(i)作为我的信息”，其他将军充当中尉，从而发出 v(i)的价值。</p>
+<h3 id="2-不可能的结果"><a href="#2-不可能的结果" class="headerlink" title="2.不可能的结果"></a>2.不可能的结果</h3><p>​        拜占庭将军问题看起来简单得让人难以置信。如果将军们只能发送口头信息，那么除非三分之二以上的将军们忠诚，否则任何解决方案都不会奏效。特别是，只有三个将军，没有任何解决办法可以在一个单一的叛徒存在。口头信息的内容完全在发送者的控制之下，因此叛国的发送者可以传递任何可能的信息。这种信息对应于计算机通常互相发送的信息类型。在第四部分，我们考虑签名的，书面的协议，因此这不是真的。</p>
+<p>​        我们现在表明，口头信息没有解决三个将军可以处理一个叛徒。为简单起见，我们考虑这样一种情况，即唯一可能的决定是“进攻”或“撤退”。让我们首先看看图</p>
+<ul>
+<li>司令是忠诚的</li>
+</ul>
+<img src="./images/bft1.png" style="zoom:80%;" />
+
+<p>​        图1 中的场景，在这个场景中，指挥官是忠诚的，并且发出了一个“攻击”命令，但是中尉2 是一个叛徒，并且向中尉 1 报告他收到了一个“撤退”命令。为了满足<code>IC2</code> (所有忠诚的副官都遵守同样的命令)的要求，中尉 1 必须服从进攻命令。</p>
+<ul>
+<li>司令是叛徒</li>
+</ul>
+<img src="./images/bft2.png" style="zoom:80%;" />
+
+<p>​        现在考虑另一个场景，如图 2 所示，其中指挥官是一个叛徒，向中尉 1 发出一个“攻 击”命令，向中尉 2 发出一个“撤退”命令。中尉 1 不知道谁是叛徒，他不能告诉什么信息的指挥官实际上发送给中尉 2。因此，这两张图片中的场景在中尉 1 看来完全相同。如果叛徒一贯说谎，那么中尉 1 就没有办法区分这两种情况，所以他必须服从“攻击”命令在他们两个。因此，每当中尉一号接到指挥官的“攻击”命令时，他必须服从。<br>​        然而，一个类似的论点表明，如果中尉 2 接到指挥官的“撤退”命令，那么他必须服从命令，即使中尉 1 告诉他指挥官说“进攻”。因此，在图 2 的场景中，中尉 2 必须服从“撤退”命令，而中尉 1 服从“攻击”命令，因此违反了条件 IC1。因此，三个将军在一个叛徒面前工作是没有解决办法的。<br>​        这个论点可能看起来令人信服，但是我们强烈建议读者对这种非严格的推理非常怀疑。虽然这个结果确实是正确的，但我们已经看到了同样似是而非的无效结果的“证明”.我们知道在计算机科学或数学中，没有一个领域的非正式推理比这类算法的研究更容易导致错误。为了严格证明可以处理单个叛逆者的三通解是不可能的，我们请读者参考[3]。<br>​        <strong>利用这个结果，我们可以证明少于 3m+1 个将军的解决方案不能应付 m个 叛徒。</strong>更确切地说，三个或更多的将军不存在这样的解决方案，因为这个问题对两个将军来说是微不足道的。<br>​        解一组 3m 或更少的问题，然后用它构造一个拜占庭将军问题的三通解，这是我们知道不可能的。为了避免两种算法之间的混淆，我们称<strong>假设</strong>解的将军为阿尔巴尼亚将军，<strong>构造</strong>解的将军为拜占庭将军。因此，从允许 300 万或更少的阿尔巴尼亚将军对付 300 万叛徒的算法出发，我们构造了一个允许三个拜占庭将军对付一个叛徒的解决方案。</p>
+<p>​        通过让拜占庭的每一位将军模拟大约三分之一的阿尔巴尼亚将军，得到三个一般解，这样每一位拜占庭将军模拟的阿尔巴尼亚将军最多不超过万人。拜占庭指挥官模拟阿尔巴尼亚指挥官和最多 m-1 阿尔巴尼亚中尉，两个拜占庭中尉模拟最多m 阿尔巴尼亚中尉。因为只有一个拜占庭将军可以成为叛徒，而且他假装最多亿阿尔巴尼亚人，最多亿阿尔巴尼亚将军是叛徒。因此，假定的解决办法保证了 IC1 和IC2 对阿尔巴尼亚将军们适用。通过 IC1，所有的阿尔巴尼亚中尉被忠诚的拜赞廷中尉模仿，服从同样的命令，这是他必须服从的命令。阿尔巴尼亚将军解的 IC1 和IC2 条件是否暗示了拜占庭将军解的相应条件是很容易验证的，因此我们构造了所需的不可能解。</p>
+<p>​        有人可能会认为，解决拜占庭将军问题贸易协定的困难源于达成确切协议的要求。我们现在通过表明达成近似协议与达成确切协议同样困难来证明情况并非如此。让我们假设，将军们不是试图商定一个精确的作战计划，而是必须商定一个大约的进攻时间。更确切地说，我们假设指挥官命令进攻的时间，我们要求保持以下两个条件：</p>
+<p>​        IC1’. 所有忠诚的副官在 10 分钟内互相攻击。</p>
+<p>​        IC2’.如果指挥官是忠诚的，那么每个忠诚的中尉都会在指挥官命令的 10 分钟内发动攻击。</p>
+<p>(我们假设命令是在攻击前一天发出和处理的，接收命令的时间与此无关——只是命令中给出的攻击时间有关。)</p>
+<p>​        像拜占庭将军问题一样，这个问题是无法解决的，除非超过三分之二的将军是忠诚的。我们首先证明了这一点，如果对付一个叛徒的三个将军有一个解决方案，那么我们就可以构造一个对付一个叛徒的拜占庭将军问题的三个通用解决方案。假设指挥官希望发出“进攻”或“撤退”的命令。他通过发送 1:00 的攻击时间命令攻击，并使用假定的算法发送 2:00 的攻击时间命令撤退。每个中尉使用以下程序获得他的命令。</p>
+<p>​    (1) 在收到指挥官的攻击时间后，一名中尉做了以下事情之一:</p>
+<p>​        (a) 如果时间是 1:10 或更早，然后攻击。</p>
+<p>​        (b) 如果时间是 1:50 或更晚，那么就撤退。</p>
+<p>​        (c)否则，继续步骤(2)。IC2`</p>
+<p>​    (2) 问问另一个中尉，他在第(1)步做了什么决定。</p>
+<p>​        (a)如果另一个中尉做出了决定，那么就做出和他一样的决定。</p>
+<p>​        (b) 否则，就撤退。</p>
+<p>​        根据 IC2’，如果指挥官是忠诚的，那么忠诚的中尉将在步骤(1)中获得正确的顺序，因此 IC2 是满意的。如果指挥官是忠诚的，那么 IC1 就跟随 IC2，所以我们只需要在指挥官是叛徒的假设下证明 IC1。因为最多只有一个叛徒，这意味着两个副手都是忠诚的。因此，如果一个中尉决定第(1)步进攻，那么另一个中尉不能决定第(1)步撤退。因此，要么他们都会在步骤(1)中做出相同的决定，要么他们中至少有一个会推迟到步骤(2)再做决定。在这种情况下，很容易看到它们都得到了相同的决定，因此 IC1 是满意的。因此，我们构建了一个拜占庭将军问题的三通解决方案来处理一个叛徒，这是不可能的。因此，我们不能有一个三通用的算法来维护 ICI’和 IC2’的存在一个叛徒。</p>
+<p>现在可以用一般模拟法证明少于 3m+1 的解决方案不能对付 m 个叛徒。这个证明与原始拜占庭将军问题的证明相似，由读者自己去证明。</p>
+<h3 id="3-口头信息的解决方案"><a href="#3-口头信息的解决方案" class="headerlink" title="3.口头信息的解决方案"></a>3.口头信息的解决方案</h3><p>​        我们在上面展示了一个用口头信息来对付拜占庭将军问题叛徒的解决方案，必须至少有 3 百万+1 个将军。我们现在给出了一个对 3 百万+1 或更多的将军有效的解决方案。然而，我们首先确切地说明“口头信息”是什么意思。每个将军都应该执行一些算法，包括向其他将军发送消息，我们假设一个忠诚的将军正确地执行他的算法。<strong>定义口头信息</strong>体现在我们对将军信息系统的下列假设中:</p>
+<figure class="highlight mipsasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">A1</span>. 每条发送的信息都被正确传递。</span><br><span class="line"><span class="built_in">A2</span>. 信息的接收者知道是谁发送的。</span><br><span class="line"><span class="built_in">A3</span>. 可以检测到消息的缺失。</span><br></pre></td></tr></table></figure>
+
+<p>假设 A1 和 A2 防止叛徒干扰其他两位将军之间的通讯，因为通过 A1 他不能干扰他们发送的信息，通过 A2 他不能通过引入虚假信息来混淆他们之间的交流。假设 A3 将挫败一个试图仅仅通过不发送信息来阻止一个决定的叛徒。这些假设的实际应用将在第 6 节中讨论。</p>
+<p>​        本节和下面的算法要求每个通用程序都能够直接向其他通用程序发送消息。在第 5节中，我们描述了不具备这一要求的算法。叛国指挥官可以决定不下达任何命令。由于中尉们必须服从一些命令，在这种情况下，他们需要一些默认命令来服从。我们让 retreat 是这个默认顺序。</p>
+<p>​        我们归纳性地定义了所有非负整数的<strong>口头协议算法 OM(m)</strong>，通过这些算法，指挥官可以向 n-1 中尉发送命令。我们证明 OM(m)在最多 m 叛徒面前解决 3m+1 或更多的将军的拜占庭将军问题。我们发现用“获得一个值”而不是“服从一个值”来描述这个算法更方便排序”.</p>
+<p>该算法假设函数 majority 具有如下性质:如果大多数值 vi = v，则 majority(V1,…..,Vn)=v .(实际上，它假定了一系列这样的函数——每个 n )对于函数majority(V1,…Vn)的值有<strong>两个自然的选择:</strong></p>
+<figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">1.</span> 如果大多数值中存在vi，否则为 retreat;</span><br><span class="line"></span><br><span class="line"><span class="number">2.</span> 假设它们来自一个有序集合,选择中位数 vi 。</span><br></pre></td></tr></table></figure>
+
+<p>下面的算法只需要上述的majority（）性质。</p>
+<p><code>Algorithm OM(0).</code></p>
+<figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">(<span class="number">1</span>) 指挥官把他的价值传递给每个中尉。</span><br><span class="line">(<span class="number">2</span>) 每个中尉使用他从指挥官那里得到的价值，或者如果他没有得到价值就使用 RETREAT。</span><br></pre></td></tr></table></figure>
+
+<p><code>Algorithm OM(m), m &gt; O</code></p>
+<figure class="highlight matlab"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">(<span class="number">1</span>) 指挥官把他的价值传递给每个中尉。</span><br><span class="line">(<span class="number">2</span>)对每一个中尉<span class="built_in">i</span>,令vi为中尉<span class="built_in">i</span>收到的命令，如果没有收到则使用撤退。中尉<span class="built_in">i</span>作为算法OM(m<span class="number">-1</span>) 的指挥官，发送vi给余下的n<span class="number">-2</span>个将领。</span><br><span class="line">(<span class="number">3</span>)对每一个 <span class="built_in">i</span>和<span class="built_in">j</span>(<span class="built_in">i</span>！=<span class="built_in">j</span>),令vj为第二步（<span class="number">2</span>）将领<span class="built_in">i</span>从将领<span class="built_in">j</span>获得的信息，如果没有收到则使用撤退。将领<span class="built_in">i</span>使用majority（v1 ,…,vn<span class="number">-1</span>）的值作为最终命令值。</span><br></pre></td></tr></table></figure>
+
+<p>​        为了理解这个算法是如何工作的，我们考虑 m=1，n=4 的情况。图 3 展示了当指挥官发送值v 而中尉 3 是叛徒时，中尉 2 接收到的消息。在 OM(1)的第一步中，指挥官向所有三名中尉发送 v。在第二步中，Lieutenant1 使用平凡算法 OM(0)将值 v 发送给 Lieutenant2。同样在第二个步骤中，叛变的中尉 3 给中尉 2 一些其他的值 x。在步骤 3 中，中尉 2 然后有 v1=v2 和v3=x，所以他得到正确的value  v = majority ( v , v, x) .值 v=majorty(v，v，x)。证明过程<a href="https://www.jianshu.com/p/538e6c9fac81" target="_blank" rel="noopener">https://www.jianshu.com/p/538e6c9fac81</a></p>
+<p>​        接下来，我们看看如果指挥官是叛徒会发生什么。图 4 显示了如果一个叛变的指挥官将三个任意值 x、y 和 z 发送给三个中尉，中尉们所接收到的值。每个中尉得到v1 = x, v2 = y, and v3 = z, 因此在步骤(3)中它们都得到相同的值majority(x，y，z)，不管这三个值 x，y 和 z 是否相等。</p>
+<p>图3：副官是叛徒</p>
+<p><strong>第一步</strong>：司令向每个副官发送他的值vvv给每个副官；<br><strong>第二步</strong>：副官1执行OM(0)，作为司令向副官2发送v；由于副官3是叛徒，其执行OM(0)向副官2发送了不同的值，假设为x；<br><strong>第三步</strong>：副官2拥有的行动值集为{v1,v2,v3}={v,v,x}，采用majority函数，副官2采取的行动v=majority{v1,v2,v3}</p>
+<p>同理，副官1采取的行动指令也是v，即满足拜占庭将军问题一致性条件IC1和IC2。</p>
+<img src="./images/bft3.png" style="zoom:150%;" />
+
+<p>图4：将军是叛徒</p>
+<p><strong>第一步</strong>：司令为了阻止忠诚副官达成一致，分别向三位副官发送值{x,y,z}{x, y, z}{x,y,z};<br><strong>第二步</strong>：每个副官从司令收到的值作为自己的值，并执行OM(0)向其他副官发送；<br><strong>第三步</strong>：在第三步中，每个副官拥有的值集均为{x,y,z}{x, y, z}{x,y,z}，因此，副官执行行动函数majority得到的结果是一样的。</p>
+<p>由于三位忠诚的将军采取同样的行动，满足拜占庭将军一致性条件IC1。</p>
+<p><strong>从m=1, n=4的例子可以看出，OM(m)算法能够处理拜占庭将军问题。递归算法 OM(m)调用算法 OM(m-1)的 n-1 个独立执行，每个执行都调用 OM(m-2)等的 n- 2 个执行。</strong>这意味着，对于 m&gt;1，一个中尉会给彼此发送许多不同的信息。必须有某种方法来区分这些不同的信息。读者可以验证，如果每个中尉 i 在步骤(2)中将数字 i 前缀为他发送的值 vi，那么所有的模糊性都消除了。随着递归的“展开”，算法 OM(m-k)将被调用(n-1)…(n-k)次，以发送一个以 k 中尉的数字序列为前缀的值。</p>
+<p><strong>为了证明算法<em>OM</em>(<em>m</em>)，</strong>对任意的<em>m</em>,的正确性。首先证明以下引理。<br>Lemma1. 对任意的<em>m</em>和<em>k</em>,如果将军个数大于2<em>k</em>+<em>m</em>，有最多<em>k</em>个叛徒，算法 <em>OM</em>(<em>m</em>)满足IC2 。<br><strong>证明：针对<em>m</em>的取值情况进行分析。</strong><br>    1.<em>m</em>= 0，忠诚的将军只要服从将军的命令就可以了，引理成立。<br>    2.假设<em>m</em>-1，<em>m</em>&gt;0,时算法满足IC2，证明对<em>m</em> 成立。（归纳法）<br>算法第一步（1），忠诚的司令发送值<em>v</em>给<em>n</em>-1个将领。第二步（2），每一个忠诚的将领调用算法OM(<em>m</em>-1)。<br><em>n</em>&gt;2<em>k</em>+<em>m</em> =&gt; <em>n</em>-1&gt;2<em>k</em>+(<em>m</em> -1)&gt;2<em>k</em>，多数的将领是忠诚的，每一个忠诚的将领得到一个<em>v</em>i=<em>v</em> 从<em>n</em>-1个值<em>i</em>中，在第三步majority(<em>v</em>1,…,<em>v</em>n-1)=<em>v</em>，满足IC2.</p>
+<p>证明算法成立的定理1：<br>Theorem1.对任意的<em>m</em>,在人数大于3<em>m</em>，有<em>m</em>个叛徒的情况下，算法<em>OM</em>(<em>m</em>)满足条件IC1和条件IC2。<br><strong>证明：针对<em>m</em>的取值情况进行分析</strong>。<br>    1.<em>m</em>= 0，定理成立。<br>    2.假设<em>m</em>-1，<em>m</em>&gt;0,时成立，证明对<em>m</em> 成立。（归纳法）<br>在司令忠诚的情况下，令<em>m</em>=<em>k</em>,根据引理1可知，IC2成立从而IC1成立。<br>所以只需要证明司令是叛徒的情况。有最多<em>m</em>个叛徒，司令为其中一个，所以还有<em>m</em>-1个将领是叛徒。人数大于3<em>m</em>,所以将领人数大于3<em>m</em>-1。<br>3<em>m</em>-1&gt;3(<em>m</em>-1)<br>使用归纳假设法证明<em>OM</em>(<em>m</em>-1)满足条件CI1和CI2。因此，在第三步，对每一个<em>j</em>,任意两个忠诚的将军获得相同的值<em>vj<em>。从而任意两个忠诚的将军获得相同的值 在函数majority(</em>v<em>1,…,</em>v**n</em>-1)在第三步，IC1的证。</p>
+<h3 id="4-带签名信息的解决方案"><a href="#4-带签名信息的解决方案" class="headerlink" title="4.带签名信息的解决方案"></a>4.带签名信息的解决方案</h3><p>正如我们在图 1 和图 2 中看到的场景，正是叛徒撒谎的能力使得拜占庭将军问题变得如此困难。如果我们能够限制这种能力，问题就会变得更容易解决。一种方法是允许将军们发送不可伪造的签名信息。更确切地说，我们在 A1-A3以下假设:</p>
+<figure class="highlight gcode"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">A<span class="number">4</span> <span class="comment">(a)</span> 忠诚的将军的签名是不能伪造的，并且可以检测到他签名信息内容的任何变更。</span><br><span class="line">   <span class="comment">(b)</span> 任何人都可以核实将军签字的真实性。</span><br><span class="line">   请注意，我们对叛国将军的签名不做任何假设。特别是，我们允许另一个叛徒伪造他的签名，从而允许叛徒之间相互勾结。</span><br></pre></td></tr></table></figure>
+
+<p>现在，我们已经介绍了签名信息，我们以前的论点，即四个将军必须处理一个叛徒不再成立。事实上，确实存在三个通用解决方案。我们现在给出了一个算法，可以处理任意数量的将军的万叛徒。(如果少于 m+2 个将军，问题就是空洞的。)<br>在我们的算法中，指挥官向每个副官发送一个签名命令。然后每个中尉在命令上签名，并将其发送给其他中尉，中尉再加上他们的签名，然后再发送给其他人，如此类推。这意味着中尉必须有效地接收一条签名信息，复制几份，并签名和发送这些副本。如何获得这些副本并不重要;一条消息可能是复印的，或者每条消息可能由一堆相同的消息组成，这些消息根据需要进行了签名和分发。</p>
+<p>算法定义一个选择函数choice,其在一个集合命令信息中选出一个，如下：</p>
+<figure class="highlight gcode"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">1.</span>如果集合V只有一个值v,Choice<span class="comment">(V)</span> = v。</span><br><span class="line"><span class="number">2.</span>choice<span class="comment">(∅)</span> = RETREAT<span class="comment">(撤退)</span>。空集情况下。</span><br></pre></td></tr></table></figure>
+
+<p>​    可以注意到，可选择中值为函数的值。                                </p>
+<p><strong>定义</strong></p>
+<p><em>x</em>:<em>i</em> 表示被将军<em>i</em>签名的值<em>x</em> ，则<em>v</em>:<em>j</em>:<em>i</em> 表示值<em>v</em>被将军<em>j</em>签名以后，然后又被将军<em>i</em>签名。令将军0号为命令的发送者。在算法里每一个将领<em>i</em>都有一个集合<em>Vi</em> ,集合里面包括他收到的被其他将军签名的信息。<br>算法<em>SM</em>(<em>m</em>).<br>初始化 <em>Vi</em> =∅.<br><strong>(1)司令发送其签名信息<em>v</em>:0给每一个将领。</strong><br><strong>(2)对每一个将领<em>i</em> ：</strong><br>    (A)如果将领 <em>i</em> 收到从司令<em>v</em>:0，且其<em>Vi</em> =∅。 其操作如下：</p>
+<p>​        (i)他令其<em>Vi</em> ={<em>v</em>}；<br>​        (ii)他发送<em>v</em>:0：<em>i</em>给每一个其他的将领.<br>​    (B)如果将领 <em>i</em> 收到信息<em>v</em>:0：<em>j1</em>:…:<em>jk</em> ,且<em>v</em>∉<em>Vi<em>，则：<br>​        (i)他将</em>v<em>加入自己的集合</em>Vi<em>；<br>​        (ii)如果</em>k</em>&lt;<em>m</em>,则其发送<em>v</em>:0：<em>j1</em>:…:<em>jk</em>:<em>i</em> 给其他的将领∉<em>j1</em>，…，<em>jk</em>。</p>
+<p><strong>(3)对每一个将领<em>i</em> ：当将领<em>i</em> 不再收到信息后，其遵守choice(<em>Vi</em>)</strong></p>
+<p>注意，在第二步中，副官i将忽略任意值已经在Vi出现的消息。通过对k的归纳，对于每个副官序列j1,…,jk , 且k&lt;m，每个副官至多收到一条v:0:j1:…:jk 消息。在第(3)步中可以使用超时来判断没有消息再回到来。</p>
+<p><strong>举例： m=1, n=3</strong></p>
+<p><img src="./images/bft4.png" alt="">        注意在第(1)步，司令发送发送“attack”给副官1并发送“retreat”给副官2；<br>在第(2)步，每个副官将收到两个命令值，即V1=V2={&quot;attack&quot;,&quot;retreat&quot;}<br>在第(3)步，两个忠诚的副官执行choice(Vi得到的结果也是一样的。</p>
+<p>因此，当司令叛徒时，算法满足条件IC1。</p>
+<p>当司令是忠诚的时，叛徒副官无法篡改司令的命令，因此忠诚的副官的行动值集Vi只有一个元素，即司令发送的命令。因此，SM(m)算法满足条件IC1和IC2。</p>
+<p><strong>定理2</strong>.对任意的<em>m</em>，在至多<em>m</em>个叛徒的情况下，算法<em>SM</em>(<em>m</em>)解决拜占庭问题。<br>证明，在司令是忠诚的情况下，没有信息可被篡改。显然成立。<br>在司令是叛徒的情况下，需要证明IC1成立，则任意两个忠诚的将领<em>i</em>和<em>j</em>将遵循第三步获得的一致的命令。所以必须证明 将领<em>i</em>和<em>j</em>在第二步将相同的命令信息放进自己的集合。情况分析,可得有以下两种情况，如果将军<em>i</em>获得信息<em>v</em>,他把信息发送给将军<em>j</em>。如果将军<em>i</em>获得信息<em>v</em>：0：<em>j1</em>:…:<em>jk</em> ，且<em>j</em>在签名当中，则<em>j</em>已经把值<em>v</em>放进自己的集合。如果<em>j</em>不在签名当中,分析两种情况：</p>
+<figure class="highlight matlab"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">1.</span>k&lt;m.将军<span class="built_in">i</span>将会发送信息v：<span class="number">0</span>：j1:…:jk :<span class="built_in">i</span>给将军<span class="built_in">j</span> ,所以<span class="built_in">j</span>获得信息v.</span><br><span class="line"><span class="number">2.</span>k=m.因为司令是叛徒，且有m<span class="number">-1</span>个将领也是叛徒。所以在j1,…,jm 至少有一个将领是忠诚的。这个忠诚的将领必定有将获得的v值发送给将领 <span class="built_in">j</span>，当他第一次收到这个信息的时候，将领<span class="built_in">j</span>,必定收到信息。</span><br></pre></td></tr></table></figure>
+
+<p>证明结束。</p>
+<h3 id="5-通讯路径缺失"><a href="#5-通讯路径缺失" class="headerlink" title="5.通讯路径缺失"></a>5.通讯路径缺失</h3><p>​    到目前为止，我们假设一个将军可以直接向其他所有将军发送消息。我们现在移除这个假设。相反，我们认为物理障碍对谁可以向谁发送信息设置了一些限制。我们认为将军构成一个简单的 2 个有限无向图 g 的节点，其中两个节点之间的弧表示这两个将军可以发送消息</p>
+<p>2 一个简单图是这样一个图，其中最多有一条弧连接任意两个节点，每条弧连接两个不同的节点。</p>
+<p>接下来 对算法<em>OM</em>(<em>m</em>)和<em>SM</em>(<em>m</em>)进行拓展，<em>G</em> 为全联通图。<br>首先对算法<em>OM</em>(<em>m</em>)进行拓展，给出以下定义：</p>
+<p><strong>定义1.</strong></p>
+<p>(a)节点集合{<em>i</em>1 ,…,<em>ip</em>}为节点<em>i</em>的正则邻接集，满足：<br>        (i)每一个<em>i j*都邻接点 *i</em><br>        (ii)对任意的将军 <em>k</em> （<em>k</em> 和 <em>i</em> 不相等），则有路径 <em>γj,k</em> ,从 <em>ij</em> 到 <em>k</em> 无需通过 <em>i</em>，且任意两条路径 <em>γj,k</em> 除了节点 <em>k</em> 没        有共同节点。<br>(b)图 <em>G</em> 是 <em>p</em>正则的 ，如果每个节点的正则集都有 <em>p</em> 个不同的节点。<br>如图所示，图六是 3-正则图，每个节点有三个度（三条边）。<br>图七 不是 3-正则图 ，中间节点有四条边。</p>
+<p><img src="./images/bft5.png" alt=""></p>
+<p><strong>拓展的<em>OM</em>(<em>m</em>,<em>p</em>)算法</strong></p>
+<p><em>m</em>个叛徒 ，<em>G</em> 为 3-正则图。（注意到， 3<em>m</em>-正则图 必至少含有 3<em>m</em> +1 个节点 ）。对任意的正整数 <em>m</em> , <em>p</em> 。且将军通信情况构成 <em>p</em>-正则图。通过分析 <em>m</em> 如下：<br>算法 <em>OM</em>(<em>m</em>,<em>p</em>).<br>        (0)选择司令（commander）的正则邻接集 <em>N</em> (含有 <em>p</em> 个 将领)。p为3<br>        (1) 司令将信息发送给集合 <em>N</em> 里的每一个将领。<br>        (2)对每一个 <em>i</em> ∈ <em>N</em> ，令 <em>vi</em> 为 将领 <em>i</em> 收到的从司令发过来的命令，或者没有收到信息则默认为 撤退    （RETREAT）。将领 <em>i</em> 按照以下规则将 <em>vi</em> 发送给其他将领 <em>k</em>：<br>                    (A) 如果 <em>m</em> = 1 通过路径 <em>γj,k</em> 发送信息，路径存在定义1由(a)(ii)保证.<br>                    (B)如果 <em>m</em> &gt; 1 ,则 将领 <em>i</em>扮演司令的角色在<em>OM</em>(<em>m</em>-1,<em>p</em>-1)，图由去掉原先的司令构成。<br>        (3)对 每一个 <em>k</em> ，和 <em>i</em> ∈ <em>N</em> ， <em>k</em> ≠ <em>i</em> 。令 <em>vi</em> 为将领 <em>k</em> 从 <em>i</em> （<em>i</em> 在第二步（2））） 收到的信息，或者 RETREAT 如        果没有收到信息。将领 <em>k</em> 使用 函数值 <em>majority</em>(<em>vi<em>，… ,</em>v <del>i p</del></em>), <em>N</em> = {<em>i</em>1 ，… , <em>ip</em> }.</p>
+<p>接下来证明 在至多 <em>m</em> 个叛徒的情况下 ，<em>OM</em>(<em>m</em>,<em>3m</em>) 解决拜占庭将军问题 。首先对引理1 进行拓展（见 一）。<br>定理2：<br>Lemma 2 .对任意的 <em>m</em> &gt;0 和任意的 <em>p</em> ≥ 2<em>k</em> + <em>m</em> ，如果至多有 <em>k</em> 个叛徒 ，算法 <em>OM</em>(<em>m</em>,<em>p</em>)满足条件IC2(见一)。</p>
+<p><strong>证明</strong></p>
+<p>​        当 <em>m</em> = 1, 注意到 一个将领获得的值 <em>majority</em>(<em>v1<em>，… ,</em>v p</em>) 中，每一个 <em>vi</em> 的命令发送者是通过不相交的路径发送的信息。且至多有 <em>k</em> 个叛徒. 在 <em>p</em> ≥ 2<em>k</em> + <em>m</em> 的情况下知道 忠诚将军的人数超过半数。当将军是忠诚的情况下，算法保证IC2 从而的证。运用归纳法可得对 <em>m</em> -1, <em>m</em> &gt;1 .引理成立。<br>继续证明…<br>定理 3：<br>Theorem 3. 对任意的 <em>m</em> &gt;0 和对任意的 <em>p</em> ≥ 3<em>m</em> ,在至多 m 叛徒的情况下 ，算法<em>OM</em>(<em>m</em>,<em>p</em>) 解决拜占庭问题。<br>证明。根据引理2，令 <em>k</em> = <em>m</em> ,可知算法满足IC2，在司令是忠诚的情况下。现在只需要证明司令为叛徒的情况。假设所有忠诚的将领再第三步（3）要获得一致的值 <em>v i</em> 集合.<br>​        如果 <em>m</em> = 1,则所有将领都是忠诚的，成立。<br>​        如果 <em>m</em> &gt;1 ,简单的归纳 <em>p</em> ≥ 3<em>m</em> 可得 <em>p</em> -1 ≥ 3 (<em>m</em> -1) ，算法成立。<br>​        证毕。</p>
+<p>算法假设图<em>G</em> 为3-正则 ，是一个条件很强的连通假设。事实上当总共有3<em>m</em> +1人时，3 <em>m</em>-正则意味着全连通，算法<em>OM</em>(<em>m</em>,3<em>m</em>) 可推出 <em>OM</em>(<em>m</em>）。可以看出，拓展算法 <em>SM</em>(<em>m</em>) 只需要更弱的连通条件。</p>
+<p>​        分析多少连通条件能解决拜占庭问题。IC2 要求 忠诚的将领服从忠诚的司令，这要求他们之间要能够通信。特别地，当每一条信息都会通过一个叛徒中转的时候，不能保证将领能获得司令的信息。类似的，如果两个将领只能通过有叛徒的路径通信则IC1无法保证。<br>拜占庭将军的弱连通假设为，忠诚将军构成的<em>G</em> 的子图要互相连接。在这个条件下，总人数为 <em>n</em> ，不管叛徒的个数，算法 <em>SM</em>(<em>n</em>-2)成立。</p>
+<p>接下来证明更加普遍的结果。定义一个图的半径为最小的数 <em>d</em> ,任意两个节点相连至多需要 <em>d</em> 条边。</p>
+<p>定理4.<br>Theorem4. 对任意的 <em>m</em> 和 <em>d</em> ,如果有 <em>m</em> 个叛徒且 忠诚将军构成的子图有直径 <em>d</em>, 则 <em>SM</em>(<em>m</em> + <em>d</em> - 1) 解决拜占庭问题。</p>
+<p>证明和定理2的证明类似（略）。</p>
+<p>推论.如果忠诚将军构成的子图是连接的，则 <em>SM</em>(<em>n</em> - 2)可解决拜占庭问题。<br>证明，令 <em>d</em> 为忠诚将军构成的图的直径。且已知 <em>d</em> 小于 节点数，所以忠诚将军的人数大于<em>d</em> ，叛徒人数少于 <em>n</em> - <em>d</em> 。令 <em>m</em> = <em>n</em> - <em>d</em> -1 可的证。</p>
+<p>可靠的系统大多使用多数票方法保证可靠性，其使用多个处理器得出一致的结果，然后使用多数票表决的方法得到单个值。<br>使用多数票方法是基于假设不出错的处理器将得到一致的结果。这在它们获得一致的输入时成立。其基于假设出错的处理器不会得到一致的错误结果。但是也有很多其他的情况，无法获得一致的输入，比如出错的程序发送不同的值给其他处理器。比如获取时钟值的时候，很难保证两个处理器获取相同的值等等。所以给出以下前提条件：<br>        1.所有无故障的处理器使用相同的输入。（可以获得相同的输出）<br>        2.如果只输入单元无故障，那么所有无故障的处理器要使用其提供的值作为输入。</p>
+<p>这里，司令是作为 输入值的提供者，将领是处理器，忠诚为无故障。</p>
+<h3 id="6-可靠的系统"><a href="#6-可靠的系统" class="headerlink" title="6.可靠的系统"></a>6.可靠的系统</h3><p>​        除了使用本质上可靠的电路元件，我们知道实现一个可靠的计算机系统的唯一方法是使用几个不同的“处理器”来计算相同的结果，然后对它们的输出进行多数表决，以获得一个单一的值。(投票可以在系统内进行，也可以由输出的用户在外部进行。)无论是使用冗余电路来防止单个芯片故障的可靠计算机，还是使用冗余计算站点来防止单个站点被核攻击破坏的弹道导弹防御系统，都是如此。唯一的区别在于复制的“处理器”的大小。</p>
+<p>使用多数表决来实现可靠性是基于所有非故障处理器将产生相同的输出的假设。只要它们都使用相同的输入，这就是正确的。然而，任何单个输入数据都来自单个物理元件——例如，来自可靠计算机中的其他电路，或者来自导弹防御系统中的某个雷达站点——和一个故障定位元件，可以为不同的处理器提供不同的值。此外，不同的处理器可以获得不同的值，甚至从一个非故障的输入单元，如果他们读取的值，而它正在变化。例如，如果两个处理器在时钟前进时读取时钟，那么一个处理器可能获得旧时间，另一个处理器获得新时间。这只能通过与时钟推进同步读操作来防止。可靠的制度，必须满足以下两个条件:</p>
+<ol>
+<li><p><strong>所有非故障处理器必须使用相同的输入值(因此它们产生相同的输出)。</strong></p>
+</li>
+<li><p><strong>如果输入单元是非故障的，那么所有非故障进程都使用它提供的值作为输入(因此它们产生正确的输出)。</strong></p>
+</li>
+</ol>
+<p>这些只是我们的交互式一致性条件 IC1 和 IC2，其中“指挥官”是产生输入的单位，“中尉”是程序，“忠诚”意味着没有错误。</p>
+<p>​        尝试用“硬件”解决方案来规避这个问题是很诱人的。例如，可以尝试通过让所有处理器都从相同的线路读取输入值来确保所有处理器获得相同的输入值。然而，一个错误的输入单元可以沿着线路发送一个边际信号—-这个信号可以被某些处理器解释为 0，而其他处理器可以解释为 1。没有办法保证不同的处理器将从一个可能出错的输入设备获得相同的值，除非让处理器相互通信来解决拜占庭将军问题。</p>
+<p>​        当然，有故障的输入设备可能提供无意义的输入值。一个拜占庭将军解决方案所能做的就是保证所有处理器使用相同的输入值。如果输入是重要的，那么应该有几个独立的输入设备提供冗余值。例如，在导弹防御系统中应该有冗余雷达和冗余处理站点。然而，冗余输入不能实现可靠性，仍然需要确保非故障处理器使用冗余数据产生相同的输出。</p>
+<p>​        如果输入设备是非故障的，但是由于它在值变化时被读取而给出不同的值，我们仍然希望非故障处理器获得一个合理的输入值。可以证明，如果多数函数和选择函数都是中值函数，那么我们的算法具有这样的性质，即非故障处理器获得的值在输入单元提供的值范围之内。因此，只要输入单元产生合理的值范围，非故障处理器将获得合理的值。</p>
+<p>​        我们已经给出了几种解决方案，但是它们都是用拜占庭式的将军而不是用计算系统来表述的。我们现在研究如何将这些解决方案应用于可靠的计算系统。当然，用处理器实现“通用”算法是没有问题的。问题在于实现满足 A1-A3(算法 SM(m)的 A1-A4 假设)假设的消息传递系统。我们现在按顺序考虑这些假设。</p>
+<p><strong>A 1</strong>。假设 A1 指出，没有错误的处理器发送的每条消息都是正确的。</p>
+<p>在实际系统中，通信线路可能会失灵。对于口信算法 OM(m)和 OM(m，p)，连接两个处理器的通信线路的故障与其中一个处理器的故障是无法区分的。因此，我们只能保证这些算法将工作在存在多达亿故障，无论是处理器或通信线路故障。(当然，连接到同一个处理器的多条通信线路的故障相当于单个处理器的故障。)如果我们假设失败的通信线路不会导致伪造有符号消息——我们将在下面看到这个假设是相当合理的，那么我们的有符号消息算法 SM(m)对通信线路失败不敏感。更准确地说，定理 4 即使在通信线路故障的情况下仍然有效。失败的通信线路与简单地删除通信线路具有同样的效果——它降低了处理器图形的连接性。</p>
+<p><strong>A 2</strong>。假设 A2 指出，处理器可以确定它所接收的任何消息的发出者。</p>
+<p>实际上需要的是有故障的处理器不能模拟一个没有故障的处理器。在实践中，这意味着进程间通信是通过固定的线路而不是通过某些报文交换网络进行的。(如果使用交换网络，那么必须考虑有故障的网络节点，然后拜占庭将军问题节点再次出现。)请注意，如果假设A4 并且所有消息都有签名，则不需要假设 A2，因为模拟另一个处理器将意味着伪造其消息。</p>
+<p><strong>A 3</strong>。假设 A3 要求可以检测到消息的缺失。</p>
+<p>消息的缺失只能通过其未能在某个固定时间内到达来检测——换句话说，通过使用某种超时限制。使用超时来满足 A3 需要两个假设:</p>
+<ol>
+<li><p>生成和传输消息所需的最长时间是固定的。</p>
+</li>
+<li><p>发送方和接收方都有时钟，这些时钟在某个固定的最大误差范围内同步。</p>
+</li>
+</ol>
+<p>第一个假设的必要性是相当明显的，因为接受者必须知道他需要等多久才能收到消息。(生成时间是处理器在接收到生成消息所需的所有输入之后发送消息所需的时间。)第二个假设的必要性就不那么明显了。然而，可以证明这个假设或者一个等价的假设对于解决拜占庭将军问题问题是必要的。更确切地说，假设我们允许算法，将军们只在下列情况下采取行动:</p>
+<ol>
+<li><p>在某个固定的初始时间(所有的将军都一样)。</p>
+</li>
+<li><p>在收到信息后。</p>
+</li>
+<li><p>当一段随机选择的时间过去时。(也就是说，一个普通人可以将计时器设置为一个随机值，并在计时器结束时行动。)</p>
+</li>
+</ol>
+<p>{这产生了我们可以想象到的最一般的算法类别，它们不允许构造同步的时钟。)可以证明，如果消息可以任意快速地传递，即使存在消息传递延迟的上界，这种算法也不能解决拜占庭将军问题问题。而且，即使我们限制叛徒，只允许他们不正确的行为是不发送信息，也不可能有解决办法。这个结果的证明超出了本文的范围。请注意，在传输延迟上设置一个下限和一个上限，将使处理器通过来回发送消息来实现时钟。</p>
+<p>​        以上两个假设使得检测未发送的消息变得容易。假设/z 是最大的消息生成和传输延迟，并且假设没有故障的处理器的时钟在任何时候最多相差 t。然后，任何非故障进程应该开始在其时钟上按时间 t 生成的消息将在接收方时钟上的时间 t+#+t 到达其目的地。因此，如果接收者到那时还没有接收到消息，那么它可能假设消息没有被发送。(如果它晚一点到达，那么发送者一定是错误的，因此我们的算法的正确性并不取决于发送的消息。)通过对输入处理器发送其值的时间进行 fLxing，可以计算出处理器在自己的时钟上必须等待每条消息的时间。例如，在算法 SM(m)中，处理器必须等到对于任何有+ k(# +~) 签名的消息，其中 To 是指挥官开始执行算法的时间(在他的时钟上)。没有两个时钟以完全相同的速率运行，所以无论最初处理器的时钟同步得多么精确，它们最终会偏离得任意远，除非它们周期性地重新同步。因此，我们面临的问题是，即使有些处理器出现故障，也要保持处理器的时钟同步到某个固定的数量。这是一个和拜占庭将军问题本身一样困难的问题。时钟同步问题的解决方案与我国拜占庭式的解决方案密切相关。它们将在未来的论文中加以描述。</p>
+<p><strong>A 4</strong>。假设 A4 要求处理器能够以这样一种方式对其消息进行签名，即不能伪造没有错误的处理器签名。</p>
+<p>签名是由进程 i 从数据项 m 生成的一段冗余信息 Si(m)。由 i 签名的消息由一对(m，Si(m))组成。满足部分(a)和(b)对于 A4，Si 函数必须具有以下两个性质:</p>
+<p>​        (a)如果处理器 i 是非故障的，那么没有故障的处理器可以生成 Si(m)。</p>
+<p>​        (b)给定 M 和 X，任何过程都可以确定 ifX 等于 Si(m)。</p>
+<p>属性(a)永远不能得到保证，因为 Si(m)只是一个数据项，故障处理器可能生成任何数据项。然而，我们可以使违反它的概率小到我们所希望的程度，从而使系统如我们所希望的那样可靠。如何做到这一点取决于我们预期会遇到的故障类型。有两个令人感兴趣的案例:</p>
+<p>1.随机故障。通过使Si 成为一个适当的“随机化”函数，我们可以使处理器中的一个随机故障产生正确签名的概率本质上等于它通过一个随机选择过程产生正<em>确签名的概率<strong>——</strong>即可能签名数目的倒数。下面是一个实现这一点的方法。假设消息被编码为小于</em> <em>p</em> 的正整数，其中 <em>p</em> <em>是</em> <em>2</em> <em>的幂。设</em> <em>Si(m)等于</em> m <em>Ki mod p，其中 Ki *是小于</em> <em>p</em> <em>的一个随机选择的奇数。如果另一个处理器的内存中没有</em> <em>Ki<strong>，</strong>那么它为单个<strong>(</strong>非零<strong>)</strong>消息</em> <em>m</em> <em>生成正确签名</em> <em>m*Ki</em> <em>的概率应该是</em> <em>l/p:它通过随机选</em>择生成正确签名 mKi <em>的概率。*</em>(*<em>注意，如果处理器可以通过一些简单的程序获</em>得 Ki，那么在计算时用Ki 代替 k，可能会有更大的可能性出现处理器错误地伪造 i 的签名 Sj(M).)律政司(m))</p>
+<p>2.<em>恶意情报。如果错误的处理器被恶意的智能引导<strong>—-</strong>例如，如果一个完美的<strong>处理器被一个试图破坏系统的人操作</strong>—-那么信号函数</em> <em>Si</em> <em>的构造就成了一个密<strong>码学问题。我们建议读者参阅</strong>[1]<strong>和</strong>[4]来讨论如何解决这个问题。</em></p>
+<p>请注意，如果进程已经看到签名，则很容易生成签名 Si(m)。因此，重要的是，相同的消息永远不必被签名两次。这意味着，当重复使用 SM(m)分发一个值序列时，序列号应该附加到值上以保证唯一性。</p>
+<h3 id="7-结论"><a href="#7-结论" class="headerlink" title="7.结论"></a>7.结论</h3><p>​        在各种假设下，我们已经向拜占庭将军问题提出了几种解决方案，并展示了如何使用它们来实现可靠的计算机系统。这些解决方案在时间量和所需的消息数量上都很昂贵。算法 OM(m)和 SM(m)都要求消息路径的长度达到 m+1。换句话说，每个中尉可能不得不等待来自指挥官的信息，然后通过其他名中尉转发。费舍尔和林奇已经证明，这对任何可以对付万叛徒的解决方案都是正确的，所以我们的解决方案在这方面是最佳的。对于不完全连通的图，我们的算法需要长度为 m+d 的消息路径，其中 d 是忠诚将军子图的直径。我们认为这也是最佳选择。</p>
+<p>​        算法 OM(m)和 SM(m)包括发送到(n-1)(n-2)..。(n-m-1)信息。通过组合消息，必然可以减少所需的单独消息的数量。也许还可以减少传输的信息量，但这一点尚未得到详细研究。但是，我们预计仍然需要大量的消息。</p>
+<p>​        在任意故障的情况下实现可靠性是一个困难的问题，其解决方案似乎本身就代价高昂。降低成本的唯一方法是对可能发生的故障类型进行假设。例如，通常假设计算机可能无法响应，但是绝不会错误响应。然而，当需要极高的可靠性时，这样的假设是不可能做出的，并且需要一个拜占庭将军解决方案的全部费用。</p>
+
+    </div>
+
+    
+    
+    
+    <div>
+      
+        <div>
+    
+        <div style="text-align:center;color: #ccc;font-size:14px;">-------------本文结束<i class="fa fa-paw"></i>感谢您的阅读-------------</div>
+    
+</div>
+
+      
+    </div>
+        <div class="reward-container">
+  <div>坚持原创技术分享，您的支持将鼓励我继续创作！</div>
+  <button disable="enable" onclick="var qr = document.getElementById(&quot;qr&quot;); qr.style.display = (qr.style.display === 'none') ? 'block' : 'none';">
+    打赏
+  </button>
+  <div id="qr" style="display: none;">
+      
+      <div style="display: inline-block;">
+        <img src="/images/wechatpay.jpg" alt="Hongery 微信支付">
+        <p>微信支付</p>
+      </div>
+      
+      <div style="display: inline-block;">
+        <img src="/images/alipay.jpg" alt="Hongery 支付宝">
+        <p>支付宝</p>
+      </div>
+
+  </div>
+</div>
+
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>Hongery
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="http://yoursite.com/2020/04/09/%E8%AE%BA%E6%96%87%E7%BF%BB%E8%AF%91/%E6%8B%9C%E5%8D%A0%E5%BA%AD%E9%97%AE%E9%A2%98/" title="BFT拜占庭问题">http://yoursite.com/2020/04/09/论文翻译/拜占庭问题/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E8%AE%BA%E6%96%87/" rel="tag"># 论文</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/04/09/RPC%E5%92%8CGRPC/%E4%BD%BF%E7%94%A8gRPC%E6%9E%84%E5%BB%BA%E4%B8%BA%E6%9C%8D%E5%8A%A1/" rel="prev" title="使用grpc构建为服务包括proto生成go">
+      <i class="fa fa-chevron-left"></i> 使用grpc构建为服务包括proto生成go
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2020/04/09/RPC%E5%92%8CGRPC/RPC/" rel="next" title="RPC">
+      RPC <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let activeClass = CONFIG.comments.activeClass;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#The-Byzantine-Generals-Problem"><span class="nav-text">The Byzantine Generals Problem</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-引言"><span class="nav-text">1.引言</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-不可能的结果"><span class="nav-text">2.不可能的结果</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-口头信息的解决方案"><span class="nav-text">3.口头信息的解决方案</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-带签名信息的解决方案"><span class="nav-text">4.带签名信息的解决方案</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-通讯路径缺失"><span class="nav-text">5.通讯路径缺失</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-可靠的系统"><span class="nav-text">6.可靠的系统</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#7-结论"><span class="nav-text">7.结论</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Hongery"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">Hongery</p>
+  <div class="site-description" itemprop="description">直到这一刻微笑着说话为止，我至少留下了一公升眼泪</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">107</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">9</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/Hongery" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;Hongery" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://blog.csdn.net/weixin_40098405" title="CSDN → https:&#x2F;&#x2F;blog.csdn.net&#x2F;weixin_40098405" rel="noopener" target="_blank"><i class="fa fa-fw fa-crosshairs"></i>CSDN</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:1281185088@qq.com" title="E-Mail1 → mailto:1281185088@qq.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail1</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:hongery@yeah.net" title="E-Mail2 → mailto:hongery@yeah.net" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail2</a>
+      </span>
+  </div>
+  <div class="cc-license motion-element" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">hongery</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+      <span class="post-meta-item-text">站点总字数：</span>
+    <span title="站点总字数">NaNm</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span class="post-meta-item-text">站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">NaN:aN字</span>
+</div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>
+<!-- 页面点击小红心 -->
+<script type="text/javascript" src="/js/clicklove.js"></script>

@@ -210,7 +210,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/03/26/%E8%81%94%E7%9B%9F%E9%93%BE/%E7%AC%AC7%E7%AB%A0Fabric%E5%85%B1%E8%AF%86%E6%9C%BA%E5%88%B6/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/04/10/%E5%8C%BA%E5%9D%97%E9%93%BE%E9%9D%A2%E8%AF%95/Untitled/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.jpg">
@@ -224,7 +224,7 @@
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
           
-            <a href="/2020/03/26/%E8%81%94%E7%9B%9F%E9%93%BE/%E7%AC%AC7%E7%AB%A0Fabric%E5%85%B1%E8%AF%86%E6%9C%BA%E5%88%B6/" class="post-title-link" itemprop="url">第7章Fabric共识机制</a>
+            <a href="/2020/04/10/%E5%8C%BA%E5%9D%97%E9%93%BE%E9%9D%A2%E8%AF%95/Untitled/" class="post-title-link" itemprop="url">区块链面试/Untitled</a>
         </h1>
 
         <div class="post-meta">
@@ -234,331 +234,7 @@
               </span>
               <span class="post-meta-item-text">发表于</span>
 
-              <time title="创建时间：2020-03-26 20:36:33" itemprop="dateCreated datePublished" datetime="2020-03-26T20:36:33+08:00">2020-03-26</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-03-27 00:18:15" itemprop="dateModified" datetime="2020-03-27T00:18:15+08:00">2020-03-27</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Hyperledger-Fabric/" itemprop="url" rel="index">
-                    <span itemprop="name">Hyperledger Fabric</span>
-                  </a>
-                </span>
-            </span>
-
-          <br>
-            <span class="post-meta-item" title="本文字数">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-file-word-o"></i>
-              </span>
-                <span class="post-meta-item-text">本文字数：</span>
-              <span>28k</span>
-            </span>
-            <span class="post-meta-item" title="阅读时长">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-clock-o"></i>
-              </span>
-                <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>26 分钟</span>
-            </span>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h3 id="一、Fabric中的共识实现"><a href="#一、Fabric中的共识实现" class="headerlink" title="一、Fabric中的共识实现"></a>一、Fabric中的共识实现</h3><h2 id="目标"><a href="#目标" class="headerlink" title="目标"></a>目标</h2><ol>
-<li><p>共识算法的实现目的</p>
-</li>
-<li><p>共识算法的分类</p>
-</li>
-<li><p>Hyperledger Fabric所使用的共识算法</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2020/03/26/%E8%81%94%E7%9B%9F%E9%93%BE/%E7%AC%AC7%E7%AB%A0Fabric%E5%85%B1%E8%AF%86%E6%9C%BA%E5%88%B6/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-    <div>
-      
-    </div>
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-        
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/03/25/%E8%81%94%E7%9B%9F%E9%93%BE/%E7%AC%AC6%E7%AB%A0MSP%E6%88%90%E5%91%98%E7%AE%A1%E7%90%86%E5%92%8CCA%E6%9C%8D%E5%8A%A1%E5%AE%9E%E7%8E%B0/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpg">
-      <meta itemprop="name" content="Hongery">
-      <meta itemprop="description" content="直到这一刻微笑着说话为止，我至少留下了一公升眼泪">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Hongery">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/03/25/%E8%81%94%E7%9B%9F%E9%93%BE/%E7%AC%AC6%E7%AB%A0MSP%E6%88%90%E5%91%98%E7%AE%A1%E7%90%86%E5%92%8CCA%E6%9C%8D%E5%8A%A1%E5%AE%9E%E7%8E%B0/" class="post-title-link" itemprop="url">第6章MSP成员管理和CA服务实现</a>
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2020-03-25 20:36:33" itemprop="dateCreated datePublished" datetime="2020-03-25T20:36:33+08:00">2020-03-25</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-03-27 00:08:41" itemprop="dateModified" datetime="2020-03-27T00:08:41+08:00">2020-03-27</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Hyperledger-Fabric/" itemprop="url" rel="index">
-                    <span itemprop="name">Hyperledger Fabric</span>
-                  </a>
-                </span>
-            </span>
-
-          <br>
-            <span class="post-meta-item" title="本文字数">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-file-word-o"></i>
-              </span>
-                <span class="post-meta-item-text">本文字数：</span>
-              <span>21k</span>
-            </span>
-            <span class="post-meta-item" title="阅读时长">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-clock-o"></i>
-              </span>
-                <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>19 分钟</span>
-            </span>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h3 id="走进MSP"><a href="#走进MSP" class="headerlink" title="走进MSP"></a>走进MSP</h3><h2 id="一、走进MSP"><a href="#一、走进MSP" class="headerlink" title="一、走进MSP"></a>一、走进MSP</h2><h4 id="目标"><a href="#目标" class="headerlink" title="目标"></a>目标</h4><ol>
-<li>MSP 概念及作用</li>
-<li>MSP 的组成结构</li>
-<li>MSP 在 Hyperledger Fabric 中的应用</li>
-</ol>
-<h4 id="任务实现"><a href="#任务实现" class="headerlink" title="任务实现"></a>任务实现</h4><blockquote>
-<p>数据隐私及安全是区块链技术中的的重要组成部分，联盟链中由多个不同的组织组成，且每一个组织又可以由多个节点组成，那么在 Hyperledger Fabric 中使用了什么且如何确保数据隐私及安全，在这一章中我们来认识一下相关的重要内容。</p>
-</blockquote>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2020/03/25/%E8%81%94%E7%9B%9F%E9%93%BE/%E7%AC%AC6%E7%AB%A0MSP%E6%88%90%E5%91%98%E7%AE%A1%E7%90%86%E5%92%8CCA%E6%9C%8D%E5%8A%A1%E5%AE%9E%E7%8E%B0/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-    <div>
-      
-    </div>
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-        
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/03/24/%E8%81%94%E7%9B%9F%E9%93%BE/%E7%AC%AC5%E7%AB%A0%E9%93%BE%E7%A0%81%E7%9A%84%E5%BC%80%E5%8F%91%E4%B8%8E%E5%AE%9E%E6%88%98/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpg">
-      <meta itemprop="name" content="Hongery">
-      <meta itemprop="description" content="直到这一刻微笑着说话为止，我至少留下了一公升眼泪">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Hongery">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/03/24/%E8%81%94%E7%9B%9F%E9%93%BE/%E7%AC%AC5%E7%AB%A0%E9%93%BE%E7%A0%81%E7%9A%84%E5%BC%80%E5%8F%91%E4%B8%8E%E5%AE%9E%E6%88%98/" class="post-title-link" itemprop="url">第5章链码的开发与实战</a>
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2020-03-24 20:36:33" itemprop="dateCreated datePublished" datetime="2020-03-24T20:36:33+08:00">2020-03-24</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-03-27 00:08:56" itemprop="dateModified" datetime="2020-03-27T00:08:56+08:00">2020-03-27</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Hyperledger-Fabric/" itemprop="url" rel="index">
-                    <span itemprop="name">Hyperledger Fabric</span>
-                  </a>
-                </span>
-            </span>
-
-          <br>
-            <span class="post-meta-item" title="本文字数">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-file-word-o"></i>
-              </span>
-                <span class="post-meta-item-text">本文字数：</span>
-              <span>21k</span>
-            </span>
-            <span class="post-meta-item" title="阅读时长">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-clock-o"></i>
-              </span>
-                <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>19 分钟</span>
-            </span>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h2 id="一、如何利用Fabric提供的接口编写链码"><a href="#一、如何利用Fabric提供的接口编写链码" class="headerlink" title="一、如何利用Fabric提供的接口编写链码"></a>一、如何利用Fabric提供的接口编写链码</h2><h4 id="目标"><a href="#目标" class="headerlink" title="目标"></a>目标</h4><ol>
-<li>牢记编写链码所需要的两个重要包</li>
-<li>开发链码所必须实现的接口及方法</li>
-<li>开发链码文件的基本结构</li>
-</ol>
-<h4 id="任务实现"><a href="#任务实现" class="headerlink" title="任务实现"></a>任务实现</h4><p>开发链码，离不开 Hyperledger Fabric 提供的 SDK ，为了方便诸多不同的应用场景且使用不同语言的开发人员，Hyperledger Fabric 提供了许多不同的 SDK 来支持各种编程语言。如：</p>
-<ul>
-<li>Hyperledger Fabric Node SDK：<a href="https://github.com/hyperledger/fabric-sdk-node" target="_blank" rel="noopener">https://github.com/hyperledger/fabric-sdk-node</a></li>
-<li>Hyperledger Fabric Java SDK：<a href="https://github.com/hyperledger/fabric-sdk-java" target="_blank" rel="noopener">https://github.com/hyperledger/fabric-sdk-java</a></li>
-<li>Hyperledger Fabric Python SDK：<a href="https://github.com/hyperledger/fabric-sdk-py" target="_blank" rel="noopener">https://github.com/hyperledger/fabric-sdk-py</a></li>
-<li>Hyperledger Fabric Go SDK：<a href="https://github.com/hyperledger/fabric-sdk-go" target="_blank" rel="noopener">https://github.com/hyperledger/fabric-sdk-go</a></li>
-</ul>
-<p>在本课程中我们将使用 Golang 进行链码的开发，所以我们应该确定在本系统中有 Hyperledger Fabric 提供的相关API，其它语言的 SDK 我们不在本课程中进行讨论。</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2020/03/24/%E8%81%94%E7%9B%9F%E9%93%BE/%E7%AC%AC5%E7%AB%A0%E9%93%BE%E7%A0%81%E7%9A%84%E5%BC%80%E5%8F%91%E4%B8%8E%E5%AE%9E%E6%88%98/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-    <div>
-      
-    </div>
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-        
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/03/22/%E8%81%94%E7%9B%9F%E9%93%BE/Untitled/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpg">
-      <meta itemprop="name" content="Hongery">
-      <meta itemprop="description" content="直到这一刻微笑着说话为止，我至少留下了一公升眼泪">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Hongery">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/03/22/%E8%81%94%E7%9B%9F%E9%93%BE/Untitled/" class="post-title-link" itemprop="url">联盟链/Untitled</a>
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2020-03-22 16:00:50" itemprop="dateCreated datePublished" datetime="2020-03-22T16:00:50+08:00">2020-03-22</time>
+              <time title="创建时间：2020-04-10 23:26:29" itemprop="dateCreated datePublished" datetime="2020-04-10T23:26:29+08:00">2020-04-10</time>
             </span>
 
           <br>
@@ -608,7 +284,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/03/21/%E8%81%94%E7%9B%9F%E9%93%BE/%E7%AC%AC4%E7%AB%A0%E8%AE%A4%E8%AF%86%E9%93%BE%E7%A0%81%EF%BC%9A%E9%93%BE%E7%A0%81%E4%BD%9C%E7%94%A8%E5%8F%8A%E5%AF%B9%E9%93%BE%E7%A0%81%E8%BF%9B%E8%A1%8C%E7%AE%A1%E7%90%86%E4%B8%8E%E6%B5%8B%E8%AF%95/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/04/09/RPC%E5%92%8CGRPC/gRPC/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.jpg">
@@ -622,7 +298,7 @@
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
           
-            <a href="/2020/03/21/%E8%81%94%E7%9B%9F%E9%93%BE/%E7%AC%AC4%E7%AB%A0%E8%AE%A4%E8%AF%86%E9%93%BE%E7%A0%81%EF%BC%9A%E9%93%BE%E7%A0%81%E4%BD%9C%E7%94%A8%E5%8F%8A%E5%AF%B9%E9%93%BE%E7%A0%81%E8%BF%9B%E8%A1%8C%E7%AE%A1%E7%90%86%E4%B8%8E%E6%B5%8B%E8%AF%95/" class="post-title-link" itemprop="url">第4章认识链码：链码作用及对链码进行管理与测试</a>
+            <a href="/2020/04/09/RPC%E5%92%8CGRPC/gRPC/" class="post-title-link" itemprop="url">gRPC</a>
         </h1>
 
         <div class="post-meta">
@@ -632,14 +308,14 @@
               </span>
               <span class="post-meta-item-text">发表于</span>
 
-              <time title="创建时间：2020-03-21 20:36:33" itemprop="dateCreated datePublished" datetime="2020-03-21T20:36:33+08:00">2020-03-21</time>
+              <time title="创建时间：2020-04-09 15:59:43" itemprop="dateCreated datePublished" datetime="2020-04-09T15:59:43+08:00">2020-04-09</time>
             </span>
               <span class="post-meta-item">
                 <span class="post-meta-item-icon">
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-03-27 00:09:10" itemprop="dateModified" datetime="2020-03-27T00:09:10+08:00">2020-03-27</time>
+                <time title="修改时间：2020-04-10 00:16:44" itemprop="dateModified" datetime="2020-04-10T00:16:44+08:00">2020-04-10</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -647,8 +323,8 @@
               </span>
               <span class="post-meta-item-text">分类于</span>
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Hyperledger-Fabric/" itemprop="url" rel="index">
-                    <span itemprop="name">Hyperledger Fabric</span>
+                  <a href="/categories/RPC%E5%92%8CGRPC/" itemprop="url" rel="index">
+                    <span itemprop="name">RPC和GRPC</span>
                   </a>
                 </span>
             </span>
@@ -659,14 +335,14 @@
                 <i class="fa fa-file-word-o"></i>
               </span>
                 <span class="post-meta-item-text">本文字数：</span>
-              <span>16k</span>
+              <span>4.7k</span>
             </span>
             <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
                 <i class="fa fa-clock-o"></i>
               </span>
                 <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>15 分钟</span>
+              <span>4 分钟</span>
             </span>
 
         </div>
@@ -678,18 +354,10 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h3 id="初识链码：链码概念与原理"><a href="#初识链码：链码概念与原理" class="headerlink" title="初识链码：链码概念与原理"></a>初识链码：链码概念与原理</h3><h3 id="一、初识链码：链码概念与原理"><a href="#一、初识链码：链码概念与原理" class="headerlink" title="一、初识链码：链码概念与原理"></a>一、初识链码：链码概念与原理</h3><h4 id="目标"><a href="#目标" class="headerlink" title="目标"></a>目标</h4><ol>
-<li>认识 Hyperledger Fabric 中的链码（智能合约）</li>
-<li>明确系统链码的种类及作用</li>
-<li>熟知链码的生命周期管理</li>
-</ol>
-<h3 id="1-链码概念"><a href="#1-链码概念" class="headerlink" title="1 链码概念"></a>1 链码概念</h3><blockquote>
-<p>网络运行环境我们已经启动完成，现在我们从开发者的角度来认识一下完成交易所必须的智能合约（在 Hyperledger Fabric 中被称之为 Chaincode，也就是链上代码）的相关知识，以便于理解账本中的数据到底是通过什么方式进行操作。</p>
-</blockquote>
-<p>Chaincode：链上代码，简称链码，一般是指由开发人员使用Go语言（也支持Java等语言）编写的应用程序代码，<strong>提供分布式账本的状态处理逻辑</strong>。链码被部署在Fabric的网络节点中，能够独立运行在具有安全特性的受保护的 Docker 容器中，<strong>以 gRPC 协议与相应的 peer 节点进行通信</strong>，以操作（初始化或管理）分布式账本中的数据。可以根据不同的需求开发出不同的复杂的应用。</p>
+          <h1 id="gRPC快速入门"><a href="#gRPC快速入门" class="headerlink" title="gRPC快速入门"></a>gRPC快速入门</h1><p>RPC算是近些年比较火热的概念了，随着微服务架构的兴起，RPC的应用越来越广泛。本文介绍了RPC和gRPC的相关概念，并且通过详细的代码示例介绍了gRPC的基本使用。</p>
           <!--noindex-->
             <div class="post-button">
-              <a class="btn" href="/2020/03/21/%E8%81%94%E7%9B%9F%E9%93%BE/%E7%AC%AC4%E7%AB%A0%E8%AE%A4%E8%AF%86%E9%93%BE%E7%A0%81%EF%BC%9A%E9%93%BE%E7%A0%81%E4%BD%9C%E7%94%A8%E5%8F%8A%E5%AF%B9%E9%93%BE%E7%A0%81%E8%BF%9B%E8%A1%8C%E7%AE%A1%E7%90%86%E4%B8%8E%E6%B5%8B%E8%AF%95/#more" rel="contents">
+              <a class="btn" href="/2020/04/09/RPC%E5%92%8CGRPC/gRPC/#more" rel="contents">
                 阅读全文 &raquo;
               </a>
             </div>
@@ -716,7 +384,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/03/21/%E8%81%94%E7%9B%9F%E9%93%BE/%E7%AC%AC2%E7%AB%A0Fabric%E6%9E%B6%E6%9E%84%E8%AE%BE%E8%AE%A1/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/04/09/RPC%E5%92%8CGRPC/protobuf/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.jpg">
@@ -730,7 +398,7 @@
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
           
-            <a href="/2020/03/21/%E8%81%94%E7%9B%9F%E9%93%BE/%E7%AC%AC2%E7%AB%A0Fabric%E6%9E%B6%E6%9E%84%E8%AE%BE%E8%AE%A1/" class="post-title-link" itemprop="url">第2章fabric架构设计</a>
+            <a href="/2020/04/09/RPC%E5%92%8CGRPC/protobuf/" class="post-title-link" itemprop="url">protobuf</a>
         </h1>
 
         <div class="post-meta">
@@ -740,14 +408,14 @@
               </span>
               <span class="post-meta-item-text">发表于</span>
 
-              <time title="创建时间：2020-03-21 20:19:33" itemprop="dateCreated datePublished" datetime="2020-03-21T20:19:33+08:00">2020-03-21</time>
+              <time title="创建时间：2020-04-09 15:59:43" itemprop="dateCreated datePublished" datetime="2020-04-09T15:59:43+08:00">2020-04-09</time>
             </span>
               <span class="post-meta-item">
                 <span class="post-meta-item-icon">
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-03-23 15:02:30" itemprop="dateModified" datetime="2020-03-23T15:02:30+08:00">2020-03-23</time>
+                <time title="修改时间：2020-04-10 00:10:55" itemprop="dateModified" datetime="2020-04-10T00:10:55+08:00">2020-04-10</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -755,8 +423,715 @@
               </span>
               <span class="post-meta-item-text">分类于</span>
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Hyperledger-Fabric/" itemprop="url" rel="index">
-                    <span itemprop="name">Hyperledger Fabric</span>
+                  <a href="/categories/RPC%E5%92%8CGRPC/" itemprop="url" rel="index">
+                    <span itemprop="name">RPC和GRPC</span>
+                  </a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-file-word-o"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>6.2k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-clock-o"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>6 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="protobuf初识"><a href="#protobuf初识" class="headerlink" title="protobuf初识"></a>protobuf初识</h1><p>protobuf是一种高效的数据格式，平台无关、语言无关、可扩展，可用于 RPC 系统和持续数据存储系统。</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2020/04/09/RPC%E5%92%8CGRPC/protobuf/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+    <div>
+      
+    </div>
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+        
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/04/09/RPC%E5%92%8CGRPC/RPC/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="Hongery">
+      <meta itemprop="description" content="直到这一刻微笑着说话为止，我至少留下了一公升眼泪">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hongery">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/04/09/RPC%E5%92%8CGRPC/RPC/" class="post-title-link" itemprop="url">RPC</a>
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2020-04-09 15:59:43 / 修改时间：23:31:13" itemprop="dateCreated datePublished" datetime="2020-04-09T15:59:43+08:00">2020-04-09</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/RPC%E5%92%8CGRPC/" itemprop="url" rel="index">
+                    <span itemprop="name">RPC和GRPC</span>
+                  </a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-file-word-o"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>12k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-clock-o"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>11 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h3 id="1-RPC简介"><a href="#1-RPC简介" class="headerlink" title="1. RPC简介"></a><strong>1.</strong> RPC简介</h3><ul>
+<li><p>远程过程调用（Remote Procedure Call，RPC）是一个计算机通信协议</p>
+</li>
+<li><p>该协议允许运行于一台计算机的程序调用另一台计算机的子程序，而程序员无需额外地为这个交互作用编程</p>
+</li>
+<li><p>如果涉及的软件采用面向对象编程，那么远程过程调用亦可称作远程调用或远程方法调用</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2020/04/09/RPC%E5%92%8CGRPC/RPC/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+    <div>
+      
+    </div>
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+        
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/04/09/%E8%AE%BA%E6%96%87%E7%BF%BB%E8%AF%91/%E6%8B%9C%E5%8D%A0%E5%BA%AD%E9%97%AE%E9%A2%98/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="Hongery">
+      <meta itemprop="description" content="直到这一刻微笑着说话为止，我至少留下了一公升眼泪">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hongery">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/04/09/%E8%AE%BA%E6%96%87%E7%BF%BB%E8%AF%91/%E6%8B%9C%E5%8D%A0%E5%BA%AD%E9%97%AE%E9%A2%98/" class="post-title-link" itemprop="url">BFT拜占庭问题</a>
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-04-09 15:59:43" itemprop="dateCreated datePublished" datetime="2020-04-09T15:59:43+08:00">2020-04-09</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-04-15 14:52:19" itemprop="dateModified" datetime="2020-04-15T14:52:19+08:00">2020-04-15</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E8%AE%BA%E6%96%87%E7%BF%BB%E8%AF%91/" itemprop="url" rel="index">
+                    <span itemprop="name">论文翻译</span>
+                  </a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-file-word-o"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>15k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-clock-o"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>14 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h3 id="The-Byzantine-Generals-Problem"><a href="#The-Byzantine-Generals-Problem" class="headerlink" title="The Byzantine Generals Problem"></a><strong>The Byzantine Generals Problem</strong></h3><p>​        可靠的计算机系统必须处理会向系统的不同部分提供冲突信息的故障组件。这种情况可以用拜占庭军队的将军和他们的部队围困在敌方城市附近来概括地表达。 将军们只能通过使者交流，他们必须商定共同的战斗计划。 但是，其中一个或多个可能是叛徒，他们会试图混淆其他人。 问题是找到一种算法来确保忠实的将军们达成共识。 结果表明，仅在口头表达的情况下，只有并且只有三分之二以上的将军忠诚时，这个问题才能解决。 所以一个叛徒可以混淆两个忠实的将军。 有了不可伪造的书面信息，这个问题对于任何数量的将军和可能的叛徒来说都是可以解决的。 然后讨论该解决方案在可靠的计算机系统中的应用。</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2020/04/09/%E8%AE%BA%E6%96%87%E7%BF%BB%E8%AF%91/%E6%8B%9C%E5%8D%A0%E5%BA%AD%E9%97%AE%E9%A2%98/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+    <div>
+      
+    </div>
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+        
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/04/09/RPC%E5%92%8CGRPC/%E4%BD%BF%E7%94%A8gRPC%E6%9E%84%E5%BB%BA%E4%B8%BA%E6%9C%8D%E5%8A%A1/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="Hongery">
+      <meta itemprop="description" content="直到这一刻微笑着说话为止，我至少留下了一公升眼泪">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hongery">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/04/09/RPC%E5%92%8CGRPC/%E4%BD%BF%E7%94%A8gRPC%E6%9E%84%E5%BB%BA%E4%B8%BA%E6%9C%8D%E5%8A%A1/" class="post-title-link" itemprop="url">使用grpc构建为服务包括proto生成go</a>
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-04-09 15:59:43" itemprop="dateCreated datePublished" datetime="2020-04-09T15:59:43+08:00">2020-04-09</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-04-10 00:11:54" itemprop="dateModified" datetime="2020-04-10T00:11:54+08:00">2020-04-10</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/RPC%E5%92%8CGRPC/" itemprop="url" rel="index">
+                    <span itemprop="name">RPC和GRPC</span>
+                  </a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-file-word-o"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>2.2k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-clock-o"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>2 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h2 id="一、使用gRPC构建微服务"><a href="#一、使用gRPC构建微服务" class="headerlink" title="一、使用gRPC构建微服务"></a>一、使用gRPC构建微服务</h2><p>文件夹结构</p>
+<p>gRPC/proto/user.pb.go</p>
+<p>gRPC/proto/user.proto</p>
+<p>gRPC/server.go</p>
+<p>gRPC/client.go            </p>
+<h3 id="1-编写proto文件-gRPC-proto-user-proto"><a href="#1-编写proto文件-gRPC-proto-user-proto" class="headerlink" title="1. 编写proto文件  gRPC/proto/user.proto"></a><strong>1.</strong> 编写proto文件  gRPC/proto/user.proto</h3> <figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//版本号</span></span><br><span class="line">syntax=<span class="string">"proto3"</span>;</span><br><span class="line"><span class="comment">//指定包名</span></span><br><span class="line"><span class="keyword">package</span> proto;</span><br><span class="line"><span class="comment">//定义结构体</span></span><br><span class="line">message UserRequest&#123;</span><br><span class="line">    <span class="comment">//定义用户名</span></span><br><span class="line">    <span class="keyword">string</span> name =<span class="number">1</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//相应结构体</span></span><br><span class="line">message UserResponse&#123;</span><br><span class="line">    <span class="keyword">int32</span> id =<span class="number">1</span>;</span><br><span class="line">    <span class="keyword">string</span> name =<span class="number">2</span>;</span><br><span class="line">    <span class="keyword">int32</span>  age=<span class="number">3</span>;</span><br><span class="line">    <span class="comment">//repeated 修饰符是可变数组，go转切片</span></span><br><span class="line">    repeated <span class="keyword">string</span> hobby=<span class="number">4</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//service 定义方法  接口</span></span><br><span class="line">service UserInfoService &#123;</span><br><span class="line">      rpc GetUserInfo (UserRequest) returns (UserResponse)&#123;</span><br><span class="line">      &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="2-生成go文件-gRPC-proto-user-pb-go"><a href="#2-生成go文件-gRPC-proto-user-pb-go" class="headerlink" title="2. 生成go文件   gRPC/proto/user.pb.go"></a><strong>2.</strong> 生成go文件   gRPC/proto/user.pb.go</h3><p> pycharm中打开命令行，输入命令生成接口文件：</p>
+<p>$ protoc -I . –go_out=plugins=grpc:. ./user.proto  (文件名及位置)</p>
+<h3 id="3-编写服务端-gRPC-server-go"><a href="#3-编写服务端-gRPC-server-go" class="headerlink" title="3. 编写服务端    gRPC/server.go"></a><strong>3.</strong> 编写服务端    gRPC/server.go</h3> <figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="comment">//1.需要监听</span></span><br><span class="line"><span class="comment">//2.需要实例化gRPC</span></span><br><span class="line"><span class="comment">//3.在gRPC商注册为服务</span></span><br><span class="line"><span class="comment">//4.启动服务端</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">	pb <span class="string">"ginDemo/gRPC/proto"</span></span><br><span class="line"></span><br><span class="line">	<span class="string">"context"</span></span><br><span class="line">	<span class="string">"net"</span></span><br><span class="line">	<span class="string">"fmt"</span></span><br><span class="line">	<span class="string">"google.golang.org/grpc"</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="comment">//定义空接口</span></span><br><span class="line"><span class="keyword">type</span> UserInfoService <span class="keyword">struct</span> &#123;&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> u=UserInfoService&#123;&#125;</span><br><span class="line"><span class="comment">//实现方法</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(s *UserInfoService)</span><span class="title">GetUserInfo</span><span class="params">(ctx context.Context,req *pb.UserRequest)</span><span class="params">(resp *pb.UserResponse,err error)</span></span>&#123;</span><br><span class="line">	<span class="comment">//同过用户名查询用户信息</span></span><br><span class="line">	name :=req.Name</span><br><span class="line">	<span class="comment">//数据里查用户的信息</span></span><br><span class="line">	<span class="keyword">if</span> name == <span class="string">"zs"</span>&#123;</span><br><span class="line">		resp =&amp;pb.UserResponse&#123;</span><br><span class="line">			Id:<span class="number">1</span>,</span><br><span class="line">			Name:name,</span><br><span class="line">			Age:<span class="number">22</span>,</span><br><span class="line">			Hobby:[]<span class="keyword">string</span>&#123;<span class="string">"sing"</span>,<span class="string">"Run"</span>&#125;,</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">	addr :=<span class="string">"127.0.0.1:8080"</span></span><br><span class="line">	<span class="comment">//1.监听</span></span><br><span class="line">	listener, err := net.Listen(<span class="string">"tcp"</span>, addr)</span><br><span class="line">	<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">		fmt.Printf(<span class="string">"监听异常：%s\n"</span>,err)</span><br><span class="line">	&#125;</span><br><span class="line">	fmt.Printf(<span class="string">"监听端口:%s\n"</span>,addr)</span><br><span class="line">	<span class="comment">//2.实例化gRPC</span></span><br><span class="line">	s := grpc.NewServer()</span><br><span class="line">	<span class="comment">//3.在grpc上注册微服务</span></span><br><span class="line">	pb.RegisterUserInfoServiceServer(s,&amp;u)</span><br><span class="line">	<span class="comment">//4.启动服务</span></span><br><span class="line">	s.Serve(listener)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="4-编写客户端-gPRC-client-go"><a href="#4-编写客户端-gPRC-client-go" class="headerlink" title="4. 编写客户端  gPRC/client.go"></a><strong>4.</strong> 编写客户端  gPRC/client.go</h3><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">	pb <span class="string">"ginDemo/gRPC/proto"</span></span><br><span class="line">	<span class="string">"google.golang.org/grpc"</span></span><br><span class="line">	<span class="string">"fmt"</span></span><br><span class="line">	<span class="string">"context"</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="comment">//1.链接服务端</span></span><br><span class="line"><span class="comment">//2.实例gRPC客户端 ，RPC使用Call（）方法</span></span><br><span class="line"><span class="comment">//3.调用</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span>&#123;</span><br><span class="line">	<span class="comment">//1.连接</span></span><br><span class="line">	conn, err := grpc.Dial(<span class="string">"127.0.0.1:8080"</span>, grpc.WithInsecure())</span><br><span class="line">	<span class="keyword">if</span> err !=<span class="literal">nil</span> &#123;</span><br><span class="line">		fmt.Printf(<span class="string">"连接异常，%s\n"</span>,err)</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">defer</span> conn.Close()</span><br><span class="line">	<span class="comment">//2.实例化gRPC客户端</span></span><br><span class="line">	client := pb.NewUserInfoServiceClient(conn)</span><br><span class="line">	<span class="comment">//3.组装请求参数</span></span><br><span class="line">	req :=<span class="built_in">new</span>(pb.UserRequest)</span><br><span class="line">	req.Name=<span class="string">"zs"</span></span><br><span class="line">	<span class="comment">//4.调用接口</span></span><br><span class="line">	response, err := client.GetUserInfo(context.Background(), req)</span><br><span class="line">	<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">		fmt.Printf(<span class="string">"响应异常：%s\n"</span>,err )</span><br><span class="line">	&#125;</span><br><span class="line">	fmt.Printf(<span class="string">"响应结果：%s\n"</span>,response)</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="5-测试"><a href="#5-测试" class="headerlink" title="5.测试"></a>5.测试</h2><ol>
+<li>go build run server.go</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">监听端口:127.0.0.1:8080</span><br></pre></td></tr></table></figure>
+
+<p>2.go build run client.go</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">响应结果：id:1 name:&quot;zs&quot; age:22 hobby:&quot;sing&quot; hobby:&quot;Run&quot; </span><br><span class="line"></span><br><span class="line">Process finished with exit code 0</span><br></pre></td></tr></table></figure>
+
+
+      
+    </div>
+
+    
+    
+    
+    <div>
+      
+    </div>
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+        
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/04/06/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/%E8%BF%9B%E7%A8%8B%E9%97%B4%E9%80%9A%E4%BF%A1%E7%9A%84%E5%87%A0%E7%A7%8D%E6%96%B9%E5%BC%8F/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="Hongery">
+      <meta itemprop="description" content="直到这一刻微笑着说话为止，我至少留下了一公升眼泪">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hongery">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/04/06/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/%E8%BF%9B%E7%A8%8B%E9%97%B4%E9%80%9A%E4%BF%A1%E7%9A%84%E5%87%A0%E7%A7%8D%E6%96%B9%E5%BC%8F/" class="post-title-link" itemprop="url">进程间的几种通信方式</a>
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2020-04-06 15:59:45 / 修改时间：20:08:39" itemprop="dateCreated datePublished" datetime="2020-04-06T15:59:45+08:00">2020-04-06</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/" itemprop="url" rel="index">
+                    <span itemprop="name">计算机网络</span>
+                  </a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-file-word-o"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>1.8k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-clock-o"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>2 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="进程间的几种通信方式"><a href="#进程间的几种通信方式" class="headerlink" title="进程间的几种通信方式"></a>进程间的几种通信方式</h1><p>​    进程间通信就是在不同进程之间传播或交换信息，那么不同进程之间存在着什么双方都可以访问的介质呢？进程的用户空间是互相独立的，一般而言是不能互相访问的，唯一的例外是共享内存区。但是，系统空间却是“公共场所”，所以内核显然可以提供这样的条件。除此以外，那就是双方都可以访问的外设了。在这个意义上，两个进程当然也可以通过磁盘上的普通文件交换信息，或者通过“注册表”或其它数据库中的某些表项和记录交换信息。广义上这也是进程间通信的手段，但是一般都不把这算作“进程间通信”。因为那些通信手段的效率太低了，而人们对进程间通信的要求是要有一定的实时性。 </p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2020/04/06/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/%E8%BF%9B%E7%A8%8B%E9%97%B4%E9%80%9A%E4%BF%A1%E7%9A%84%E5%87%A0%E7%A7%8D%E6%96%B9%E5%BC%8F/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+    <div>
+      
+    </div>
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+        
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/04/05/LeetCode/01%E4%B8%A4%E6%95%B0%E4%B9%8B%E5%92%8C/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="Hongery">
+      <meta itemprop="description" content="直到这一刻微笑着说话为止，我至少留下了一公升眼泪">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hongery">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/04/05/LeetCode/01%E4%B8%A4%E6%95%B0%E4%B9%8B%E5%92%8C/" class="post-title-link" itemprop="url">01两数之和</a>
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-04-05 15:59:45" itemprop="dateCreated datePublished" datetime="2020-04-05T15:59:45+08:00">2020-04-05</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-04-06 19:27:39" itemprop="dateModified" datetime="2020-04-06T19:27:39+08:00">2020-04-06</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/LeetCode/" itemprop="url" rel="index">
+                    <span itemprop="name">LeetCode</span>
+                  </a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-file-word-o"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>1.1k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-clock-o"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>1 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h4 id="两数之和"><a href="#两数之和" class="headerlink" title="两数之和"></a>两数之和</h4>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2020/04/05/LeetCode/01%E4%B8%A4%E6%95%B0%E4%B9%8B%E5%92%8C/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+    <div>
+      
+    </div>
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+        
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/04/05/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/TCPIP/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="Hongery">
+      <meta itemprop="description" content="直到这一刻微笑着说话为止，我至少留下了一公升眼泪">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hongery">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/04/05/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/TCPIP/" class="post-title-link" itemprop="url">TCP/IP</a>
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-04-05 15:59:45" itemprop="dateCreated datePublished" datetime="2020-04-05T15:59:45+08:00">2020-04-05</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-04-06 19:49:34" itemprop="dateModified" datetime="2020-04-06T19:49:34+08:00">2020-04-06</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/" itemprop="url" rel="index">
+                    <span itemprop="name">计算机网络</span>
+                  </a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-file-word-o"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>4.5k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-clock-o"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>4 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="TCP-IP"><a href="#TCP-IP" class="headerlink" title="TCP/IP"></a>TCP/IP</h1><p>TCP/IP 是因特网的通信协议。</p>
+<p>TCP/IP 通信协议是对计算机必须遵守的规则的描述，只有遵守这些规则，计算机之间才能进行通信。</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2020/04/05/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/TCPIP/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+    <div>
+      
+    </div>
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+        
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/04/05/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/HTPP/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="Hongery">
+      <meta itemprop="description" content="直到这一刻微笑着说话为止，我至少留下了一公升眼泪">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hongery">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2020/04/05/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/HTPP/" class="post-title-link" itemprop="url">HTPP</a>
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-04-05 15:59:45" itemprop="dateCreated datePublished" datetime="2020-04-05T15:59:45+08:00">2020-04-05</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-04-06 20:02:14" itemprop="dateModified" datetime="2020-04-06T20:02:14+08:00">2020-04-06</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/" itemprop="url" rel="index">
+                    <span itemprop="name">计算机网络</span>
                   </a>
                 </span>
             </span>
@@ -774,7 +1149,7 @@
                 <i class="fa fa-clock-o"></i>
               </span>
                 <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>12 分钟</span>
+              <span>13 分钟</span>
             </span>
 
         </div>
@@ -786,356 +1161,16 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h2 id="扒开Fabric架构：抽象的逻辑架构与实际的运行时架构"><a href="#扒开Fabric架构：抽象的逻辑架构与实际的运行时架构" class="headerlink" title="扒开Fabric架构：抽象的逻辑架构与实际的运行时架构"></a>扒开Fabric架构：抽象的逻辑架构与实际的运行时架构</h2><h2 id="一、扒开Fabric架构：抽象的逻辑架构与实际的运行时架构"><a href="#一、扒开Fabric架构：抽象的逻辑架构与实际的运行时架构" class="headerlink" title="一、扒开Fabric架构：抽象的逻辑架构与实际的运行时架构"></a>一、扒开Fabric架构：抽象的逻辑架构与实际的运行时架构</h2><h4 id="目标"><a href="#目标" class="headerlink" title="目标"></a>目标</h4><ol>
-<li>理解Hyperledger Fabric超级账本的逻辑架构。</li>
-<li>理解Hyperledger Fabric超级账本的实际运行时架构。</li>
-</ol>
-<h3 id="1-比较抽象的逻辑架构"><a href="#1-比较抽象的逻辑架构" class="headerlink" title="1 比较抽象的逻辑架构"></a>1 比较抽象的逻辑架构</h3><p>Fabric从1.X开始，在扩展性及安全性上面有了大大的提升，且新增了诸多的新特性：</p>
-<ul>
-<li><p>多通道：支持多通道，提高隔离安全性。</p>
-</li>
-<li><p>可拔插的组件：支持共识组件、权限管理组件等可拔插功能。</p>
-</li>
-<li><p>账本数据可被存储为多种格式。</p>
-</li>
-<li><p>分化了Peer节点的多种角色，可以根据具体情况实现灵活部署</p>
+          <h1 id="HTTP-简介"><a href="#HTTP-简介" class="headerlink" title="HTTP 简介"></a>HTTP 简介</h1><p>HTTP协议是Hyper Text Transfer Protocol（超文本传输协议）的缩写,是用于从万维网（WWW:World Wide Web ）服务器传输超文本到本地浏览器的传送协议。。</p>
+<p>HTTP是一个基于TCP/IP通信协议来传递数据（HTML 文件, 图片文件, 查询结果等）。</p>
           <!--noindex-->
             <div class="post-button">
-              <a class="btn" href="/2020/03/21/%E8%81%94%E7%9B%9F%E9%93%BE/%E7%AC%AC2%E7%AB%A0Fabric%E6%9E%B6%E6%9E%84%E8%AE%BE%E8%AE%A1/#more" rel="contents">
+              <a class="btn" href="/2020/04/05/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/HTPP/#more" rel="contents">
                 阅读全文 &raquo;
               </a>
             </div>
           <!--/noindex-->
         
-      
-    </div>
-
-    
-    
-    
-    <div>
-      
-    </div>
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-        
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/03/21/%E8%81%94%E7%9B%9F%E9%93%BE/%E7%AC%AC3%E7%AB%A0Fabric%E7%BD%91%E7%BB%9C%E7%9A%84%E6%90%AD%E5%BB%BA/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpg">
-      <meta itemprop="name" content="Hongery">
-      <meta itemprop="description" content="直到这一刻微笑着说话为止，我至少留下了一公升眼泪">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Hongery">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/03/21/%E8%81%94%E7%9B%9F%E9%93%BE/%E7%AC%AC3%E7%AB%A0Fabric%E7%BD%91%E7%BB%9C%E7%9A%84%E6%90%AD%E5%BB%BA/" class="post-title-link" itemprop="url">第3章fabric网络搭建</a>
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2020-03-21 20:19:33" itemprop="dateCreated datePublished" datetime="2020-03-21T20:19:33+08:00">2020-03-21</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-03-27 00:09:26" itemprop="dateModified" datetime="2020-03-27T00:09:26+08:00">2020-03-27</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/Hyperledger-Fabric/" itemprop="url" rel="index">
-                    <span itemprop="name">Hyperledger Fabric</span>
-                  </a>
-                </span>
-            </span>
-
-          <br>
-            <span class="post-meta-item" title="本文字数">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-file-word-o"></i>
-              </span>
-                <span class="post-meta-item-text">本文字数：</span>
-              <span>34k</span>
-            </span>
-            <span class="post-meta-item" title="阅读时长">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-clock-o"></i>
-              </span>
-                <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>31 分钟</span>
-            </span>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h3 id="生成组织结构与身份证书"><a href="#生成组织结构与身份证书" class="headerlink" title="生成组织结构与身份证书"></a>生成组织结构与身份证书</h3><h3 id="一、生成组织结构与身份证书"><a href="#一、生成组织结构与身份证书" class="headerlink" title="一、生成组织结构与身份证书"></a>一、生成组织结构与身份证书</h3><h4 id="目标"><a href="#目标" class="headerlink" title="目标"></a>目标</h4><ol>
-<li>明确生成组织结构及身份证书所需的配置文件及其内容含义</li>
-<li>如何使用命令生成对应的组织结构信身份证书</li>
-</ol>
-<h4 id="任务实现"><a href="#任务实现" class="headerlink" title="任务实现"></a>任务实现</h4><blockquote>
-<p>自动化脚本 byfn.sh 可以自动帮我们创建网络环境运行时所需的所有内容，但在一些特定情况之下，我们根据不同的需求需要自定义一些设置。</p>
-<p>现在，我们来实现最重要的环节，哪些配置文件的相关设置会影响创建 Hyperledger Fabric 网络环境运行时所需要的相应内容。</p>
-</blockquote>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2020/03/21/%E8%81%94%E7%9B%9F%E9%93%BE/%E7%AC%AC3%E7%AB%A0Fabric%E7%BD%91%E7%BB%9C%E7%9A%84%E6%90%AD%E5%BB%BA/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-    <div>
-      
-    </div>
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-        
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/03/21/Untitled/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpg">
-      <meta itemprop="name" content="Hongery">
-      <meta itemprop="description" content="直到这一刻微笑着说话为止，我至少留下了一公升眼泪">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Hongery">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/03/21/Untitled/" class="post-title-link" itemprop="url">Untitled</a>
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2020-03-21 12:59:25" itemprop="dateCreated datePublished" datetime="2020-03-21T12:59:25+08:00">2020-03-21</time>
-            </span>
-
-          <br>
-            <span class="post-meta-item" title="本文字数">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-file-word-o"></i>
-              </span>
-                <span class="post-meta-item-text">本文字数：</span>
-              <span>0</span>
-            </span>
-            <span class="post-meta-item" title="阅读时长">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-clock-o"></i>
-              </span>
-                <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>1 分钟</span>
-            </span>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          
-      
-    </div>
-
-    
-    
-    
-    <div>
-      
-    </div>
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-        
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/03/21/%E5%AE%8C%E6%95%B4%E5%AF%86%E7%A0%81%E5%AD%A6/Untitled/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpg">
-      <meta itemprop="name" content="Hongery">
-      <meta itemprop="description" content="直到这一刻微笑着说话为止，我至少留下了一公升眼泪">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Hongery">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/03/21/%E5%AE%8C%E6%95%B4%E5%AF%86%E7%A0%81%E5%AD%A6/Untitled/" class="post-title-link" itemprop="url">完整密码学/Untitled</a>
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2020-03-21 12:52:52" itemprop="dateCreated datePublished" datetime="2020-03-21T12:52:52+08:00">2020-03-21</time>
-            </span>
-
-          <br>
-            <span class="post-meta-item" title="本文字数">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-file-word-o"></i>
-              </span>
-                <span class="post-meta-item-text">本文字数：</span>
-              <span>0</span>
-            </span>
-            <span class="post-meta-item" title="阅读时长">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-clock-o"></i>
-              </span>
-                <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>1 分钟</span>
-            </span>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          
-      
-    </div>
-
-    
-    
-    
-    <div>
-      
-    </div>
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-        
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/03/16/%E5%AE%8C%E6%95%B4%E5%AF%86%E7%A0%81%E5%AD%A6/%E7%AC%AC7%E7%AB%A0%E9%9D%9E%E5%AF%B9%E7%A7%B0%E5%8A%A0%E5%AF%86%E7%AE%97%E6%B3%95/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpg">
-      <meta itemprop="name" content="Hongery">
-      <meta itemprop="description" content="直到这一刻微笑着说话为止，我至少留下了一公升眼泪">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Hongery">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          
-            <a href="/2020/03/16/%E5%AE%8C%E6%95%B4%E5%AF%86%E7%A0%81%E5%AD%A6/%E7%AC%AC7%E7%AB%A0%E9%9D%9E%E5%AF%B9%E7%A7%B0%E5%8A%A0%E5%AF%86%E7%AE%97%E6%B3%95/" class="post-title-link" itemprop="url">完整密码学/第7章非对称加密算法</a>
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2020-03-16 23:37:06" itemprop="dateCreated datePublished" datetime="2020-03-16T23:37:06+08:00">2020-03-16</time>
-            </span>
-
-          <br>
-            <span class="post-meta-item" title="本文字数">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-file-word-o"></i>
-              </span>
-                <span class="post-meta-item-text">本文字数：</span>
-              <span>0</span>
-            </span>
-            <span class="post-meta-item" title="阅读时长">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-clock-o"></i>
-              </span>
-                <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>1 分钟</span>
-            </span>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          
       
     </div>
 
@@ -1157,7 +1192,7 @@
 
   
   <nav class="pagination">
-    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><span class="space">&hellip;</span><a class="page-number" href="/page/8/">8</a><a class="extend next" rel="next" href="/page/2/"><i class="fa fa-angle-right" aria-label="下一页"></i></a>
+    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><span class="space">&hellip;</span><a class="page-number" href="/page/11/">11</a><a class="extend next" rel="next" href="/page/2/"><i class="fa fa-angle-right" aria-label="下一页"></i></a>
   </nav>
 
 
@@ -1225,20 +1260,20 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">74</span>
+          <span class="site-state-item-count">107</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
             <a href="/categories/">
           
-        <span class="site-state-item-count">8</span>
+        <span class="site-state-item-count">14</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-count">9</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>

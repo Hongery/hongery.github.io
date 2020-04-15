@@ -1,0 +1,702 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.1.1">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/avatar.jpg">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/avatar.jpg">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    hostname: new URL('http://yoursite.com').hostname,
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.6.0',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},
+    copycode: {"enable":true,"show_result":true,"style":"mac"},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":true},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: false,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    comments: {"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    },
+    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: 'search.xml',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}
+  };
+</script>
+
+  <meta name="description" content="1. RPC简介 远程过程调用（Remote Procedure Call，RPC）是一个计算机通信协议  该协议允许运行于一台计算机的程序调用另一台计算机的子程序，而程序员无需额外地为这个交互作用编程  如果涉及的软件采用面向对象编程，那么远程过程调用亦可称作远程调用或远程方法调用">
+<meta property="og:type" content="article">
+<meta property="og:title" content="RPC">
+<meta property="og:url" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2020&#x2F;04&#x2F;09&#x2F;RPC%E5%92%8CGRPC&#x2F;RPC&#x2F;index.html">
+<meta property="og:site_name" content="Hongery">
+<meta property="og:description" content="1. RPC简介 远程过程调用（Remote Procedure Call，RPC）是一个计算机通信协议  该协议允许运行于一台计算机的程序调用另一台计算机的子程序，而程序员无需额外地为这个交互作用编程  如果涉及的软件采用面向对象编程，那么远程过程调用亦可称作远程调用或远程方法调用">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2020&#x2F;04&#x2F;09&#x2F;RPC%E5%92%8CGRPC&#x2F;RPC&#x2F;images&#x2F;wps1.jpg">
+<meta property="og:image" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2020&#x2F;04&#x2F;09&#x2F;RPC%E5%92%8CGRPC&#x2F;RPC&#x2F;images&#x2F;wps2.jpg">
+<meta property="og:image" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2020&#x2F;04&#x2F;09&#x2F;RPC%E5%92%8CGRPC&#x2F;RPC&#x2F;images&#x2F;wps4.jpg">
+<meta property="og:image" content="file:&#x2F;&#x2F;&#x2F;C:%5CUsers%5CHUANGG~1%5CAppData%5CLocal%5CTemp%5Cksohtml7300%5Cwps5.jpg">
+<meta property="article:published_time" content="2020-04-09T07:59:43.000Z">
+<meta property="article:modified_time" content="2020-04-09T15:31:13.656Z">
+<meta property="article:author" content="Hongery">
+<meta property="article:tag" content="go">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2020&#x2F;04&#x2F;09&#x2F;RPC%E5%92%8CGRPC&#x2F;RPC&#x2F;images&#x2F;wps1.jpg">
+
+<link rel="canonical" href="http://yoursite.com/2020/04/09/RPC%E5%92%8CGRPC/RPC/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true
+  };
+</script>
+
+  <title>RPC | Hongery</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Hongery</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <p class="site-subtitle">记录学习中的点点滴滴</p>
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="none"
+           placeholder="搜索..." spellcheck="false"
+           type="text" id="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+  <a href="https://github.com/Hongery" class="github-corner" title="Follow me on GitHub" aria-label="Follow me on GitHub" rel="noopener" target="_blank"><svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true"><path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path><path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path><path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path></svg></a>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2020/04/09/RPC%E5%92%8CGRPC/RPC/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="Hongery">
+      <meta itemprop="description" content="直到这一刻微笑着说话为止，我至少留下了一公升眼泪">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hongery">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          RPC
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2020-04-09 15:59:43 / 修改时间：23:31:13" itemprop="dateCreated datePublished" datetime="2020-04-09T15:59:43+08:00">2020-04-09</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/RPC%E5%92%8CGRPC/" itemprop="url" rel="index">
+                    <span itemprop="name">RPC和GRPC</span>
+                  </a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span><br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-file-word-o"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>12k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-clock-o"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>11 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h3 id="1-RPC简介"><a href="#1-RPC简介" class="headerlink" title="1. RPC简介"></a><strong>1.</strong> RPC简介</h3><ul>
+<li><p>远程过程调用（Remote Procedure Call，RPC）是一个计算机通信协议</p>
+</li>
+<li><p>该协议允许运行于一台计算机的程序调用另一台计算机的子程序，而程序员无需额外地为这个交互作用编程</p>
+</li>
+<li><p>如果涉及的软件采用面向对象编程，那么远程过程调用亦可称作远程调用或远程方法调用</p>
+<a id="more"></a>
+
+</li>
+</ul>
+<h4 id="解决问题"><a href="#解决问题" class="headerlink" title="解决问题"></a>解决问题</h4><p>而一旦踏入公司尤其是大型互联网公司就会发现，公司的系统都由成千上万大大小小的服务组成，各服务部署在不同的机器上，由不同的团队负责。到两个问题：<br>1）要建造一个新服务，免不了需要依赖他人的服务，而现在其他人的服务都在逐步，怎么调用？<br>2）其他团队要使用我们的服务，我们的服务该如何发布杀死他人呼吁？</p>
+<h4 id="过程"><a href="#过程" class="headerlink" title="过程"></a>过程</h4><p><img src="./images/wps1.jpg" alt="img"></p>
+<ol>
+<li>服务消费方（客户）调用以本地调用方式调用服务；</li>
+<li>客户端存根接收到调用后负责将方法，参数等组装成能够进行网络传输的消息体；</li>
+<li>客户存根找到服务地址，转化为消息发送到服务端；</li>
+<li>服务器存根收到消息后进行解码；</li>
+<li>服务器存根根据解码结果调用本地的服务；</li>
+<li>本地服务执行重新结果返回给服务器存根；</li>
+<li>服务器存根将返回结果打包成消息并发送至消费方；</li>
+<li>客户存根接收到消息，并进行解码；</li>
+<li>服务消费方得到最终结果。</li>
+</ol>
+<p>RPC的目标就是要2〜8这些步骤都封装起来，让用户对这些细节透明 </p>
+<h3 id="2-流行RPC框架的对比"><a href="#2-流行RPC框架的对比" class="headerlink" title="2.流行RPC框架的对比"></a>2.流行RPC框架的对比</h3><p><img src="./images/wps2.jpg" alt="img"> </p>
+<h3 id="3-golang中如何实现RPC"><a href="#3-golang中如何实现RPC" class="headerlink" title="3.golang中如何实现RPC"></a>3.golang中如何实现RPC</h3><ol>
+<li><p>golang中实现RPC非常简单，官方提供了封装好的库，还有一些第三方的库</p>
+</li>
+<li><p>golang官方的net/rpc库使用encoding/gob进行编解码，支持tcp和http数据传输方式，由于其他语言不支持gob编解码方式，所以golang的RPC只支持golang开发的服务器与客户端之间的交互</p>
+</li>
+<li><p>官方还提供了net/rpc/jsonrpc库实现RPC方法，jsonrpc采用JSON进行数据编解码，因而支持跨语言调用，目前jsonrpc库是基于tcp协议实现的，暂不支持http传输方式</p>
+</li>
+</ol>
+<p><strong>例题：golang实现RPC程序，实现求矩形面积和周长</strong></p>
+<p>l 服务端RPC/service/main.go</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">   <span class="string">"github.com/micro/go-log"</span></span><br><span class="line">   <span class="string">"net/http"</span></span><br><span class="line">   <span class="string">"net/rpc"</span></span><br><span class="line"></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="comment">//    例题：golang实现RPC程序，实现求矩形面积和周长</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">type</span> Params <span class="keyword">struct</span> &#123;</span><br><span class="line">   Width, Height <span class="keyword">int</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">type</span> Rect <span class="keyword">struct</span>&#123;&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// RPC服务端方法，求矩形面积</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(r *Rect)</span> <span class="title">Area</span><span class="params">(p Params, ret *<span class="keyword">int</span>)</span> <span class="title">error</span></span> &#123;</span><br><span class="line">   *ret = p.Height * p.Width</span><br><span class="line">   <span class="keyword">return</span> <span class="literal">nil</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 周长</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(r *Rect)</span> <span class="title">Perimeter</span><span class="params">(p Params, ret *<span class="keyword">int</span>)</span> <span class="title">error</span></span> &#123;</span><br><span class="line">   *ret = (p.Height + p.Width) * <span class="number">2</span></span><br><span class="line">   <span class="keyword">return</span> <span class="literal">nil</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 主函数</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">   <span class="comment">// 1.注册服务</span></span><br><span class="line">   rect := <span class="built_in">new</span>(Rect)</span><br><span class="line">   <span class="comment">// 注册一个rect的服务</span></span><br><span class="line">   rpc.Register(rect)</span><br><span class="line">   <span class="comment">// 2.服务处理绑定到http协议上</span></span><br><span class="line">   rpc.HandleHTTP()</span><br><span class="line">   <span class="comment">// 3.监听服务</span></span><br><span class="line">   err := http.ListenAndServe(<span class="string">":8000"</span>, <span class="literal">nil</span>)</span><br><span class="line">   <span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">      log.Fatal(err)</span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>l 客户端RPC/client/main.go</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">   <span class="string">"fmt"</span></span><br><span class="line">   <span class="string">"log"</span></span><br><span class="line">   <span class="string">"net/rpc"</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="comment">// 传的参数</span></span><br><span class="line"><span class="keyword">type</span> Params <span class="keyword">struct</span> &#123;</span><br><span class="line">   Width, Height <span class="keyword">int</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 主函数</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">   <span class="comment">// 1.连接远程rpc服务</span></span><br><span class="line">   conn, err := rpc.DialHTTP(<span class="string">"tcp"</span>, <span class="string">":8000"</span>)</span><br><span class="line">   <span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">      log.Fatal(err)</span><br><span class="line">   &#125;</span><br><span class="line">   <span class="comment">// 2.调用方法</span></span><br><span class="line">   <span class="comment">// 面积</span></span><br><span class="line">   ret := <span class="number">0</span></span><br><span class="line">   err2 := conn.Call(<span class="string">"Rect.Area"</span>, Params&#123;<span class="number">50</span>, <span class="number">100</span>&#125;, &amp;ret)</span><br><span class="line">   <span class="keyword">if</span> err2 != <span class="literal">nil</span> &#123;</span><br><span class="line">      log.Fatal(err2)</span><br><span class="line">   &#125;</span><br><span class="line">   fmt.Println(<span class="string">"面积："</span>, ret)</span><br><span class="line">   <span class="comment">// 周长</span></span><br><span class="line">   err3 := conn.Call(<span class="string">"Rect.Perimeter"</span>, Params&#123;<span class="number">50</span>, <span class="number">100</span>&#125;, &amp;ret)</span><br><span class="line">   <span class="keyword">if</span> err3 != <span class="literal">nil</span> &#123;</span><br><span class="line">      log.Fatal(err3)</span><br><span class="line">   &#125;</span><br><span class="line">   fmt.Println(<span class="string">"周长："</span>, ret)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>测试过程及结果</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">//第一个终端，开启服务</span><br><span class="line">huanggang@DESKTOP-C1VUL6T MINGW64 /c/Program Files/StudyGo/src/ginDemo/RPC/service (master)</span><br><span class="line">$ go run main.go</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">//第二个终端，连接服务</span><br><span class="line">huanggang@DESKTOP-C1VUL6T MINGW64 /c/Program Files/StudyGo/src/ginDemo/RPC/client (master)</span><br><span class="line">$ go run main.go</span><br><span class="line">面积： 5000</span><br><span class="line">周长： 300</span><br></pre></td></tr></table></figure>
+
+<h4 id="注意事项"><a href="#注意事项" class="headerlink" title="注意事项"></a>注意事项</h4><p>golang写RPC程序，必须符合4个基本条件，不然RPC用不了</p>
+<ul>
+<li><p>结构体字段首字母要大写，可以别人调用</p>
+</li>
+<li><p>函数名必须首字母大写</p>
+</li>
+<li><p>函数第一参数是接收参数，第二个参数是返回给客户端的参数，必须是指针类型</p>
+</li>
+<li><p>函数还必须有一个返回值error</p>
+</li>
+</ul>
+<p>l <strong>练习：模仿前面例题，自己实现RPC程序，服务端接收2个参数，可以做乘法运算，也可以做商和余数的运算，客户端进行传参和访问，得到结果如下：</strong></p>
+<figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">9</span>*<span class="number">2</span>=<span class="number">18</span></span><br><span class="line"><span class="number">9</span>/<span class="number">2</span>，商=<span class="number">4</span>，余数=<span class="number">1</span></span><br></pre></td></tr></table></figure>
+
+<p>l 服务端service/main.go</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">   <span class="string">"errors"</span></span><br><span class="line">   <span class="string">"log"</span></span><br><span class="line">   <span class="string">"net/http"</span></span><br><span class="line">   <span class="string">"net/rpc"</span></span><br><span class="line">)</span><br><span class="line"><span class="comment">// 结构体，用于注册的</span></span><br><span class="line"><span class="keyword">type</span> Arith <span class="keyword">struct</span>&#123;&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 声明参数结构体</span></span><br><span class="line"><span class="keyword">type</span> ArithRequest <span class="keyword">struct</span> &#123; A, B <span class="keyword">int</span>&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 返回给客户端的结果</span></span><br><span class="line"><span class="keyword">type</span> ArithResponse <span class="keyword">struct</span> &#123;</span><br><span class="line">   Pro <span class="keyword">int</span>  <span class="comment">// 乘积</span></span><br><span class="line">   Quo <span class="keyword">int</span> <span class="comment">// 商</span></span><br><span class="line">   Rem <span class="keyword">int</span>  <span class="comment">// 余数</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 乘法</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(this *Arith)</span> <span class="title">Multiply</span><span class="params">(req ArithRequest, res *ArithResponse)</span> <span class="title">error</span></span> &#123;</span><br><span class="line">   res.Pro = req.A * req.B</span><br><span class="line">   <span class="keyword">return</span> <span class="literal">nil</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 商和余数</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(this *Arith)</span> <span class="title">Divide</span><span class="params">(req ArithRequest, res *ArithResponse)</span> <span class="title">error</span></span> &#123;</span><br><span class="line">   <span class="keyword">if</span> req.B == <span class="number">0</span> &#123;  <span class="keyword">return</span> errors.New(<span class="string">"除数不能为0"</span>)&#125;</span><br><span class="line">   res.Quo = req.A / req.B  <span class="comment">// 除</span></span><br><span class="line">   res.Rem = req.A % req.B     <span class="comment">// 取模</span></span><br><span class="line">   <span class="keyword">return</span> <span class="literal">nil</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 主函数</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">   rect := <span class="built_in">new</span>(Arith)  <span class="comment">// 1.注册服务</span></span><br><span class="line">   rpc.Register(rect)     <span class="comment">// 注册一个rect的服务</span></span><br><span class="line">   rpc.HandleHTTP()    <span class="comment">// 2.服务处理绑定到http协议上</span></span><br><span class="line">   <span class="comment">// 3.监听服务</span></span><br><span class="line">   err := http.ListenAndServe(<span class="string">":8000"</span>, <span class="literal">nil</span>)</span><br><span class="line">   <span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">      log.Fatal(err)</span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>l 客户端client/main.go</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">   <span class="string">"fmt"</span></span><br><span class="line">   <span class="string">"log"</span></span><br><span class="line">   <span class="string">"net/rpc"</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="keyword">type</span> ArithRequest <span class="keyword">struct</span> &#123;A, B <span class="keyword">int</span>&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 返回给客户端的结果</span></span><br><span class="line"><span class="keyword">type</span> ArithResponse <span class="keyword">struct</span> &#123;</span><br><span class="line">   Pro <span class="keyword">int</span>   <span class="comment">// 乘积</span></span><br><span class="line">   Quo <span class="keyword">int</span>      <span class="comment">// 商</span></span><br><span class="line">   Rem <span class="keyword">int</span>     <span class="comment">// 余数</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">   conn, err := rpc.DialHTTP(<span class="string">"tcp"</span>, <span class="string">":8000"</span>)</span><br><span class="line">   <span class="keyword">if</span> err != <span class="literal">nil</span> &#123; log.Fatal(err)&#125;</span><br><span class="line">   req := ArithRequest&#123;<span class="number">9</span>, <span class="number">2</span>&#125;</span><br><span class="line">   <span class="keyword">var</span> res ArithResponse</span><br><span class="line">   err2 := conn.Call(<span class="string">"Arith.Multiply"</span>, req, &amp;res)</span><br><span class="line">   <span class="keyword">if</span> err2 != <span class="literal">nil</span> &#123;</span><br><span class="line">      log.Fatal(err2)</span><br><span class="line">   &#125;</span><br><span class="line">   fmt.Printf(<span class="string">"%d * %d = %d\n"</span>, req.A, req.B, res.Pro)</span><br><span class="line">   err3 := conn.Call(<span class="string">"Arith.Divide"</span>, req, &amp;res)</span><br><span class="line">   <span class="keyword">if</span> err3 != <span class="literal">nil</span> &#123;</span><br><span class="line">      log.Fatal(err3)</span><br><span class="line">   &#125;</span><br><span class="line">   fmt.Printf(<span class="string">"%d / %d 商 %d，余数 = %d\n"</span>, req.A, req.B, res.Quo, res.Rem)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>l 另外，<strong>net/rpc/jsonrpc库通过json格式编解码，支持跨语言调用</strong></p>
+<p><strong>server</strong></p>
+<p><img src="./images/wps4.jpg" alt="img"> </p>
+<p><strong>client</strong></p>
+<p><img src="file:///C:%5CUsers%5CHUANGG~1%5CAppData%5CLocal%5CTemp%5Cksohtml7300%5Cwps5.jpg" alt="img"> </p>
+<h3 id="4-RPC调用流程"><a href="#4-RPC调用流程" class="headerlink" title="4.RPC调用流程"></a>4.RPC调用流程</h3><ul>
+<li><p>微服务架构下数据交互一般是对内 RPC，对外 REST</p>
+</li>
+<li><p>将业务按功能模块拆分到各个微服务，具有提高项目协作效率、降低模块耦合度、提高系统可用性等优点，但是开发门槛比较高，比如 RPC 框架的使用、后期的服务监控等工作</p>
+</li>
+<li><p>一般情况下，我们会将功能代码在本地直接调用，微服务架构下，我们需要将这个函数作为单独的服务运行，客户端通过网络调用</p>
+</li>
+</ul>
+<h3 id="5-网络传输数据格式"><a href="#5-网络传输数据格式" class="headerlink" title="5. 网络传输数据格式"></a><strong>5.</strong> 网络传输数据格式</h3><p> 两端要约定好数据包的格式</p>
+<p> 成熟的RPC框架会有自定义传输协议，这里网络传输格式定义如下，前面是固定长度消息头，后面是变长消息体</p>
+<p><strong><code>网络字节流:</code>      <code>header unit32</code>       <code>data []byte</code></strong></p>
+<p>l自己定义数据格式的读写 reader_writer.go</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> rpc_</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">   <span class="string">"encoding/binary"</span></span><br><span class="line">   <span class="string">"io"</span></span><br><span class="line">   <span class="string">"net"</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="comment">// 测试网络中读写数据的情况</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 会话连接的结构体</span></span><br><span class="line"><span class="keyword">type</span> Session <span class="keyword">struct</span> &#123;</span><br><span class="line">   conn net.Conn</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 构造方法</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">NewSession</span><span class="params">(conn net.Conn)</span> *<span class="title">Session</span></span> &#123;</span><br><span class="line">   <span class="keyword">return</span> &amp;Session&#123;conn: conn&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 向连接中去写数据</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(s *Session)</span> <span class="title">Write</span><span class="params">(data []<span class="keyword">byte</span>)</span> <span class="title">error</span></span> &#123;</span><br><span class="line">   <span class="comment">// 定义写数据的格式</span></span><br><span class="line">   <span class="comment">// 4字节头部 + 可变体的长度</span></span><br><span class="line">   buf := <span class="built_in">make</span>([]<span class="keyword">byte</span>, <span class="number">4</span>+<span class="built_in">len</span>(data))</span><br><span class="line">   <span class="comment">// 写入头部，记录数据长度</span></span><br><span class="line">   binary.BigEndian.PutUint32(buf[:<span class="number">4</span>], <span class="keyword">uint32</span>(<span class="built_in">len</span>(data)))</span><br><span class="line">   <span class="comment">// 将整个数据，放到4后边</span></span><br><span class="line">   <span class="built_in">copy</span>(buf[<span class="number">4</span>:], data)</span><br><span class="line">   _, err := s.conn.Write(buf)</span><br><span class="line">   <span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">      <span class="keyword">return</span> err</span><br><span class="line">   &#125;</span><br><span class="line">   <span class="keyword">return</span> <span class="literal">nil</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 从连接读数据</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(s *Session)</span> <span class="title">Read</span><span class="params">()</span> <span class="params">([]<span class="keyword">byte</span>, error)</span></span> &#123;</span><br><span class="line">   <span class="comment">// 读取头部记录的长度</span></span><br><span class="line">   header := <span class="built_in">make</span>([]<span class="keyword">byte</span>, <span class="number">4</span>)</span><br><span class="line">   <span class="comment">// 按长度读取消息</span></span><br><span class="line">   _, err := io.ReadFull(s.conn, header)</span><br><span class="line">   <span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">      <span class="keyword">return</span> <span class="literal">nil</span>, err</span><br><span class="line">   &#125;</span><br><span class="line">   <span class="comment">// 读取数据</span></span><br><span class="line">   dataLen := binary.BigEndian.Uint32(header)</span><br><span class="line">   data := <span class="built_in">make</span>([]<span class="keyword">byte</span>, dataLen)</span><br><span class="line">   _, err = io.ReadFull(s.conn, data)</span><br><span class="line">   <span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">      <span class="keyword">return</span> <span class="literal">nil</span>, err</span><br><span class="line">   &#125;</span><br><span class="line">   <span class="keyword">return</span> data, <span class="literal">nil</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>l 测试类***_test.go</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> rpc_</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">   <span class="string">"fmt"</span></span><br><span class="line">   <span class="string">"net"</span></span><br><span class="line">   <span class="string">"sync"</span></span><br><span class="line">   <span class="string">"testing"</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">TestSession_ReadWriter</span><span class="params">(t *testing.T)</span></span> &#123;</span><br><span class="line">   <span class="comment">// 定义地址</span></span><br><span class="line">   addr := <span class="string">"127.0.0.1:8000"</span></span><br><span class="line">   my_data := <span class="string">"hello"</span></span><br><span class="line">   <span class="comment">// 等待组定义</span></span><br><span class="line">   wg := sync.WaitGroup&#123;&#125;</span><br><span class="line">   wg.Add(<span class="number">2</span>)</span><br><span class="line">   <span class="comment">// 写数据的协程</span></span><br><span class="line">   <span class="keyword">go</span> <span class="function"><span class="keyword">func</span><span class="params">()</span></span> &#123;</span><br><span class="line">      <span class="keyword">defer</span> wg.Done()</span><br><span class="line">      lis, err := net.Listen(<span class="string">"tcp"</span>, addr)</span><br><span class="line">      <span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">         t.Fatal(err)</span><br><span class="line">      &#125;</span><br><span class="line">      conn, _ := lis.Accept()</span><br><span class="line">      s := Session&#123;conn: conn&#125;</span><br><span class="line">      err = s.Write([]<span class="keyword">byte</span>(my_data))</span><br><span class="line">      <span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">         t.Fatal(err)</span><br><span class="line">      &#125;</span><br><span class="line">   &#125;()</span><br><span class="line"></span><br><span class="line">   <span class="comment">// 读数据的协程</span></span><br><span class="line">   <span class="keyword">go</span> <span class="function"><span class="keyword">func</span><span class="params">()</span></span> &#123;</span><br><span class="line">      <span class="keyword">defer</span> wg.Done()</span><br><span class="line">      conn, err := net.Dial(<span class="string">"tcp"</span>, addr)</span><br><span class="line">      <span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">         t.Fatal(err)</span><br><span class="line">      &#125;</span><br><span class="line">      s := Session&#123;conn: conn&#125;</span><br><span class="line">      data, err := s.Read()</span><br><span class="line">      <span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">         t.Fatal(err)</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="comment">// 最后一层校验</span></span><br><span class="line">      <span class="keyword">if</span> <span class="keyword">string</span>(data) != my_data &#123;</span><br><span class="line">         t.Fatal(err)</span><br><span class="line">      &#125;</span><br><span class="line">      fmt.Println(<span class="keyword">string</span>(data))</span><br><span class="line">   &#125;()</span><br><span class="line">   wg.Wait()</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>l 编码解码utils.go</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> rpc_</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">	<span class="string">"fmt"</span></span><br><span class="line">	<span class="string">"net"</span></span><br><span class="line">	<span class="string">"reflect"</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="comment">// 声明服务端</span></span><br><span class="line"><span class="keyword">type</span> Server <span class="keyword">struct</span> &#123;</span><br><span class="line">	<span class="comment">// 地址</span></span><br><span class="line">	addr <span class="keyword">string</span></span><br><span class="line">	<span class="comment">// map 用于维护关系的</span></span><br><span class="line">	funcs <span class="keyword">map</span>[<span class="keyword">string</span>]reflect.Value</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 构造方法</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">NewServer</span><span class="params">(addr <span class="keyword">string</span>)</span> *<span class="title">Server</span></span> &#123;</span><br><span class="line">	<span class="keyword">return</span> &amp;Server&#123;addr: addr, funcs: <span class="built_in">make</span>(<span class="keyword">map</span>[<span class="keyword">string</span>]reflect.Value)&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 服务端需要一个注册Register</span></span><br><span class="line"><span class="comment">// 第一个参数函数名，第二个传入真正的函数</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(s *Server)</span> <span class="title">Register</span><span class="params">(rpcName <span class="keyword">string</span>, f <span class="keyword">interface</span>&#123;&#125;)</span></span> &#123;</span><br><span class="line">	<span class="comment">// 维护一个map</span></span><br><span class="line">	<span class="comment">// 若map已经有键了</span></span><br><span class="line">	<span class="keyword">if</span> _, ok := s.funcs[rpcName]; ok &#123;</span><br><span class="line">		<span class="keyword">return</span></span><br><span class="line">	&#125;</span><br><span class="line">	<span class="comment">// 若map中没值，则将映射加入map，用于调用</span></span><br><span class="line">	fVal := reflect.ValueOf(f)</span><br><span class="line">	s.funcs[rpcName] = fVal</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 服务端等待调用的方法</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(s *Server)</span> <span class="title">Run</span><span class="params">()</span></span> &#123;</span><br><span class="line">	<span class="comment">// 监听</span></span><br><span class="line">	lis, err := net.Listen(<span class="string">"tcp"</span>, s.addr)</span><br><span class="line">	<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">		fmt.Printf(<span class="string">"监听 %s err :%v"</span>, s.addr, err)</span><br><span class="line">		<span class="keyword">return</span></span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">for</span> &#123;</span><br><span class="line">		<span class="comment">// 服务端循环等待调用</span></span><br><span class="line">		conn, err := lis.Accept()</span><br><span class="line">		<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">			<span class="keyword">return</span></span><br><span class="line">		&#125;</span><br><span class="line">		serSession := NewSession(conn)</span><br><span class="line">		<span class="comment">// 使用RPC方式读取数据</span></span><br><span class="line">		b, err := serSession.Read()</span><br><span class="line">		<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">			<span class="keyword">return</span></span><br><span class="line">		&#125;</span><br><span class="line">		<span class="comment">// 数据解码</span></span><br><span class="line">		rpcData, err := decode(b)</span><br><span class="line">		<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">			<span class="keyword">return</span></span><br><span class="line">		&#125;</span><br><span class="line">		<span class="comment">// 根据读到的name，得到要调用的函数</span></span><br><span class="line">		f, ok := s.funcs[rpcData.Name]</span><br><span class="line">		<span class="keyword">if</span> !ok &#123;</span><br><span class="line">			fmt.Println(<span class="string">"函数 %s 不存在"</span>, rpcData.Name)</span><br><span class="line">			<span class="keyword">return</span></span><br><span class="line">		&#125;</span><br><span class="line">		<span class="comment">// 遍历解析客户端传来的参数,放切片里</span></span><br><span class="line">		inArgs := <span class="built_in">make</span>([]reflect.Value, <span class="number">0</span>, <span class="built_in">len</span>(rpcData.Args))</span><br><span class="line">		<span class="keyword">for</span> _, arg := <span class="keyword">range</span> rpcData.Args &#123;</span><br><span class="line">			inArgs = <span class="built_in">append</span>(inArgs, reflect.ValueOf(arg))</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="comment">// 反射调用方法</span></span><br><span class="line">		<span class="comment">// 返回Value类型，用于给客户端传递返回结果,out是所有的返回结果</span></span><br><span class="line">		out := f.Call(inArgs)</span><br><span class="line">		<span class="comment">// 遍历out ，用于返回给客户端，存到一个切片里</span></span><br><span class="line">		outArgs := <span class="built_in">make</span>([]<span class="keyword">interface</span>&#123;&#125;, <span class="number">0</span>, <span class="built_in">len</span>(out))</span><br><span class="line">		<span class="keyword">for</span> _, o := <span class="keyword">range</span> out &#123;</span><br><span class="line">			outArgs = <span class="built_in">append</span>(outArgs, o.Interface())</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="comment">// 数据编码，返回给客户端</span></span><br><span class="line">		respRPCData := RPCData&#123;rpcData.Name, outArgs&#125;</span><br><span class="line">		bytes, err := encode(respRPCData)</span><br><span class="line">		<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">			<span class="keyword">return</span></span><br><span class="line">		&#125;</span><br><span class="line">		<span class="comment">// 将服务端编码后的数据，写出到客户端</span></span><br><span class="line">		err = serSession.Write(bytes)</span><br><span class="line">		<span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">			<span class="keyword">return</span></span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="6-实现RPC服务端"><a href="#6-实现RPC服务端" class="headerlink" title="6. 实现RPC服务端"></a><strong>6.</strong> 实现RPC服务端</h3><ul>
+<li>服务端接收到的数据需要包括什么？</li>
+</ul>
+<p> 调用的函数名、参数列表，还有一个返回值error类型</p>
+<ul>
+<li>服务端需要解决的问题是什么？</li>
+</ul>
+<p> Map维护客户端传来调用函数，服务端知道去调谁</p>
+<ul>
+<li>服务端的核心功能有哪些？</li>
+</ul>
+<p> 维护函数map</p>
+<p> 客户端传来的东西进行解析</p>
+<p> 函数的返回值打包，传给客户端</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> rpc_</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line"><span class="string">"net"</span></span><br><span class="line"><span class="string">"reflect"</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="comment">// 声明服务端</span></span><br><span class="line"><span class="keyword">type</span> Client <span class="keyword">struct</span> &#123;</span><br><span class="line">   conn net.Conn</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 构造方法</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">NewClient</span><span class="params">(conn net.Conn)</span> *<span class="title">Client</span></span> &#123;</span><br><span class="line">   <span class="keyword">return</span> &amp;Client&#123;conn: conn&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 实现通用的RPC客户端</span></span><br><span class="line"><span class="comment">// 传入访问的函数名</span></span><br><span class="line"><span class="comment">// fPtr指向的是函数原型</span></span><br><span class="line"><span class="comment">//var select fun xx(User)</span></span><br><span class="line"><span class="comment">//cli.callRPC("selectUser",&amp;select)</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(c *Client)</span> <span class="title">callRPC</span><span class="params">(rpcName <span class="keyword">string</span>, fPtr <span class="keyword">interface</span>&#123;&#125;)</span></span> &#123;</span><br><span class="line">   <span class="comment">// 通过反射，获取fPtr未初始化的函数原型</span></span><br><span class="line">   fn := reflect.ValueOf(fPtr).Elem()</span><br><span class="line">   <span class="comment">// 需要另一个函数，作用是对第一个函数参数操作</span></span><br><span class="line">   f := <span class="function"><span class="keyword">func</span><span class="params">(args []reflect.Value)</span> []<span class="title">reflect</span>.<span class="title">Value</span></span> &#123;</span><br><span class="line">      <span class="comment">// 处理参数</span></span><br><span class="line">      inArgs := <span class="built_in">make</span>([]<span class="keyword">interface</span>&#123;&#125;, <span class="number">0</span>, <span class="built_in">len</span>(args))</span><br><span class="line">      <span class="keyword">for</span> _, arg := <span class="keyword">range</span> args &#123;</span><br><span class="line">         inArgs = <span class="built_in">append</span>(inArgs, arg.Interface())</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="comment">// 连接</span></span><br><span class="line">      cliSession := NewSession(c.conn)</span><br><span class="line">      <span class="comment">// 编码数据</span></span><br><span class="line">      reqRPC := RPCData&#123;Name: rpcName, Args: inArgs&#125;</span><br><span class="line">      b, err := encode(reqRPC)</span><br><span class="line">      <span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">         <span class="built_in">panic</span>(err)</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="comment">// 写数据</span></span><br><span class="line">      err = cliSession.Write(b)</span><br><span class="line">      <span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">         <span class="built_in">panic</span>(err)</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="comment">// 服务端发过来返回值，此时应该读取和解析</span></span><br><span class="line">      respBytes, err := cliSession.Read()</span><br><span class="line">      <span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">         <span class="built_in">panic</span>(err)</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="comment">// 解码</span></span><br><span class="line">      respRPC, err := decode(respBytes)</span><br><span class="line">      <span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">         <span class="built_in">panic</span>(err)</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="comment">// 处理服务端返回的数据</span></span><br><span class="line">      outArgs := <span class="built_in">make</span>([]reflect.Value, <span class="number">0</span>, <span class="built_in">len</span>(respRPC.Args))</span><br><span class="line">      <span class="keyword">for</span> i, arg := <span class="keyword">range</span> respRPC.Args &#123;</span><br><span class="line">         <span class="comment">// 必须进行nil转换</span></span><br><span class="line">         <span class="keyword">if</span> arg == <span class="literal">nil</span> &#123;</span><br><span class="line">            <span class="comment">// reflect.Zero()会返回类型的零值的value</span></span><br><span class="line">            <span class="comment">// .out()会返回函数输出的参数类型</span></span><br><span class="line">            outArgs = <span class="built_in">append</span>(outArgs, reflect.Zero(fn.Type().Out(i)))</span><br><span class="line">            <span class="keyword">continue</span></span><br><span class="line">         &#125;</span><br><span class="line">         outArgs = <span class="built_in">append</span>(outArgs, reflect.ValueOf(arg))</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="keyword">return</span> outArgs</span><br><span class="line">   &#125;</span><br><span class="line">   <span class="comment">// 完成原型到函数调用的内部转换</span></span><br><span class="line">   <span class="comment">// 参数1是reflect.Type</span></span><br><span class="line">   <span class="comment">// 参数2 f是函数类型，是对于参数1 fn函数的操作</span></span><br><span class="line">   <span class="comment">// fn是定义，f是具体操作</span></span><br><span class="line">   v := reflect.MakeFunc(fn.Type(), f)</span><br><span class="line">   <span class="comment">// 为函数fPtr赋值，过程</span></span><br><span class="line">   fn.Set(v)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="7-实现RPC客户端"><a href="#7-实现RPC客户端" class="headerlink" title="7. 实现RPC客户端"></a><strong>7.</strong> 实现RPC客户端</h3><p>客户端只有函数原型，使用reflect.MakeFunc() 可以完成原型到函数的调用</p>
+<p> reflect.MakeFunc()是Client从函数原型到网络调用的关键</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> rpc_</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line"><span class="string">"net"</span></span><br><span class="line"><span class="string">"reflect"</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="comment">// 声明服务端</span></span><br><span class="line"><span class="keyword">type</span> Client <span class="keyword">struct</span> &#123;</span><br><span class="line">   conn net.Conn</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 构造方法</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">NewClient</span><span class="params">(conn net.Conn)</span> *<span class="title">Client</span></span> &#123;</span><br><span class="line">   <span class="keyword">return</span> &amp;Client&#123;conn: conn&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 实现通用的RPC客户端</span></span><br><span class="line"><span class="comment">// 传入访问的函数名</span></span><br><span class="line"><span class="comment">// fPtr指向的是函数原型</span></span><br><span class="line"><span class="comment">//var select fun xx(User)</span></span><br><span class="line"><span class="comment">//cli.callRPC("selectUser",&amp;select)</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="params">(c *Client)</span> <span class="title">callRPC</span><span class="params">(rpcName <span class="keyword">string</span>, fPtr <span class="keyword">interface</span>&#123;&#125;)</span></span> &#123;</span><br><span class="line">   <span class="comment">// 通过反射，获取fPtr未初始化的函数原型</span></span><br><span class="line">   fn := reflect.ValueOf(fPtr).Elem()</span><br><span class="line">   <span class="comment">// 需要另一个函数，作用是对第一个函数参数操作</span></span><br><span class="line">   f := <span class="function"><span class="keyword">func</span><span class="params">(args []reflect.Value)</span> []<span class="title">reflect</span>.<span class="title">Value</span></span> &#123;</span><br><span class="line">      <span class="comment">// 处理参数</span></span><br><span class="line">      inArgs := <span class="built_in">make</span>([]<span class="keyword">interface</span>&#123;&#125;, <span class="number">0</span>, <span class="built_in">len</span>(args))</span><br><span class="line">      <span class="keyword">for</span> _, arg := <span class="keyword">range</span> args &#123;</span><br><span class="line">         inArgs = <span class="built_in">append</span>(inArgs, arg.Interface())</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="comment">// 连接</span></span><br><span class="line">      cliSession := NewSession(c.conn)</span><br><span class="line">      <span class="comment">// 编码数据</span></span><br><span class="line">      reqRPC := RPCData&#123;Name: rpcName, Args: inArgs&#125;</span><br><span class="line">      b, err := encode(reqRPC)</span><br><span class="line">      <span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">         <span class="built_in">panic</span>(err)</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="comment">// 写数据</span></span><br><span class="line">      err = cliSession.Write(b)</span><br><span class="line">      <span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">         <span class="built_in">panic</span>(err)</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="comment">// 服务端发过来返回值，此时应该读取和解析</span></span><br><span class="line">      respBytes, err := cliSession.Read()</span><br><span class="line">      <span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">         <span class="built_in">panic</span>(err)</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="comment">// 解码</span></span><br><span class="line">      respRPC, err := decode(respBytes)</span><br><span class="line">      <span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">         <span class="built_in">panic</span>(err)</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="comment">// 处理服务端返回的数据</span></span><br><span class="line">      outArgs := <span class="built_in">make</span>([]reflect.Value, <span class="number">0</span>, <span class="built_in">len</span>(respRPC.Args))</span><br><span class="line">      <span class="keyword">for</span> i, arg := <span class="keyword">range</span> respRPC.Args &#123;</span><br><span class="line">         <span class="comment">// 必须进行nil转换</span></span><br><span class="line">         <span class="keyword">if</span> arg == <span class="literal">nil</span> &#123;</span><br><span class="line">            <span class="comment">// reflect.Zero()会返回类型的零值的value</span></span><br><span class="line">            <span class="comment">// .out()会返回函数输出的参数类型</span></span><br><span class="line">            outArgs = <span class="built_in">append</span>(outArgs, reflect.Zero(fn.Type().Out(i)))</span><br><span class="line">            <span class="keyword">continue</span></span><br><span class="line">         &#125;</span><br><span class="line">         outArgs = <span class="built_in">append</span>(outArgs, reflect.ValueOf(arg))</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="keyword">return</span> outArgs</span><br><span class="line">   &#125;</span><br><span class="line">   <span class="comment">// 完成原型到函数调用的内部转换</span></span><br><span class="line">   <span class="comment">// 参数1是reflect.Type</span></span><br><span class="line">   <span class="comment">// 参数2 f是函数类型，是对于参数1 fn函数的操作</span></span><br><span class="line">   <span class="comment">// fn是定义，f是具体操作</span></span><br><span class="line">   v := reflect.MakeFunc(fn.Type(), f)</span><br><span class="line">   <span class="comment">// 为函数fPtr赋值，过程</span></span><br><span class="line">   fn.Set(v)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="8-实现RPC通信测试"><a href="#8-实现RPC通信测试" class="headerlink" title="8. 实现RPC通信测试"></a><strong>8.</strong> 实现RPC通信测试</h3><p> 给服务端注册一个查询用户的方法，客户端使用RPC方式调用</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> rpc_</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line"><span class="string">"encoding/gob"</span></span><br><span class="line"><span class="string">"fmt"</span></span><br><span class="line"><span class="string">"net"</span></span><br><span class="line"><span class="string">"testing"</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line"><span class="comment">//    给服务端注册一个查询用户的方法，客户端使用RPC方式调用</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 定义用户对象</span></span><br><span class="line"><span class="keyword">type</span> User <span class="keyword">struct</span> &#123;</span><br><span class="line">   Name <span class="keyword">string</span></span><br><span class="line">   Age  <span class="keyword">int</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 用于测试用户查询的方法</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">queryUser</span><span class="params">(uid <span class="keyword">int</span>)</span> <span class="params">(User, error)</span></span> &#123;</span><br><span class="line">   user := <span class="built_in">make</span>(<span class="keyword">map</span>[<span class="keyword">int</span>]User)</span><br><span class="line">   <span class="comment">// 假数据</span></span><br><span class="line">   user[<span class="number">0</span>] = User&#123;<span class="string">"zs"</span>, <span class="number">20</span>&#125;</span><br><span class="line">   user[<span class="number">1</span>] = User&#123;<span class="string">"ls"</span>, <span class="number">21</span>&#125;</span><br><span class="line">   user[<span class="number">2</span>] = User&#123;<span class="string">"ww"</span>, <span class="number">22</span>&#125;</span><br><span class="line">   <span class="comment">// 模拟查询用户</span></span><br><span class="line">   <span class="keyword">if</span> u, ok := user[uid]; ok &#123;</span><br><span class="line">      <span class="keyword">return</span> u, <span class="literal">nil</span></span><br><span class="line">   &#125;</span><br><span class="line">   <span class="keyword">return</span> User&#123;&#125;, fmt.Errorf(<span class="string">"%d err"</span>, uid)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">TestRPC</span><span class="params">(t *testing.T)</span></span> &#123;</span><br><span class="line">   <span class="comment">// 编码中有一个字段是interface&#123;&#125;时，要注册一下</span></span><br><span class="line">   gob.Register(User&#123;&#125;)</span><br><span class="line">   addr := <span class="string">"127.0.0.1:8000"</span></span><br><span class="line">   <span class="comment">// 创建服务端</span></span><br><span class="line">   srv := NewServer(addr)</span><br><span class="line">   <span class="comment">// 将服务端方法，注册一下</span></span><br><span class="line">   srv.Register(<span class="string">"queryUser"</span>, queryUser)</span><br><span class="line">   <span class="comment">// 服务端等待调用</span></span><br><span class="line">   <span class="keyword">go</span> srv.Run()</span><br><span class="line">   <span class="comment">// 客户端获取连接</span></span><br><span class="line">   conn, err := net.Dial(<span class="string">"tcp"</span>, addr)</span><br><span class="line">   <span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">      fmt.Println(<span class="string">"err"</span>)</span><br><span class="line">   &#125;</span><br><span class="line">   <span class="comment">// 创建客户端对象</span></span><br><span class="line">   cli := NewClient(conn)</span><br><span class="line">   <span class="comment">// 需要声明函数原型</span></span><br><span class="line">   <span class="keyword">var</span> query <span class="function"><span class="keyword">func</span><span class="params">(<span class="keyword">int</span>)</span> <span class="params">(User, error)</span></span></span><br><span class="line">   cli.callRPC(<span class="string">"queryUser"</span>, &amp;query)</span><br><span class="line">   <span class="comment">// 得到查询结果</span></span><br><span class="line">   u, err := query(<span class="number">1</span>)</span><br><span class="line">   <span class="keyword">if</span> err != <span class="literal">nil</span> &#123;</span><br><span class="line">      fmt.Println(<span class="string">"err"</span>)</span><br><span class="line">   &#125;</span><br><span class="line">   fmt.Println(u)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+    </div>
+
+    
+    
+    
+    <div>
+      
+        <div>
+    
+        <div style="text-align:center;color: #ccc;font-size:14px;">-------------本文结束<i class="fa fa-paw"></i>感谢您的阅读-------------</div>
+    
+</div>
+
+      
+    </div>
+        <div class="reward-container">
+  <div>坚持原创技术分享，您的支持将鼓励我继续创作！</div>
+  <button disable="enable" onclick="var qr = document.getElementById(&quot;qr&quot;); qr.style.display = (qr.style.display === 'none') ? 'block' : 'none';">
+    打赏
+  </button>
+  <div id="qr" style="display: none;">
+      
+      <div style="display: inline-block;">
+        <img src="/images/wechatpay.jpg" alt="Hongery 微信支付">
+        <p>微信支付</p>
+      </div>
+      
+      <div style="display: inline-block;">
+        <img src="/images/alipay.jpg" alt="Hongery 支付宝">
+        <p>支付宝</p>
+      </div>
+
+  </div>
+</div>
+
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>Hongery
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="http://yoursite.com/2020/04/09/RPC%E5%92%8CGRPC/RPC/" title="RPC">http://yoursite.com/2020/04/09/RPC和GRPC/RPC/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fa fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/go/" rel="tag"># go</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/04/09/%E8%AE%BA%E6%96%87%E7%BF%BB%E8%AF%91/%E6%8B%9C%E5%8D%A0%E5%BA%AD%E9%97%AE%E9%A2%98/" rel="prev" title="BFT拜占庭问题">
+      <i class="fa fa-chevron-left"></i> BFT拜占庭问题
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2020/04/09/RPC%E5%92%8CGRPC/protobuf/" rel="next" title="protobuf">
+      protobuf <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let activeClass = CONFIG.comments.activeClass;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-RPC简介"><span class="nav-text">1. RPC简介</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#解决问题"><span class="nav-text">解决问题</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#过程"><span class="nav-text">过程</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-流行RPC框架的对比"><span class="nav-text">2.流行RPC框架的对比</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-golang中如何实现RPC"><span class="nav-text">3.golang中如何实现RPC</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#注意事项"><span class="nav-text">注意事项</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-RPC调用流程"><span class="nav-text">4.RPC调用流程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-网络传输数据格式"><span class="nav-text">5. 网络传输数据格式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-实现RPC服务端"><span class="nav-text">6. 实现RPC服务端</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#7-实现RPC客户端"><span class="nav-text">7. 实现RPC客户端</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#8-实现RPC通信测试"><span class="nav-text">8. 实现RPC通信测试</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="Hongery"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">Hongery</p>
+  <div class="site-description" itemprop="description">直到这一刻微笑着说话为止，我至少留下了一公升眼泪</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">107</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">9</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/Hongery" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;Hongery" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://blog.csdn.net/weixin_40098405" title="CSDN → https:&#x2F;&#x2F;blog.csdn.net&#x2F;weixin_40098405" rel="noopener" target="_blank"><i class="fa fa-fw fa-crosshairs"></i>CSDN</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:1281185088@qq.com" title="E-Mail1 → mailto:1281185088@qq.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail1</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:hongery@yeah.net" title="E-Mail2 → mailto:hongery@yeah.net" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail2</a>
+      </span>
+  </div>
+  <div class="cc-license motion-element" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">hongery</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-area-chart"></i>
+    </span>
+      <span class="post-meta-item-text">站点总字数：</span>
+    <span title="站点总字数">NaNm</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span class="post-meta-item-text">站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">NaN:aN字</span>
+</div>
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>
+<!-- 页面点击小红心 -->
+<script type="text/javascript" src="/js/clicklove.js"></script>
