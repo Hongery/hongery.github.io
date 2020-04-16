@@ -210,6 +210,203 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/12/18/Gin%E6%A1%86%E6%9E%B6%E7%9A%84%E4%BD%BF%E7%94%A8/01gin%E6%95%B0%E6%8D%AE%E8%A7%A3%E6%9E%90%E5%92%8C%E7%BB%91%E5%AE%9A/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="Hongery">
+      <meta itemprop="description" content="直到这一刻微笑着说话为止，我至少留下了一公升眼泪">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hongery">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2019/12/18/Gin%E6%A1%86%E6%9E%B6%E7%9A%84%E4%BD%BF%E7%94%A8/01gin%E6%95%B0%E6%8D%AE%E8%A7%A3%E6%9E%90%E5%92%8C%E7%BB%91%E5%AE%9A/" class="post-title-link" itemprop="url">01Gin数据解析和绑定</a>
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-12-18 15:59:43" itemprop="dateCreated datePublished" datetime="2019-12-18T15:59:43+08:00">2019-12-18</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-03-28 21:43:01" itemprop="dateModified" datetime="2020-03-28T21:43:01+08:00">2020-03-28</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Gin%E6%A1%86%E6%9E%B6/" itemprop="url" rel="index">
+                    <span itemprop="name">Gin框架</span>
+                  </a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-file-word-o"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>2.9k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-clock-o"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>3 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h2 id="一、json数据解析和绑定"><a href="#一、json数据解析和绑定" class="headerlink" title="一、json数据解析和绑定"></a>一、json数据解析和绑定</h2><figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">	<span class="string">"github.com/gin-gonic/gin"</span></span><br><span class="line">	<span class="string">"net/http"</span></span><br><span class="line">	<span class="string">"fmt"</span></span><br><span class="line">)</span><br><span class="line"><span class="comment">//定义接受数据的结构体</span></span><br><span class="line"><span class="keyword">type</span> Login <span class="keyword">struct</span> &#123;</span><br><span class="line">	User <span class="keyword">string</span> <span class="string">`json:"user"`</span></span><br><span class="line">	Password <span class="keyword">string</span> <span class="string">`json:"password"`</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	<span class="comment">//创建路由</span></span><br><span class="line">	router := gin.Default()</span><br><span class="line"></span><br><span class="line">	<span class="comment">//Json绑定</span></span><br><span class="line">	router.POST(<span class="string">"/login"</span>, <span class="function"><span class="keyword">func</span><span class="params">(c *gin.Context)</span></span> &#123;</span><br><span class="line">		<span class="comment">//生命接受变量</span></span><br><span class="line">		<span class="keyword">var</span> login Login</span><br><span class="line">		<span class="comment">//将request的body中的数据，自动按照json格式解析到结构体</span></span><br><span class="line">		<span class="keyword">if</span> err := c.ShouldBindJSON(&amp;login);err != <span class="literal">nil</span> &#123;</span><br><span class="line">			<span class="comment">//返回错误信息，gin.H封装了生成json的工具</span></span><br><span class="line">			c.JSON(http.StatusBadRequest,gin.H&#123;<span class="string">"error"</span>:err.Error()&#125;)</span><br><span class="line">			<span class="keyword">return</span></span><br><span class="line">			&#125;</span><br><span class="line">		<span class="comment">//判断用户名和密码是否正确</span></span><br><span class="line">		<span class="keyword">if</span> login.User!= <span class="string">"root"</span> || login.Password!= <span class="string">"password"</span>&#123;</span><br><span class="line">			c.JSON(http.StatusBadRequest,gin.H&#123;<span class="string">"status"</span>:<span class="string">"304"</span>&#125;)</span><br><span class="line">			<span class="keyword">return</span></span><br><span class="line">		&#125;</span><br><span class="line">		c.JSON(http.StatusOK,gin.H&#123;<span class="string">"status"</span>:<span class="string">"200"</span>&#125;)</span><br><span class="line">	&#125;)</span><br><span class="line">	router.Run(<span class="string">":8000"</span>)</span><br><span class="line">	<span class="comment">//http.ListenAndServe("8000",router)</span></span><br><span class="line"></span><br><span class="line">	&#125;</span><br></pre></td></tr></table></figure>
+
+<p>测试结果</p>
+<p><img src="./image/1585401321(1).png" alt="测试结果"></p>
+<h2 id="二、表单数据解析和绑定"><a href="#二、表单数据解析和绑定" class="headerlink" title="二、表单数据解析和绑定"></a>二、表单数据解析和绑定</h2><p>main.go</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">	<span class="string">"github.com/gin-gonic/gin"</span></span><br><span class="line">	<span class="string">"net/http"</span></span><br><span class="line">	<span class="string">"fmt"</span></span><br><span class="line">)</span><br><span class="line"><span class="comment">//定义接受数据的结构体</span></span><br><span class="line"><span class="keyword">type</span> Login <span class="keyword">struct</span> &#123;</span><br><span class="line">	User <span class="keyword">string</span> <span class="string">`json:"user"`</span></span><br><span class="line">	Password <span class="keyword">string</span> <span class="string">`json:"password"`</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	<span class="comment">//创建路由</span></span><br><span class="line">	router := gin.Default()</span><br><span class="line">	<span class="comment">//Json绑定</span></span><br><span class="line">	router.POST(<span class="string">"/loginForm"</span>, <span class="function"><span class="keyword">func</span><span class="params">(c *gin.Context)</span></span> &#123;</span><br><span class="line">		<span class="comment">//声明接受变量</span></span><br><span class="line">		<span class="keyword">var</span> form Login</span><br><span class="line">		<span class="comment">//将request的body中的数据，自动按照json格式解析到结构体</span></span><br><span class="line">		<span class="keyword">if</span> err := c.Bind(&amp;form);err != <span class="literal">nil</span> &#123;</span><br><span class="line">			<span class="comment">//返回错误信息，gin.H封装了生成json的工具</span></span><br><span class="line">			c.JSON(http.StatusBadRequest,gin.H&#123;<span class="string">"error"</span>:err.Error()&#125;)</span><br><span class="line">			<span class="keyword">return</span></span><br><span class="line">			&#125;</span><br><span class="line">		<span class="comment">//判断用户名和密码是否正确</span></span><br><span class="line">		<span class="keyword">if</span> form.User!= <span class="string">"root"</span> || form.Password!= <span class="string">"password"</span>&#123;</span><br><span class="line">			c.JSON(http.StatusBadRequest,gin.H&#123;<span class="string">"status"</span>:<span class="string">"304"</span>&#125;)</span><br><span class="line">			<span class="keyword">return</span></span><br><span class="line">		&#125;</span><br><span class="line">		c.JSON(http.StatusOK,gin.H&#123;<span class="string">"status"</span>:<span class="string">"200"</span>&#125;)</span><br><span class="line">	&#125;)</span><br><span class="line">	router.Run(<span class="string">":8000"</span>)</span><br><span class="line">	<span class="comment">//http.ListenAndServe("8000",router)</span></span><br><span class="line"></span><br><span class="line">	&#125;</span><br></pre></td></tr></table></figure>
+
+<p>index.html</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;!DOCTYPE <span class="meta-keyword">html</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">html</span> <span class="attr">lang</span>=<span class="string">"zh-CN"</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">head</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">title</span>&gt;</span>登录<span class="tag">&lt;/<span class="name">title</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">head</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">form</span> <span class="attr">action</span>=<span class="string">"http://127.0.0.1:8000/loginForm"</span> <span class="attr">method</span>=<span class="string">"post"</span> <span class="attr">enctype</span>=<span class="string">"applicaton/x-www-form-urlencoded"</span>&gt;</span></span><br><span class="line">    用户名：<span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"text"</span> <span class="attr">name</span>=<span class="string">"username"</span>&gt;</span></span><br><span class="line">    密码：<span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"password"</span> <span class="attr">name</span>=<span class="string">"password"</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"submit"</span> <span class="attr">value</span>=<span class="string">"登录"</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">form</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>测试</p>
+<p><img src="./image/1585402117(1).png" alt="test"></p>
+<h2 id="三、URI数据解析和绑定"><a href="#三、URI数据解析和绑定" class="headerlink" title="三、URI数据解析和绑定"></a>三、URI数据解析和绑定</h2><p>main.go</p>
+<figure class="highlight go"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> main</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> (</span><br><span class="line">	<span class="string">"github.com/gin-gonic/gin"</span></span><br><span class="line">	<span class="string">"net/http"</span></span><br><span class="line">	<span class="string">"fmt"</span></span><br><span class="line">)</span><br><span class="line"><span class="comment">//定义接受数据的结构体</span></span><br><span class="line"><span class="keyword">type</span> Login <span class="keyword">struct</span> &#123;</span><br><span class="line">	User <span class="keyword">string</span> <span class="string">`json:"user"`</span></span><br><span class="line">	Password <span class="keyword">string</span> <span class="string">`json:"password"`</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">main</span><span class="params">()</span></span> &#123;</span><br><span class="line">	<span class="comment">//创建路由</span></span><br><span class="line">	router := gin.Default()</span><br><span class="line">	<span class="comment">//Json绑定</span></span><br><span class="line">	router.GET(<span class="string">"/:user/:password"</span>, <span class="function"><span class="keyword">func</span><span class="params">(c *gin.Context)</span></span> &#123;</span><br><span class="line">		<span class="comment">//生命接受变量</span></span><br><span class="line">		<span class="keyword">var</span> login Login</span><br><span class="line">		<span class="comment">//将request的body中的数据，自动按照json格式解析到结构体</span></span><br><span class="line">		<span class="keyword">if</span> err := c.ShouldBindUri(&amp;login);err != <span class="literal">nil</span> &#123;</span><br><span class="line">			<span class="comment">//返回错误信息，gin.H封装了生成json的工具</span></span><br><span class="line">			c.JSON(http.StatusBadRequest,gin.H&#123;<span class="string">"error"</span>:err.Error()&#125;)</span><br><span class="line">			<span class="keyword">return</span></span><br><span class="line">			&#125;</span><br><span class="line">		<span class="comment">//判断用户名和密码是否正确</span></span><br><span class="line">		<span class="keyword">if</span> login.User!= <span class="string">"root"</span> || login.Password!= <span class="string">"password"</span>&#123;</span><br><span class="line">			c.JSON(http.StatusBadRequest,gin.H&#123;<span class="string">"status"</span>:<span class="string">"304"</span>&#125;)</span><br><span class="line">			<span class="keyword">return</span></span><br><span class="line">		&#125;</span><br><span class="line">		c.JSON(http.StatusOK,gin.H&#123;<span class="string">"status"</span>:<span class="string">"200"</span>&#125;)</span><br><span class="line">	&#125;)</span><br><span class="line">	router.Run(<span class="string">":8000"</span>)</span><br><span class="line">	<span class="comment">//http.ListenAndServe("8000",router)</span></span><br><span class="line"></span><br><span class="line">	&#125;</span><br></pre></td></tr></table></figure>
+
+<p>测试结果cmd</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash">curl http://127.0.0.1:8000/root/password</span></span><br></pre></td></tr></table></figure>
+
+
+      
+    </div>
+
+    
+    
+    
+    <div>
+      
+    </div>
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+        
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/12/18/hello-world/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="Hongery">
+      <meta itemprop="description" content="直到这一刻微笑着说话为止，我至少留下了一公升眼泪">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hongery">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2019/12/18/hello-world/" class="post-title-link" itemprop="url">Hello World</a>
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-12-18 15:50:51" itemprop="dateCreated datePublished" datetime="2019-12-18T15:50:51+08:00">2019-12-18</time>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-file-word-o"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span></span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-clock-o"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>NaN:aN</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>Welcome to <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/" target="_blank" rel="noopener">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html" target="_blank" rel="noopener">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues" target="_blank" rel="noopener">GitHub</a>.</p>
+<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo new <span class="string">"My New Post"</span></span><br></pre></td></tr></table></figure>
+
+<p>More info: <a href="https://hexo.io/docs/writing.html" target="_blank" rel="noopener">Writing</a></p>
+<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
+
+<p>More info: <a href="https://hexo.io/docs/server.html" target="_blank" rel="noopener">Server</a></p>
+<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
+
+<p>More info: <a href="https://hexo.io/docs/generating.html" target="_blank" rel="noopener">Generating</a></p>
+<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
+
+<p>More info: <a href="https://hexo.io/docs/one-command-deployment.html" target="_blank" rel="noopener">Deployment</a></p>
+
+      
+    </div>
+
+    
+    
+    
+    <div>
+      
+    </div>
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+        
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/04/07/Consensus/%E5%85%B1%E8%AF%86%E7%AE%97%E6%B3%95/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -321,7 +518,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/03/17/%E5%AE%8C%E6%95%B4%E5%AF%86%E7%A0%81%E5%AD%A6/%E7%AC%AC7%E7%AB%A0%E9%9D%9E%E5%AF%B9%E7%A7%B0%E5%8A%A0%E5%AF%86%E7%AE%97%E6%B3%95/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/03/17/%E5%AE%8C%E6%95%B4%E5%AF%86%E7%A0%81%E5%AD%A6/%E7%AC%AC17%E7%AB%A0%E9%87%8F%E5%AD%90%E5%AF%86%E7%A0%81%E5%AD%A6/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.jpg">
@@ -335,7 +532,7 @@
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
           
-            <a href="/2019/03/17/%E5%AE%8C%E6%95%B4%E5%AF%86%E7%A0%81%E5%AD%A6/%E7%AC%AC7%E7%AB%A0%E9%9D%9E%E5%AF%B9%E7%A7%B0%E5%8A%A0%E5%AF%86%E7%AE%97%E6%B3%95/" class="post-title-link" itemprop="url">第7章非对称加密算法</a>
+            <a href="/2019/03/17/%E5%AE%8C%E6%95%B4%E5%AF%86%E7%A0%81%E5%AD%A6/%E7%AC%AC17%E7%AB%A0%E9%87%8F%E5%AD%90%E5%AF%86%E7%A0%81%E5%AD%A6/" class="post-title-link" itemprop="url">第16章量子密码学</a>
         </h1>
 
         <div class="post-meta">
@@ -345,14 +542,14 @@
               </span>
               <span class="post-meta-item-text">发表于</span>
 
-              <time title="创建时间：2019-03-17 15:59:45" itemprop="dateCreated datePublished" datetime="2019-03-17T15:59:45+08:00">2019-03-17</time>
+              <time title="创建时间：2019-03-17 15:59:47" itemprop="dateCreated datePublished" datetime="2019-03-17T15:59:47+08:00">2019-03-17</time>
             </span>
               <span class="post-meta-item">
                 <span class="post-meta-item-icon">
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-04-05 21:27:31" itemprop="dateModified" datetime="2020-04-05T21:27:31+08:00">2020-04-05</time>
+                <time title="修改时间：2020-04-15 20:25:13" itemprop="dateModified" datetime="2020-04-15T20:25:13+08:00">2020-04-15</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -372,107 +569,7 @@
                 <i class="fa fa-file-word-o"></i>
               </span>
                 <span class="post-meta-item-text">本文字数：</span>
-              <span>1.4k</span>
-            </span>
-            <span class="post-meta-item" title="阅读时长">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-clock-o"></i>
-              </span>
-                <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>1 分钟</span>
-            </span>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h3 id="非对称加密算法"><a href="#非对称加密算法" class="headerlink" title="非对称加密算法"></a>非对称加密算法</h3><p>非对称加密也叫公钥密码。<br>1976年Diffie和Hellman首次提出了一种全新的加密思想，公钥密码体制思想。在当时几乎所有的密码体制都是对称密码体制，原理都是基于替换和置换这些较简单方法。公钥密码体制完全与之不同，它是非对称的，有两个不同的密钥，分别是公钥和私钥，加密的原理也不是之前的简单置换或替换，而是一些复杂的数学函数。这些数学函数都是基于数学难题。其所依据的难题一般分为三类：大整数分解问题类、离散对数问题类、椭圆曲线类。有时也把椭圆曲线类归为离散对数类。公钥密码体制是一次革命性的变革，突破了原有的密码体制模式，它解决了传统密码体制的两个大难题：密钥分配和数字签名。</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2019/03/17/%E5%AE%8C%E6%95%B4%E5%AF%86%E7%A0%81%E5%AD%A6/%E7%AC%AC7%E7%AB%A0%E9%9D%9E%E5%AF%B9%E7%A7%B0%E5%8A%A0%E5%AF%86%E7%AE%97%E6%B3%95/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-    <div>
-      
-    </div>
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-        
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/03/17/%E5%AE%8C%E6%95%B4%E5%AF%86%E7%A0%81%E5%AD%A6/%E7%AC%AC3%E7%AB%A0%E5%AF%B9%E7%A7%B0%E5%AF%86%E7%A0%81RC4%E7%AE%97%E6%B3%95%EF%BC%88%E5%BA%8F%E5%88%97%E5%AF%86%E7%A0%81%EF%BC%89/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpg">
-      <meta itemprop="name" content="Hongery">
-      <meta itemprop="description" content="直到这一刻微笑着说话为止，我至少留下了一公升眼泪">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Hongery">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          
-            <a href="/2019/03/17/%E5%AE%8C%E6%95%B4%E5%AF%86%E7%A0%81%E5%AD%A6/%E7%AC%AC3%E7%AB%A0%E5%AF%B9%E7%A7%B0%E5%AF%86%E7%A0%81RC4%E7%AE%97%E6%B3%95%EF%BC%88%E5%BA%8F%E5%88%97%E5%AF%86%E7%A0%81%EF%BC%89/" class="post-title-link" itemprop="url">第3章对称密码RC4算法（序列密码）</a>
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2019-03-17 15:59:45" itemprop="dateCreated datePublished" datetime="2019-03-17T15:59:45+08:00">2019-03-17</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-04-05 21:26:58" itemprop="dateModified" datetime="2020-04-05T21:26:58+08:00">2020-04-05</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E5%AF%86%E7%A0%81%E5%AD%A6/" itemprop="url" rel="index">
-                    <span itemprop="name">密码学</span>
-                  </a>
-                </span>
-            </span>
-
-          <br>
-            <span class="post-meta-item" title="本文字数">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-file-word-o"></i>
-              </span>
-                <span class="post-meta-item-text">本文字数：</span>
-              <span>2.5k</span>
+              <span>2.6k</span>
             </span>
             <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
@@ -491,10 +588,10 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h2 id="对称密码RC4算法（序列密码）"><a href="#对称密码RC4算法（序列密码）" class="headerlink" title="对称密码RC4算法（序列密码）"></a>对称密码RC4算法（序列密码）</h2><p>对称加密分为<strong>序列密码</strong>和<strong>分组加密</strong>。<br><strong>序列密码，也叫流加密(stream cyphers)</strong>，<strong>依次加密明文中的每一个字节。</strong>加密是指利用用户的密钥通过某种复杂的运算（密码算法）产生大量的伪随机流，对明文流的加密。解密是指用同样的密钥和密码算法及与加密相同的伪随机流，用以还原明文流。<br><strong>分组密码，也叫块加密(block cyphers)</strong>，<strong>一次加密明文中的一个块</strong>。是将明文按一定的位长分组，明文组经过加密运算得到密文组，密文组经过解密运算（加密运算的逆运算），还原成明文组。</p>
+          <h3 id="量子密码学"><a href="#量子密码学" class="headerlink" title="量子密码学"></a>量子密码学</h3><p>研究量子密码学的学科被称为量子密码学，是密码学的一个重要分支。它实际上是古老密码学一次一密概念和量子物理相结合的一个新产物。</p>
           <!--noindex-->
             <div class="post-button">
-              <a class="btn" href="/2019/03/17/%E5%AE%8C%E6%95%B4%E5%AF%86%E7%A0%81%E5%AD%A6/%E7%AC%AC3%E7%AB%A0%E5%AF%B9%E7%A7%B0%E5%AF%86%E7%A0%81RC4%E7%AE%97%E6%B3%95%EF%BC%88%E5%BA%8F%E5%88%97%E5%AF%86%E7%A0%81%EF%BC%89/#more" rel="contents">
+              <a class="btn" href="/2019/03/17/%E5%AE%8C%E6%95%B4%E5%AF%86%E7%A0%81%E5%AD%A6/%E7%AC%AC17%E7%AB%A0%E9%87%8F%E5%AD%90%E5%AF%86%E7%A0%81%E5%AD%A6/#more" rel="contents">
                 阅读全文 &raquo;
               </a>
             </div>
@@ -521,7 +618,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/03/17/%E5%AE%8C%E6%95%B4%E5%AF%86%E7%A0%81%E5%AD%A6/%E7%AC%AC10%E7%AB%A0%E6%A4%AD%E5%9C%86%E6%9B%B2%E7%BA%BF%E5%AF%86%E7%A0%81%E5%AD%A6/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/03/17/%E5%AE%8C%E6%95%B4%E5%AF%86%E7%A0%81%E5%AD%A6/%E7%AC%AC16%E7%AB%A0%E6%95%B0%E5%AD%97%E7%AD%BE%E5%90%8D/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.jpg">
@@ -535,7 +632,7 @@
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
           
-            <a href="/2019/03/17/%E5%AE%8C%E6%95%B4%E5%AF%86%E7%A0%81%E5%AD%A6/%E7%AC%AC10%E7%AB%A0%E6%A4%AD%E5%9C%86%E6%9B%B2%E7%BA%BF%E5%AF%86%E7%A0%81%E5%AD%A6/" class="post-title-link" itemprop="url">第10章椭圆曲线密码学</a>
+            <a href="/2019/03/17/%E5%AE%8C%E6%95%B4%E5%AF%86%E7%A0%81%E5%AD%A6/%E7%AC%AC16%E7%AB%A0%E6%95%B0%E5%AD%97%E7%AD%BE%E5%90%8D/" class="post-title-link" itemprop="url">第15章数字签名</a>
         </h1>
 
         <div class="post-meta">
@@ -545,14 +642,14 @@
               </span>
               <span class="post-meta-item-text">发表于</span>
 
-              <time title="创建时间：2019-03-17 15:59:45" itemprop="dateCreated datePublished" datetime="2019-03-17T15:59:45+08:00">2019-03-17</time>
+              <time title="创建时间：2019-03-17 15:59:46" itemprop="dateCreated datePublished" datetime="2019-03-17T15:59:46+08:00">2019-03-17</time>
             </span>
               <span class="post-meta-item">
                 <span class="post-meta-item-icon">
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-04-05 21:27:52" itemprop="dateModified" datetime="2020-04-05T21:27:52+08:00">2020-04-05</time>
+                <time title="修改时间：2020-04-15 20:25:06" itemprop="dateModified" datetime="2020-04-15T20:25:06+08:00">2020-04-15</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -572,7 +669,7 @@
                 <i class="fa fa-file-word-o"></i>
               </span>
                 <span class="post-meta-item-text">本文字数：</span>
-              <span>4k</span>
+              <span>4.7k</span>
             </span>
             <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
@@ -591,219 +688,11 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h3 id="椭圆曲线密码学"><a href="#椭圆曲线密码学" class="headerlink" title="椭圆曲线密码学"></a>椭圆曲线密码学</h3><h2 id="1-椭圆曲线密码学简介"><a href="#1-椭圆曲线密码学简介" class="headerlink" title="1. 椭圆曲线密码学简介"></a>1. 椭圆曲线密码学简介</h2><p>椭圆曲线密码学（英语：Elliptic curve cryptography，缩写为 ECC），一种建立公开密钥加密的算法，基于椭圆曲线数学。椭圆曲线在密码学中的使用是在1985年由Neal Koblitz和Victor Miller分别独立提出的。</p>
+          <h3 id="数字签名"><a href="#数字签名" class="headerlink" title="数字签名"></a>数字签名</h3><p>数字签名在信息安全，包括身份认证、数据完整性、不可否认性以及匿名性有着重要应用，是现代密码学的重要分支。签名隶属于公钥密码学。签名过程：发送方用自己的私钥对发送信息进行所谓的加密运算，得到一个hash值，该hash值就是签名。使用时需要将签名和信息发给接收方。接受者用发送方公开的公钥和接收到的信息对签名进行验证，通过认证，说明接收到的信息是完整的、准确的，否则说明消息来源不对。</p>
+<p>简单描述数字签名：私钥签名；公钥验签。</p>
           <!--noindex-->
             <div class="post-button">
-              <a class="btn" href="/2019/03/17/%E5%AE%8C%E6%95%B4%E5%AF%86%E7%A0%81%E5%AD%A6/%E7%AC%AC10%E7%AB%A0%E6%A4%AD%E5%9C%86%E6%9B%B2%E7%BA%BF%E5%AF%86%E7%A0%81%E5%AD%A6/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-    <div>
-      
-    </div>
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-        
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/03/17/%E5%AE%8C%E6%95%B4%E5%AF%86%E7%A0%81%E5%AD%A6/%E7%AC%AC12%E7%AB%A0%E5%93%88%E5%B8%8C%E7%AE%97%E6%B3%95/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpg">
-      <meta itemprop="name" content="Hongery">
-      <meta itemprop="description" content="直到这一刻微笑着说话为止，我至少留下了一公升眼泪">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Hongery">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          
-            <a href="/2019/03/17/%E5%AE%8C%E6%95%B4%E5%AF%86%E7%A0%81%E5%AD%A6/%E7%AC%AC12%E7%AB%A0%E5%93%88%E5%B8%8C%E7%AE%97%E6%B3%95/" class="post-title-link" itemprop="url">第11章哈希（hash）算法</a>
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2019-03-17 15:59:45" itemprop="dateCreated datePublished" datetime="2019-03-17T15:59:45+08:00">2019-03-17</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-04-05 21:28:05" itemprop="dateModified" datetime="2020-04-05T21:28:05+08:00">2020-04-05</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E5%AF%86%E7%A0%81%E5%AD%A6/" itemprop="url" rel="index">
-                    <span itemprop="name">密码学</span>
-                  </a>
-                </span>
-            </span>
-
-          <br>
-            <span class="post-meta-item" title="本文字数">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-file-word-o"></i>
-              </span>
-                <span class="post-meta-item-text">本文字数：</span>
-              <span>4.4k</span>
-            </span>
-            <span class="post-meta-item" title="阅读时长">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-clock-o"></i>
-              </span>
-                <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>4 分钟</span>
-            </span>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h3 id="哈希（hash）算法"><a href="#哈希（hash）算法" class="headerlink" title="哈希（hash）算法"></a>哈希（hash）算法</h3><p>哈希函数是密码学中的一个重要分支，该函数是一类数学函数，它可以在有限的合理时间内，将任意长度的消息变换成固定长度的二进制串，且不可逆，这个输出值就是哈希值，也叫散列值或消息摘要。以hash函数为基础的hash算法，在数字签名，实现数据完整性，merkle树数据存储和检索等方面有着广泛的应用。<br>在比特币系统中使用了两个密码学hash函数，一个是SHA256,另一个是ripemd160。ripemd160主要用于生成比特币地址，SHA256是比特币链上几乎所有加密算法的hash函数。</p>
-<h2 id="1-技术原理"><a href="#1-技术原理" class="headerlink" title="1. 技术原理"></a>1. 技术原理</h2><p>hash函数也叫散列函数，杂凑函数。它是一种单向密码机制，也就是只能加密，而不能解密。数学表达式可以为：h=H(m)，其中H是哈希函数，m是要加密的信息，h是输出的固定长度的哈希值。运算过程是设定一个初始向量，对消息补长到算法要求长度，将补长后的消息拆分成N份数据块，N份数据块与初始向量通过hash算法进行迭代循环运算，最终得到固定长度的hash值。<br>hash函数具有以下特点：</p>
-<ol>
-<li>压缩性：对任意长度的信息加密成固定长度的hash值；</li>
-<li>单向性：hash函数的数学原理没有逆运算，所以不能将hash值转换成加密前的信息；</li>
-<li>抗碰撞性：hash函数的运算过程相当复杂，包含多种数学运算和大量变量循环运算，要满足两个不同的消息产生相同的hash值几乎不可能发生；</li>
-<li>高灵敏性：任何微小的输入都有可能对输出产生巨大的影响。<br>典型的hash函数有两类：消息摘要算法（MD5）和安全散列算法（SHA）。</li>
-</ol>
-<h2 id="2-hash碰撞"><a href="#2-hash碰撞" class="headerlink" title="2. hash碰撞"></a>2. hash碰撞</h2><p>理想的hash函数对于不同的输入得到两个不同的hash值。在实际中，如果存在两个不同的信息m，m’使H(m)=H(m’)，那么就称m和m’是该函数的一个碰撞。简言之，hash碰撞是指两个不同的消息在同一个哈希函数作用下，产生两个相同的哈希值。<br>为了保证数据安全性和不可篡改性，实际hash算法要足够复杂使其有很强的hash抗碰撞性。<br>hash抗碰撞性分为两种：一种是弱抗碰撞性，即指定的消息x和函数H，去求消息y，使H(x)=H(y)在计算上是不可行的；另一个是强抗碰撞性，即给定函数H，对于任意一对不同的消息x和y，使得H(x)=H(y)在计算上也是不可行的。</p>
-<h3 id="SHA256"><a href="#SHA256" class="headerlink" title="SHA256"></a>SHA256</h3><p>SHA是一个密码散列函数家族，是英文Secure Hash Algorithm的缩写。由美国国家安全局（NSA）所设计，并由美国国家标准与技术研究院（NIST）发布。SHA家族目前有三个系列：SHA-1，SHA-2，SHA-3。因为SHA-1已经被计算出能够被破解，所以现在几乎不再使用。SHA-3是2012年产生的算法，也叫Keccak算法，在以太坊公链中主要使用。SHA-2是当前使用最广泛的算法，尤其是比特币一代的公链。</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2019/03/17/%E5%AE%8C%E6%95%B4%E5%AF%86%E7%A0%81%E5%AD%A6/%E7%AC%AC12%E7%AB%A0%E5%93%88%E5%B8%8C%E7%AE%97%E6%B3%95/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-    <div>
-      
-    </div>
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-        
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/03/17/%E5%AE%8C%E6%95%B4%E5%AF%86%E7%A0%81%E5%AD%A6/%E7%AC%AC13%E7%AB%A0MD5%E7%AE%97%E6%B3%95/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpg">
-      <meta itemprop="name" content="Hongery">
-      <meta itemprop="description" content="直到这一刻微笑着说话为止，我至少留下了一公升眼泪">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Hongery">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          
-            <a href="/2019/03/17/%E5%AE%8C%E6%95%B4%E5%AF%86%E7%A0%81%E5%AD%A6/%E7%AC%AC13%E7%AB%A0MD5%E7%AE%97%E6%B3%95/" class="post-title-link" itemprop="url">第12章MD5算法</a>
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2019-03-17 15:59:45" itemprop="dateCreated datePublished" datetime="2019-03-17T15:59:45+08:00">2019-03-17</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-04-05 21:28:13" itemprop="dateModified" datetime="2020-04-05T21:28:13+08:00">2020-04-05</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E5%AF%86%E7%A0%81%E5%AD%A6/" itemprop="url" rel="index">
-                    <span itemprop="name">密码学</span>
-                  </a>
-                </span>
-            </span>
-
-          <br>
-            <span class="post-meta-item" title="本文字数">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-file-word-o"></i>
-              </span>
-                <span class="post-meta-item-text">本文字数：</span>
-              <span>11k</span>
-            </span>
-            <span class="post-meta-item" title="阅读时长">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-clock-o"></i>
-              </span>
-                <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>10 分钟</span>
-            </span>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h3 id="MD5算法详解及go语言实现"><a href="#MD5算法详解及go语言实现" class="headerlink" title="MD5算法详解及go语言实现"></a>MD5算法详解及go语言实现</h3><p>MD5英文全称Message-Digest Algorithm，中文叫消息摘要算法。它是由美国密码学家罗纳德·李维斯特（Ronald Linn Rivest）设计，于1992年公开，用以取代被发现有安全缺陷的MD4算法。它是目前使用最广泛的密码学算法之一。</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2019/03/17/%E5%AE%8C%E6%95%B4%E5%AF%86%E7%A0%81%E5%AD%A6/%E7%AC%AC13%E7%AB%A0MD5%E7%AE%97%E6%B3%95/#more" rel="contents">
+              <a class="btn" href="/2019/03/17/%E5%AE%8C%E6%95%B4%E5%AF%86%E7%A0%81%E5%AD%A6/%E7%AC%AC16%E7%AB%A0%E6%95%B0%E5%AD%97%E7%AD%BE%E5%90%8D/#more" rel="contents">
                 阅读全文 &raquo;
               </a>
             </div>
@@ -930,7 +819,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/03/17/%E5%AE%8C%E6%95%B4%E5%AF%86%E7%A0%81%E5%AD%A6/%E7%AC%AC17%E7%AB%A0%E9%87%8F%E5%AD%90%E5%AF%86%E7%A0%81%E5%AD%A6/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/03/16/%E5%AE%8C%E6%95%B4%E5%AF%86%E7%A0%81%E5%AD%A6/%E7%AC%AC14%E7%AB%A0HMAC%E5%93%88%E5%B8%8C%E6%B6%88%E6%81%AF%E7%A0%81%E9%AA%8C%E8%AF%81%E7%AE%97%E6%B3%95/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.jpg">
@@ -944,7 +833,7 @@
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
           
-            <a href="/2019/03/17/%E5%AE%8C%E6%95%B4%E5%AF%86%E7%A0%81%E5%AD%A6/%E7%AC%AC17%E7%AB%A0%E9%87%8F%E5%AD%90%E5%AF%86%E7%A0%81%E5%AD%A6/" class="post-title-link" itemprop="url">第16章量子密码学</a>
+            <a href="/2019/03/16/%E5%AE%8C%E6%95%B4%E5%AF%86%E7%A0%81%E5%AD%A6/%E7%AC%AC14%E7%AB%A0HMAC%E5%93%88%E5%B8%8C%E6%B6%88%E6%81%AF%E7%A0%81%E9%AA%8C%E8%AF%81%E7%AE%97%E6%B3%95/" class="post-title-link" itemprop="url">第13章HMAC哈希消息认证码</a>
         </h1>
 
         <div class="post-meta">
@@ -954,215 +843,14 @@
               </span>
               <span class="post-meta-item-text">发表于</span>
 
-              <time title="创建时间：2019-03-17 15:59:45" itemprop="dateCreated datePublished" datetime="2019-03-17T15:59:45+08:00">2019-03-17</time>
+              <time title="创建时间：2019-03-16 15:59:56" itemprop="dateCreated datePublished" datetime="2019-03-16T15:59:56+08:00">2019-03-16</time>
             </span>
               <span class="post-meta-item">
                 <span class="post-meta-item-icon">
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-04-05 21:28:39" itemprop="dateModified" datetime="2020-04-05T21:28:39+08:00">2020-04-05</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E5%AF%86%E7%A0%81%E5%AD%A6/" itemprop="url" rel="index">
-                    <span itemprop="name">密码学</span>
-                  </a>
-                </span>
-            </span>
-
-          <br>
-            <span class="post-meta-item" title="本文字数">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-file-word-o"></i>
-              </span>
-                <span class="post-meta-item-text">本文字数：</span>
-              <span>2.6k</span>
-            </span>
-            <span class="post-meta-item" title="阅读时长">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-clock-o"></i>
-              </span>
-                <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>2 分钟</span>
-            </span>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h3 id="量子密码学"><a href="#量子密码学" class="headerlink" title="量子密码学"></a>量子密码学</h3><p>研究量子密码学的学科被称为量子密码学，是密码学的一个重要分支。它实际上是古老密码学一次一密概念和量子物理相结合的一个新产物。</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2019/03/17/%E5%AE%8C%E6%95%B4%E5%AF%86%E7%A0%81%E5%AD%A6/%E7%AC%AC17%E7%AB%A0%E9%87%8F%E5%AD%90%E5%AF%86%E7%A0%81%E5%AD%A6/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-    <div>
-      
-    </div>
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-        
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/03/17/%E5%AE%8C%E6%95%B4%E5%AF%86%E7%A0%81%E5%AD%A6/%E7%AC%AC16%E7%AB%A0%E6%95%B0%E5%AD%97%E7%AD%BE%E5%90%8D/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpg">
-      <meta itemprop="name" content="Hongery">
-      <meta itemprop="description" content="直到这一刻微笑着说话为止，我至少留下了一公升眼泪">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Hongery">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          
-            <a href="/2019/03/17/%E5%AE%8C%E6%95%B4%E5%AF%86%E7%A0%81%E5%AD%A6/%E7%AC%AC16%E7%AB%A0%E6%95%B0%E5%AD%97%E7%AD%BE%E5%90%8D/" class="post-title-link" itemprop="url">第15章数字签名</a>
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2019-03-17 15:59:45" itemprop="dateCreated datePublished" datetime="2019-03-17T15:59:45+08:00">2019-03-17</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-04-05 21:28:33" itemprop="dateModified" datetime="2020-04-05T21:28:33+08:00">2020-04-05</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/%E5%AF%86%E7%A0%81%E5%AD%A6/" itemprop="url" rel="index">
-                    <span itemprop="name">密码学</span>
-                  </a>
-                </span>
-            </span>
-
-          <br>
-            <span class="post-meta-item" title="本文字数">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-file-word-o"></i>
-              </span>
-                <span class="post-meta-item-text">本文字数：</span>
-              <span>4.7k</span>
-            </span>
-            <span class="post-meta-item" title="阅读时长">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-clock-o"></i>
-              </span>
-                <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>4 分钟</span>
-            </span>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h3 id="数字签名"><a href="#数字签名" class="headerlink" title="数字签名"></a>数字签名</h3><p>数字签名在信息安全，包括身份认证、数据完整性、不可否认性以及匿名性有着重要应用，是现代密码学的重要分支。签名隶属于公钥密码学。签名过程：发送方用自己的私钥对发送信息进行所谓的加密运算，得到一个hash值，该hash值就是签名。使用时需要将签名和信息发给接收方。接受者用发送方公开的公钥和接收到的信息对签名进行验证，通过认证，说明接收到的信息是完整的、准确的，否则说明消息来源不对。</p>
-<p>简单描述数字签名：私钥签名；公钥验签。</p>
-          <!--noindex-->
-            <div class="post-button">
-              <a class="btn" href="/2019/03/17/%E5%AE%8C%E6%95%B4%E5%AF%86%E7%A0%81%E5%AD%A6/%E7%AC%AC16%E7%AB%A0%E6%95%B0%E5%AD%97%E7%AD%BE%E5%90%8D/#more" rel="contents">
-                阅读全文 &raquo;
-              </a>
-            </div>
-          <!--/noindex-->
-        
-      
-    </div>
-
-    
-    
-    
-    <div>
-      
-    </div>
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-        
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/03/17/%E5%AE%8C%E6%95%B4%E5%AF%86%E7%A0%81%E5%AD%A6/%E7%AC%AC14%E7%AB%A0HMAC%E5%93%88%E5%B8%8C%E6%B6%88%E6%81%AF%E7%A0%81%E9%AA%8C%E8%AF%81%E7%AE%97%E6%B3%95/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.jpg">
-      <meta itemprop="name" content="Hongery">
-      <meta itemprop="description" content="直到这一刻微笑着说话为止，我至少留下了一公升眼泪">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Hongery">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          
-            <a href="/2019/03/17/%E5%AE%8C%E6%95%B4%E5%AF%86%E7%A0%81%E5%AD%A6/%E7%AC%AC14%E7%AB%A0HMAC%E5%93%88%E5%B8%8C%E6%B6%88%E6%81%AF%E7%A0%81%E9%AA%8C%E8%AF%81%E7%AE%97%E6%B3%95/" class="post-title-link" itemprop="url">第13章HMAC哈希消息认证码</a>
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2019-03-17 15:59:45" itemprop="dateCreated datePublished" datetime="2019-03-17T15:59:45+08:00">2019-03-17</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-04-05 21:28:20" itemprop="dateModified" datetime="2020-04-05T21:28:20+08:00">2020-04-05</time>
+                <time title="修改时间：2020-04-15 20:24:07" itemprop="dateModified" datetime="2020-04-15T20:24:07+08:00">2020-04-15</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -1204,7 +892,316 @@
           <h3 id="HMAC算法及golang实现代码详解"><a href="#HMAC算法及golang实现代码详解" class="headerlink" title="HMAC算法及golang实现代码详解"></a>HMAC算法及golang实现代码详解</h3><h2 id="1-HMAC算法概述"><a href="#1-HMAC算法概述" class="headerlink" title="1 HMAC算法概述"></a>1 HMAC算法概述</h2><p>HMAC算法中文名称叫哈希消息认证码，英文全称是Hash-based Message Authentication Code。它的算法是基于某个哈希散列函数（主要是SHA系列和MD系列），以一个密钥和一个消息为输入，生成一个消息摘要作为输出。HMAC算法与其他哈希散列算法最大区别就是需要有密钥。它的算法函数是利用分组密码来建立的一个单向Hash函数。</p>
           <!--noindex-->
             <div class="post-button">
-              <a class="btn" href="/2019/03/17/%E5%AE%8C%E6%95%B4%E5%AF%86%E7%A0%81%E5%AD%A6/%E7%AC%AC14%E7%AB%A0HMAC%E5%93%88%E5%B8%8C%E6%B6%88%E6%81%AF%E7%A0%81%E9%AA%8C%E8%AF%81%E7%AE%97%E6%B3%95/#more" rel="contents">
+              <a class="btn" href="/2019/03/16/%E5%AE%8C%E6%95%B4%E5%AF%86%E7%A0%81%E5%AD%A6/%E7%AC%AC14%E7%AB%A0HMAC%E5%93%88%E5%B8%8C%E6%B6%88%E6%81%AF%E7%A0%81%E9%AA%8C%E8%AF%81%E7%AE%97%E6%B3%95/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+    <div>
+      
+    </div>
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+        
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/03/16/%E5%AE%8C%E6%95%B4%E5%AF%86%E7%A0%81%E5%AD%A6/%E7%AC%AC12%E7%AB%A0%E5%93%88%E5%B8%8C%E7%AE%97%E6%B3%95/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="Hongery">
+      <meta itemprop="description" content="直到这一刻微笑着说话为止，我至少留下了一公升眼泪">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hongery">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2019/03/16/%E5%AE%8C%E6%95%B4%E5%AF%86%E7%A0%81%E5%AD%A6/%E7%AC%AC12%E7%AB%A0%E5%93%88%E5%B8%8C%E7%AE%97%E6%B3%95/" class="post-title-link" itemprop="url">第11章哈希（hash）算法</a>
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-03-16 15:59:54" itemprop="dateCreated datePublished" datetime="2019-03-16T15:59:54+08:00">2019-03-16</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-04-15 20:23:51" itemprop="dateModified" datetime="2020-04-15T20:23:51+08:00">2020-04-15</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E5%AF%86%E7%A0%81%E5%AD%A6/" itemprop="url" rel="index">
+                    <span itemprop="name">密码学</span>
+                  </a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-file-word-o"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>4.4k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-clock-o"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>4 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h3 id="哈希（hash）算法"><a href="#哈希（hash）算法" class="headerlink" title="哈希（hash）算法"></a>哈希（hash）算法</h3><p>哈希函数是密码学中的一个重要分支，该函数是一类数学函数，它可以在有限的合理时间内，将任意长度的消息变换成固定长度的二进制串，且不可逆，这个输出值就是哈希值，也叫散列值或消息摘要。以hash函数为基础的hash算法，在数字签名，实现数据完整性，merkle树数据存储和检索等方面有着广泛的应用。<br>在比特币系统中使用了两个密码学hash函数，一个是SHA256,另一个是ripemd160。ripemd160主要用于生成比特币地址，SHA256是比特币链上几乎所有加密算法的hash函数。</p>
+<h2 id="1-技术原理"><a href="#1-技术原理" class="headerlink" title="1. 技术原理"></a>1. 技术原理</h2><p>hash函数也叫散列函数，杂凑函数。它是一种单向密码机制，也就是只能加密，而不能解密。数学表达式可以为：h=H(m)，其中H是哈希函数，m是要加密的信息，h是输出的固定长度的哈希值。运算过程是设定一个初始向量，对消息补长到算法要求长度，将补长后的消息拆分成N份数据块，N份数据块与初始向量通过hash算法进行迭代循环运算，最终得到固定长度的hash值。<br>hash函数具有以下特点：</p>
+<ol>
+<li>压缩性：对任意长度的信息加密成固定长度的hash值；</li>
+<li>单向性：hash函数的数学原理没有逆运算，所以不能将hash值转换成加密前的信息；</li>
+<li>抗碰撞性：hash函数的运算过程相当复杂，包含多种数学运算和大量变量循环运算，要满足两个不同的消息产生相同的hash值几乎不可能发生；</li>
+<li>高灵敏性：任何微小的输入都有可能对输出产生巨大的影响。<br>典型的hash函数有两类：消息摘要算法（MD5）和安全散列算法（SHA）。</li>
+</ol>
+<h2 id="2-hash碰撞"><a href="#2-hash碰撞" class="headerlink" title="2. hash碰撞"></a>2. hash碰撞</h2><p>理想的hash函数对于不同的输入得到两个不同的hash值。在实际中，如果存在两个不同的信息m，m’使H(m)=H(m’)，那么就称m和m’是该函数的一个碰撞。简言之，hash碰撞是指两个不同的消息在同一个哈希函数作用下，产生两个相同的哈希值。<br>为了保证数据安全性和不可篡改性，实际hash算法要足够复杂使其有很强的hash抗碰撞性。<br>hash抗碰撞性分为两种：一种是弱抗碰撞性，即指定的消息x和函数H，去求消息y，使H(x)=H(y)在计算上是不可行的；另一个是强抗碰撞性，即给定函数H，对于任意一对不同的消息x和y，使得H(x)=H(y)在计算上也是不可行的。</p>
+<h3 id="SHA256"><a href="#SHA256" class="headerlink" title="SHA256"></a>SHA256</h3><p>SHA是一个密码散列函数家族，是英文Secure Hash Algorithm的缩写。由美国国家安全局（NSA）所设计，并由美国国家标准与技术研究院（NIST）发布。SHA家族目前有三个系列：SHA-1，SHA-2，SHA-3。因为SHA-1已经被计算出能够被破解，所以现在几乎不再使用。SHA-3是2012年产生的算法，也叫Keccak算法，在以太坊公链中主要使用。SHA-2是当前使用最广泛的算法，尤其是比特币一代的公链。</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2019/03/16/%E5%AE%8C%E6%95%B4%E5%AF%86%E7%A0%81%E5%AD%A6/%E7%AC%AC12%E7%AB%A0%E5%93%88%E5%B8%8C%E7%AE%97%E6%B3%95/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+    <div>
+      
+    </div>
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+        
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/03/16/%E5%AE%8C%E6%95%B4%E5%AF%86%E7%A0%81%E5%AD%A6/%E7%AC%AC10%E7%AB%A0%E6%A4%AD%E5%9C%86%E6%9B%B2%E7%BA%BF%E5%AF%86%E7%A0%81%E5%AD%A6/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="Hongery">
+      <meta itemprop="description" content="直到这一刻微笑着说话为止，我至少留下了一公升眼泪">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hongery">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2019/03/16/%E5%AE%8C%E6%95%B4%E5%AF%86%E7%A0%81%E5%AD%A6/%E7%AC%AC10%E7%AB%A0%E6%A4%AD%E5%9C%86%E6%9B%B2%E7%BA%BF%E5%AF%86%E7%A0%81%E5%AD%A6/" class="post-title-link" itemprop="url">第10章椭圆曲线密码学</a>
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-03-16 15:59:53" itemprop="dateCreated datePublished" datetime="2019-03-16T15:59:53+08:00">2019-03-16</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-04-15 20:23:43" itemprop="dateModified" datetime="2020-04-15T20:23:43+08:00">2020-04-15</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E5%AF%86%E7%A0%81%E5%AD%A6/" itemprop="url" rel="index">
+                    <span itemprop="name">密码学</span>
+                  </a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-file-word-o"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>4k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-clock-o"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>4 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h3 id="椭圆曲线密码学"><a href="#椭圆曲线密码学" class="headerlink" title="椭圆曲线密码学"></a>椭圆曲线密码学</h3><h2 id="1-椭圆曲线密码学简介"><a href="#1-椭圆曲线密码学简介" class="headerlink" title="1. 椭圆曲线密码学简介"></a>1. 椭圆曲线密码学简介</h2><p>椭圆曲线密码学（英语：Elliptic curve cryptography，缩写为 ECC），一种建立公开密钥加密的算法，基于椭圆曲线数学。椭圆曲线在密码学中的使用是在1985年由Neal Koblitz和Victor Miller分别独立提出的。</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2019/03/16/%E5%AE%8C%E6%95%B4%E5%AF%86%E7%A0%81%E5%AD%A6/%E7%AC%AC10%E7%AB%A0%E6%A4%AD%E5%9C%86%E6%9B%B2%E7%BA%BF%E5%AF%86%E7%A0%81%E5%AD%A6/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
+      
+    </div>
+
+    
+    
+    
+    <div>
+      
+    </div>
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+        
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block home" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/03/16/%E5%AE%8C%E6%95%B4%E5%AF%86%E7%A0%81%E5%AD%A6/%E7%AC%AC9%E7%AB%A0%E9%9D%9E%E5%AF%B9%E7%A7%B0%E5%AF%86%E7%A0%81DSA%E7%AE%97%E6%B3%95/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="Hongery">
+      <meta itemprop="description" content="直到这一刻微笑着说话为止，我至少留下了一公升眼泪">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Hongery">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+            <a href="/2019/03/16/%E5%AE%8C%E6%95%B4%E5%AF%86%E7%A0%81%E5%AD%A6/%E7%AC%AC9%E7%AB%A0%E9%9D%9E%E5%AF%B9%E7%A7%B0%E5%AF%86%E7%A0%81DSA%E7%AE%97%E6%B3%95/" class="post-title-link" itemprop="url">第9章非对称密码DSA算法</a>
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-03-16 15:59:52" itemprop="dateCreated datePublished" datetime="2019-03-16T15:59:52+08:00">2019-03-16</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-04-15 20:23:33" itemprop="dateModified" datetime="2020-04-15T20:23:33+08:00">2020-04-15</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E5%AF%86%E7%A0%81%E5%AD%A6/" itemprop="url" rel="index">
+                    <span itemprop="name">密码学</span>
+                  </a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-file-word-o"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>1.6k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-clock-o"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>1 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h3 id="DSA算法"><a href="#DSA算法" class="headerlink" title="DSA算法"></a>DSA算法</h3><p>DSA（Digital Signature Algorithm）是Schnorr和ElGamal签名算法的变种，被美国NIST作为DSS(DigitalSignature Standard)。</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/2019/03/16/%E5%AE%8C%E6%95%B4%E5%AF%86%E7%A0%81%E5%AD%A6/%E7%AC%AC9%E7%AB%A0%E9%9D%9E%E5%AF%B9%E7%A7%B0%E5%AF%86%E7%A0%81DSA%E7%AE%97%E6%B3%95/#more" rel="contents">
                 阅读全文 &raquo;
               </a>
             </div>
@@ -1299,7 +1296,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">107</span>
+          <span class="site-state-item-count">108</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
