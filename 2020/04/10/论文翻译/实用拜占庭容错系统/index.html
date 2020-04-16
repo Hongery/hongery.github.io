@@ -59,7 +59,7 @@
 <meta property="og:image" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2020&#x2F;04&#x2F;10&#x2F;%E8%AE%BA%E6%96%87%E7%BF%BB%E8%AF%91&#x2F;%E5%AE%9E%E7%94%A8%E6%8B%9C%E5%8D%A0%E5%BA%AD%E5%AE%B9%E9%94%99%E7%B3%BB%E7%BB%9F&#x2F;images&#x2F;pbft4.png">
 <meta property="og:image" content="http:&#x2F;&#x2F;yoursite.com&#x2F;2020&#x2F;04&#x2F;10&#x2F;%E8%AE%BA%E6%96%87%E7%BF%BB%E8%AF%91&#x2F;%E5%AE%9E%E7%94%A8%E6%8B%9C%E5%8D%A0%E5%BA%AD%E5%AE%B9%E9%94%99%E7%B3%BB%E7%BB%9F&#x2F;images&#x2F;pbft5.png">
 <meta property="article:published_time" content="2020-04-10T07:59:43.000Z">
-<meta property="article:modified_time" content="2020-04-16T06:16:51.781Z">
+<meta property="article:modified_time" content="2020-04-16T06:50:13.857Z">
 <meta property="article:author" content="Hongery">
 <meta property="article:tag" content="论文">
 <meta name="twitter:card" content="summary">
@@ -249,7 +249,7 @@
                   <i class="fa fa-calendar-check-o"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-04-16 14:16:51" itemprop="dateModified" datetime="2020-04-16T14:16:51+08:00">2020-04-16</time>
+                <time title="修改时间：2020-04-16 14:50:13" itemprop="dateModified" datetime="2020-04-16T14:50:13+08:00">2020-04-16</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -296,6 +296,8 @@
 
       
         <h2 id="实用拜占庭将军问题"><a href="#实用拜占庭将军问题" class="headerlink" title="实用拜占庭将军问题"></a>实用拜占庭将军问题</h2><h3 id="摘要"><a href="#摘要" class="headerlink" title="摘要"></a>摘要</h3><p>本文提出了一种新的能够容忍拜占庭错误的复制算法。我们认为，由于恶意攻击和软件错误越来越普遍，并可能导致错误节点表现出任意行为，因此拜占庭容错算法在未来将变得越来越重要。尽管之前的算法假设是一个同步系统，或者太慢而不能在实际中使用，但是本文描述的算法是实用的:它在异步环境中工作，比如互联网，并且结合了一些重要的优化，提高了以前算法的响应时间超过一百万数量级。我们使用我们的算法实现了一个容错的拜占庭 NFS 服务，并测量了它的性能。结果表明，我们的服务只比标准的无复制 NFS 慢 3%。 </p>
+<a id="more"></a>
+
 <h3 id="1-引言"><a href="#1-引言" class="headerlink" title="1 引言"></a>1 引言</h3><p>​        恶意攻击和软件错误越来越普遍。行业和政府对网上信息服务的依赖日益增加，使得恶意攻击更具吸引力，成功攻击的后果也更加严重。此外，由于软件的规模和复杂性的增加，软件错误的数量也在增加。由于恶意攻击和软件错误会导致错误节点表现出 Byzan-tine(即任意)行为，因此容错算法显得越来越重要。</p>
 <p>​        本文提出了一种新的、实用的容忍拜占庭错误的状态机复制算[17,34]。<strong>这个算法在保证活性和安全性（liveness &amp; safety）的前提下提供了(n-1)/3的容错性</strong>。这意味着客户最终会收到对他们请求的答复，而且根据线性化程度这些答复是正确的[14,4]。该算法适用于像互联网这样的异步系统，并且它包含了使其能够高效执行的重要优化。</p>
 <p>​        在协议方面有大量的工作和容忍拜占庭错误的复制技术(从[19]开始)。然而，大多数早期的工作(例如，[3,24,10])要么涉及旨在证明理论可行性的技术，这些技术在实践中效率太低，无法使用，要么假设同步，即依赖于已知的消息延迟和进程速度界限。与我们最接近的系统 Rampart[30]和 securityering[16]被设计得很实用，但是它们依赖于同步假设来保证正确性，这在存在恶意攻击时是危险的。攻击者可能会延迟非故障节点或它们之间的通信，直到它们被标记为故障节点并被排除在复制组之外，从而危及服务的安全。这样的分布式拒绝服务攻击通常比获得一个没有故障的节点更容易。</p>
